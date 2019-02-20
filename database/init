@@ -1,0 +1,4 @@
+use test
+db.createUser({user: 'test', pwd: 'test', roles: []})
+db.createCollection('devices')
+db.createCollection('users')
