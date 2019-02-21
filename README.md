@@ -45,3 +45,33 @@ We need to follow the steps from the previous section before trying to test the 
 ```OracleTest.new(OracleLookup.address).then(instance => {oracle = instance})```
 
 ```oracle.methods```
+
+## Run the database in a Docker container
+Another posibility is to run the database system detached as a docker container. Inside the `docker/` folder there is a Dockerfile along with an init script to initialize the database. Once we are inside the `docker/` folder, the needed commands to run it as a container are the following:
+
+```
+docker build -t mongo-mesh .
+```
+
+```
+docker run \
+--name mongo-mesh \
+-e MONGO_INITDB_DATABASE=ammbr \
+-p 27017:27017 \
+-v /var/lib/docker-mongo:/data/db
+-d mongo-mesh \ 
+mongod --auth
+```
+
+After these steps we should be able to connect to the database using the following command:
+
+```
+mongo -u <<username>> \
+-p <<password>> <<IP>> \
+--authenticationDatabase "ammbr"
+```
+
+### Some reminders about the docker container
+- If you choose to run it inside a Docker container, make sure the port `27017` is free.
+- The tags `<<username>>`, `<<password>>` and so on are not written directly in the README but they can be found in the init.js script.
+- In order to try the oracle, we will need to change the `config.js` file which contains the configuration to connect to the database.
