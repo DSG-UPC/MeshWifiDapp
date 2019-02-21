@@ -31,6 +31,11 @@ module.exports = {
       network_id: "7775",
       //from: "",
     },
+    test: {
+      provider: web3.currentProvider,
+      network_id: "7775",
+      //from: "",
+    },
     production: {
       provider: web3.currentProvider,
       network_id: "1516",

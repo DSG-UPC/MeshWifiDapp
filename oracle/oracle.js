@@ -24,8 +24,8 @@ const getAccount = async () => {
     web3.setProvider(oracleContract.provider)
     const accounts = await web3.eth.getAccounts()
     account = accounts[0];
-    databaseHandler = new DatabaseHandler(account, oracleNetwork)
-    monitorHandler = new MonitorHandler(account, oracleNetwork)
+    databaseHandler = new DatabaseHandler(account)
+    monitorHandler = new MonitorHandler(account)
     forwardingHandler = new ForwardingHandler(account, databaseHandler.handler, monitorHandler)
     console.log('Working from account ', account)
 }

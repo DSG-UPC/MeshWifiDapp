@@ -46,7 +46,7 @@ contract('Checks that oracle works properly', () => {
             oracle = instance
         })
 
-        handler = new Handler('staging')
+        handler = new Handler()
 
         await handler.removeAllData()
 

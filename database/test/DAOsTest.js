@@ -7,7 +7,7 @@ describe('Trying the DAOs methods', () => {
 
         // WE INITIALIZE THE HANDLER AND THE DAOs
 
-        handler = new Handler('staging')
+        handler = new Handler()
         uDao = handler.getUserDAO()
         dDao = handler.getDeviceDAO()
 

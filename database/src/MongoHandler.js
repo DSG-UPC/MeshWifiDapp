@@ -5,8 +5,8 @@ var config = require('../../config')
 
 class MongoHandler {
 
-    constructor(options) {
-        let url = config[options].mongo
+    constructor() {
+        let url = config.mongo
         mongoose.connect(url, {
             useNewUrlParser: true
         })

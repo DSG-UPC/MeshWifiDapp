@@ -10,6 +10,8 @@ Any configuration can be updated in `config.js` file. This file will hold the di
 
 ## How to run it
 
+### Manually
+
 1. _Read this point if you want to run it locally, otherwise continue to the second one_. We will need to install [MongoDB](https://docs.mongodb.com/manual/installation/). Once mongo is installed and running in our machine, we will have to initialize it and load some schemas. This can be done as follows:
 
 ```
@@ -37,6 +39,30 @@ node oracle --network staging
 ```
 
 5. If everything went ok we should be able to see a long output describing the WebSocketProvider and also the contract ABI.
+
+### Using a Docker container
+
+1. Build the Dockerfile to get the image:
+
+```
+docker build -t <<any-name>> .
+```
+
+2. Execute the container (**Be sure to have a Ethereum provider, a Prometheus server and a MongoDB instances running and available**)
+
+```
+docker run -it --network=host -e NETWORK=test -e ETH_NET=localhost:8545 -e PROMETHEUS_IP=localhost:9090 -e MONGO_IP=localhost:27017 oracle-mesh
+```
+
+#### Things to be taken into account
+The command from the second point has some features that need to be explained:
+- **--network=host** This makes easier the integration when running everything locally. The idea is that the docker container inherits the network interface of the host, such that we can access to the different systems deployed on the host ports without needing to expose them individually (e.g. -p 8545:8545).
+- Four environment variables need to be set for the oracle to work properly:
+    - **NETWORK** will represent the network name (check truffle.js to find available networks). Default value `staging` (be sure to choose the same network as the ethereum network provider).
+    - **ETH_NET** will represent the IP of the ethereum network provider. Default value `localhost:8545`
+    - **PROMETHEUS_IP** will represent the IP of the prometheus server. Default value `localhost:9090`
+    - **MONGO_IP** will represent the IP of the database (MongoDB). Default value `localhost:27017`
+- If it is ran with the docker command shown above, the console will only show output. Consider using `-d` or flag to detach it.
 
 ## How to test it
 

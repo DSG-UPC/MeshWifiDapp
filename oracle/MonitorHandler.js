@@ -5,10 +5,10 @@ var config = require('../config')
 
 class MonitorHandler extends OracleHandler {
 
-    constructor(_account, _network) {
+    constructor(_account) {
         super()
         this.account = _account
-        this.ip = config[_network].prometheus
+        this.ip = config.prometheus
         this.monitorServer = `http://${this.ip}/api/v1/`
         this.stepTime = '1m'
         this.step = `step=${this.stepTime}`
