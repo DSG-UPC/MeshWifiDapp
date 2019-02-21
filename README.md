@@ -12,21 +12,29 @@ Any configuration can be updated in `config.js` file. This file will hold the di
 
 1. _Read this point if you want to run it locally, otherwise continue to the second one_. We will need to install [MongoDB](https://docs.mongodb.com/manual/installation/). Once mongo is installed and running in our machine, we will have to initialize it and load some schemas. This can be done as follows:
 
-```mongo < database/init```
+```
+mongo < database/init
+```
 
 2. The first thing to do is to install all the required dependencies:
 
-```npm install```
+```
+npm install
+```
 
 3. Then we will need to compile and migrate the contracts to be used with respect to the Ethereum Network we'll be using:
 
-```./node_modules/.bin/truffle compile --all --network <network-name>```
+```
+./node_modules/.bin/truffle compile --all --network <<network-name>>
 
-```./node_modules/.bin/truffle migrate --reset --network <network-name>```
+./node_modules/.bin/truffle migrate --reset --network <<network-name>>
+```
 
 4. Once all the contracts have been migrated succesfully and we have a `build/` directory in the root folder of the project, we can start the oracle from inside the `/oracle` folder:
 
-```node oracle --network staging```
+```
+node oracle --network staging
+```
 
 5. If everything went ok we should be able to see a long output describing the WebSocketProvider and also the contract ABI.
 
@@ -36,15 +44,19 @@ We need to follow the steps from the previous section before trying to test the 
 
 1. Directly executing the tests written for that purpose (this is not giving too much information):
 
-```./node_modules/.bin/truffle test --network staging```
+```
+./node_modules/.bin/truffle test --network staging
+```
 
 2. Using truffle console and testing the OracleTest methods freely:
 
-```./node_modules/.bin/truffle console --network staging```
+```
+./node_modules/.bin/truffle console --network staging
 
-```OracleTest.new(OracleLookup.address).then(instance => {oracle = instance})```
+OracleTest.new(OracleLookup.address).then(instance => {oracle = instance})
 
-```oracle.methods```
+oracle.methods
+```
 
 ## Run the database in a Docker container
 Another posibility is to run the database system detached as a docker container. Inside the `docker/` folder there is a Dockerfile along with an init script to initialize the database. Once we are inside the `docker/` folder, the needed commands to run it as a container are the following:
