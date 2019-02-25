@@ -15,9 +15,9 @@ RUN npm install
 # Bundle app source
 COPY . .
 
-ENV NETWORK='staging'
-ENV MONGO_IP='localhost'
+ENV NETWORK_NAME='staging'
+ENV MONGO_IP='localhost:27017'
 ENV PROMETHEUS_IP='localhost:9090'
 ENV ETH_NET='localhost:8545'
 
-CMD [ "/bin/sh", "scripts/compile.sh" ]
+CMD [ "/bin/bash", "scripts/compile.sh" ]
