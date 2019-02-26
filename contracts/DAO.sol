@@ -9,6 +9,7 @@ contract DAO is Ownable {
   address public Owners;
   address public OracleQuery;
   address OracleResponse;
+  address ReserveAccount;
   uint256 public pricePerMB;
 
 
@@ -17,7 +18,17 @@ contract DAO is Ownable {
   {
     pricePerMB = _pricePerMB;
     OracleResponse = msg.sender;
+    ReserveAccount = msg.sender;
     OracleQuery = _OracleQuery;
+  }
+
+  function setReserveAccount(address _address)  public onlyOwner {
+    ReserveAccount = _address;
+  }
+
+
+  function getReserveAccount() public view returns (address) {
+    return ReserveAccount;
   }
 
   function setOracleQueryAddress(address _address)  public onlyOwner {
@@ -40,12 +51,12 @@ contract DAO is Ownable {
     return ERC20;
   }
 
-  function setERC20(address _address) internal onlyOwner returns(bool) {
+  function setERC20(address _address) public onlyOwner returns(bool) {
     ERC20 = _address;
     return true;
   }
 
-  function setERC721(address _address) internal onlyOwner returns(bool) {
+  function setERC721(address _address) public onlyOwner returns(bool) {
     ERC721 = _address;
     return true;
   }
@@ -58,7 +69,7 @@ contract DAO is Ownable {
     return Owners;
   }
 
-  function setOwners(address _address) internal onlyOwner returns(bool) {
+  function setOwners(address _address) public onlyOwner returns(bool) {
     Owners = _address;
     return true;
   }
@@ -67,7 +78,7 @@ contract DAO is Ownable {
     return pricePerMB;
   }
 
-  function setPricePerMB(uint256 _pricePerMB) internal onlyOwner returns(bool) {
+  function setPricePerMB(uint256 _pricePerMB) public onlyOwner returns(bool) {
     pricePerMB = _pricePerMB;
     return true;
   }
