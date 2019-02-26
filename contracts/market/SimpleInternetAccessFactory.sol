@@ -21,12 +21,12 @@ contract SimpleInternetAccessFactory is Ownable {
     return daoAddress;
   }
 
-  function createContract(address _client, string _providerIP,
+  function createContract(address _provider, string _providerIP,
     string _providerMonitor, uint _maxData)
     public
   {
-    address newContract = new SimpleInternetAccess(_client, _providerIP,
-      _providerMonitor, _maxData, msg.sender, daoAddress,
+    address newContract = new SimpleInternetAccess(msg.sender, _providerIP,
+      _providerMonitor, _maxData, provider, daoAddress,
       erc20Address);
     deployedContractsbyProvider[msg.sender].push(newContract);
     deployedContractsbyClient[_client].push(newContract);
