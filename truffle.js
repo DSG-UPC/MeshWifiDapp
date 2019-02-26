@@ -31,7 +31,7 @@ module.exports = {
       network_id: "7775",
       //from: "",
     },
-    test: {
+    meshdapp: {
       provider: web3.currentProvider,
       network_id: "7775",
       //from: "",

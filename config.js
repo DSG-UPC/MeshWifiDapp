@@ -2,6 +2,7 @@ var config = {
     mongo: getMongoIP(),
     prometheus: process.env.PROMETHEUS_IP || 'localhost:9090',
     ethereum_provider: process.env.ETH_NET || 'localhost:8545',
+    http_provider: process.env.HTTP_PROVIDER == 'true' || false,
 };
 
 function getMongoIP() {

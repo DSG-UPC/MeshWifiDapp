@@ -19,5 +19,6 @@ ENV NETWORK_NAME='staging'
 ENV MONGO_IP='localhost:27017'
 ENV PROMETHEUS_IP='localhost:9090'
 ENV ETH_NET='localhost:8545'
+ENV HTTP_PROVIDER='false'
 
 CMD [ "/bin/bash", "scripts/compile.sh" ]
