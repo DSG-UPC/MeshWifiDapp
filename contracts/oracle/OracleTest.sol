@@ -9,7 +9,6 @@ contract OracleTest is usingOracle {
   string public entity;
   bytes32 public id;
   string public entryId;
-  uint public priceMB;
   bool _exists;
   string _originator_;
   string _mint;
@@ -19,9 +18,7 @@ contract OracleTest is usingOracle {
   string _deviceActivate;
   uint256 _traffic;
 
-  constructor(address _lookupContract) usingOracle(_lookupContract) public{
-    priceMB = 6000;
-  }
+  constructor(address _lookupContract) usingOracle(_lookupContract) public{}
 
   function getExists() public view returns(bool){
     return _exists;

@@ -2,17 +2,14 @@ pragma solidity ^0.4.25;
 //
 // This is the API file to be included by a user of this oracle
 //
+import "contracts/DAOInterface.sol";
+
 
 // This must match the signature in dispatch.sol
 contract Oracle {
   function query(string _queryType, address _originator, string _query) public returns (bytes32);
 }
 
-// This must match the signature in lookup.sol
-contract OracleLookup {
-  function getQueryAddress() public view returns (address);
-  function getResponseAddress() public view returns (address);
-}
 
 // The actual part to be included in a client contract
 contract usingOracle {
@@ -24,14 +21,14 @@ contract usingOracle {
   }
 
   modifier onlyFromOracle() {
-    OracleLookup lookup = OracleLookup(lookupContract);
-    require(msg.sender == lookup.getResponseAddress());
+    DAOInterface lookup = DAOInterface(lookupContract);
+    require(msg.sender == lookup.getOracleResponseAddress());
     _;
   }
 
   function queryOracle(string queryType, address originator, string query) public returns (bytes32) {
-    OracleLookup lookup = OracleLookup(lookupContract);
-    Oracle oracle = Oracle(lookup.getQueryAddress());
+    DAOInterface lookup = DAOInterface(lookupContract);
+    Oracle oracle = Oracle(lookup.getOracleQueryAddress());
     return oracle.query(queryType, originator, query);
   }
 }

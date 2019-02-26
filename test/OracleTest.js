@@ -1,6 +1,6 @@
 const OracleTest = artifacts.require('./contracts/oracle/OracleTest.sol')
 const argv = require('minimist')(process.argv.slice(2))
-var jsonLookup = require('../build/contracts/OracleLookup.json')
+var jsonLookup = require('../build/contracts/DAO.json')
 const Handler = require('../database/src/MongoHandler')
 
 contract('Checks that oracle works properly', () => {
