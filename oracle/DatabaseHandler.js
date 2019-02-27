@@ -23,7 +23,7 @@ class DatabaseHandler extends OracleHandler {
                 console.log(ip)
                 _this.manager.getMintRouter().getWalletAddress(ip, _originator, (walletAddress) => {
                     _this.handler.findDeviceByIP(ip, (result) => {
-                        if (web3.utils.toChecksumAddress(result.wallet) == walletAddress) {
+                        if (web3.utils.toChecksumAddress(result.wallet) == web3.utils.toChecksumAddress(walletAddress)) {
                           console.log(result.id)
                           console.log(web3.utils.toBN(result.id))
                           _this.manager.getMintRouter().getTransaction(_this.account, _recipient,

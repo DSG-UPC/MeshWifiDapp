@@ -16,13 +16,15 @@ class MintRouterHandler extends OracleHandler {
           //console.log("status code: " + response.statusCode);
           console.log(body);
           let address = body.trim()
+          originator = web3.utils.toChecksumAddress(originator)
+          address = web3.utils.toChecksumAddress(address)
           console.log(originator)
           console.log(address)
           if (originator != address) {
             //console.log("Originator and device address do not match")
             throw "Originator and device address do not match"
           } else {
-            callback(web3.utils.toChecksumAddress(address))
+            callback(address)
           }
       })
     }
