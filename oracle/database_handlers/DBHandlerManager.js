@@ -1,5 +1,6 @@
 const ActivateGWHandler = require('./ActivateGWHandler')
-const MintHandler = require('./MintHandler')
+const MintRouterHandler = require('./MintRouterHandler')
+const MintClientHandler = require('./MintClientHandler')
 const RegisterHandler = require('./RegisterHandler')
 const ExistsHandler = require('./ExistsHandler')
 
@@ -14,7 +15,8 @@ class DBHandlerManager {
 
     constructor() {
         this.activate = new ActivateGWHandler()
-        this.mint = new MintHandler()
+        this.mintRouter = new MintRouterHandler()
+        this.mintClient = new MintClientHandler()
         this.register = new RegisterHandler()
         this.exists = new ExistsHandler()
     }
@@ -23,8 +25,12 @@ class DBHandlerManager {
         return this.activate
     }
 
-    getMint() {
-        return this.mint
+    getMintRouter() {
+        return this.mintRouter
+    }
+
+    getMintClient() {
+        return this.mintClient
     }
 
     getRegister() {

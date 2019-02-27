@@ -122,6 +122,23 @@ class MongoHandler {
     }
 
     /**
+     * This method returns a device JSON object with the specified
+     * wallet passed in as a parameter.
+     * @param {String} _wallet A String representing the wallet used
+     *                      for filtering and getting the desired user.
+     * @param {Function} callback Callback to use the return value.
+     */
+    findDeviceByIP(_ip, callback) {
+        this.deviceDAO.findByIP(_ip, (err, result) => {
+            if (err) {
+                console.log(err)
+                return err
+            }
+            callback(result)
+        })
+    }
+
+    /**
      * This method will do basically two things:
      * 1) Add a new device to the devices collection.
      * 2) Update the list of devices of the corresponding owner.

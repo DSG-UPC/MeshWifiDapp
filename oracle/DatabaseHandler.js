@@ -1,26 +1,49 @@
 const Handler = require('../database/src/MongoHandler')
 const Manager = require('./database_handlers/DBHandlerManager')
 const OracleHandler = require('./OracleHandler')
+const web3 = require('../web3')
+
 
 class DatabaseHandler extends OracleHandler {
 
-    constructor(_account) {
+    constructor(_account, _network) {
         super()
         this.account = _account
-        this.handler = new Handler()
+        this.handler = new Handler(_network)
         this.manager = new Manager()
         this.command = ''
     }
 
     handle(_id, _recipient, _originator, _data, callback) {
         let _this = this
+        let ip
         switch (this.command) {
-            case 'mint':
-                _this.handler.mintDevice(JSON.parse(_data), _device => {
-                    _this.manager.getMint().getTransaction(_this.account, _recipient,
-                        _device, callback)
+            case 'mintRouter':
+                ip = _data
+                console.log(ip)
+                _this.manager.getMintRouter().getWalletAddress(ip, _originator, (walletAddress) => {
+                    _this.handler.findDeviceByIP(ip, (result) => {
+                        if (web3.utils.toChecksumAddress(result.wallet) == web3.utils.toChecksumAddress(walletAddress)) {
+                          console.log(result.id)
+                          console.log(web3.utils.toBN(result.id))
+                          _this.manager.getMintRouter().getTransaction(_this.account, _recipient,
+                              _originator, result, callback)
+                        } else
+                            throw "Router Device wallet doesn't match DB wallet"
+                      })
                 })
                 break
+            case 'mintClient':
+                ip = _data
+                console.log(ip)
+                _this.manager.getMintClient().getWalletAddress(ip, _originator, (walletAddress) => {
+                    //TODO fix client ids
+                    let id = Math.random().toString().slice(2,11);
+                    _this.manager.getMintClient().getTransaction(_this.account, _recipient,
+                        _originator, id, ip, walletAddress, callback)
+                })
+                break
+            /* FOR FUTURE USAGE
             case 'register':
                 _this.handler.addUser(JSON.parse(_data), (_user) => {
                     _this.manager.getRegister().getTransaction(_this.account, _recipient,
@@ -33,6 +56,7 @@ class DatabaseHandler extends OracleHandler {
                         _device, callback)
                 })
                 break
+            */
             case 'activateGW':
                 _this.handler.findDeviceByWallet(_data, (result) => {
                     if (result) {

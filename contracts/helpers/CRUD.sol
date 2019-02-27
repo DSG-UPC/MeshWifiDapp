@@ -9,10 +9,12 @@ contract CRUDFactory{
 
   address routers;
   address gateways;
+  address clients;
 
   constructor() public {
       routers = new CRUD('router');
       gateways = new CRUD('gateway');
+      clients = new CRUD('client');
   }
 
   function getRouters() public view returns (address addr){
@@ -21,6 +23,10 @@ contract CRUDFactory{
 
   function getGateways() public view returns (address addr){
       return gateways;
+  }
+
+  function getClients() public view returns (address addr){
+      return clients;
   }
 
 }
