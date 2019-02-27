@@ -11,16 +11,18 @@ module.exports = function (deployer, network, accounts) {
   .then(async function (erc20) {
     await DAO.deployed().then(function(instance){dao=instance})
     console.log("DAO: " + dao.address);
-    dao.setERC20(erc20.address,{from:accounts[0]});
-    deployer.deploy(CRUDFactory)
+    await dao.setERC20(erc20.address,{from:accounts[0]});
+    await deployer.deploy(CRUDFactory)
       .then(async function (crudfactory) {
         const crudrouter = await crudfactory.getRouters.call();
-        console.log(crudrouter);
+        console.log("crudrouter: " + crudrouter);
         const crudgateway = await crudfactory.getGateways.call();
         console.log("crudgateway: " + crudgateway);
+        const crudclient = await crudfactory.getClients.call();
+        console.log("crudclient: " + crudclient);
         const erc721 = await deployer.deploy(MyERC721, 'GuifiDeviceToken', 'GDT',
-          DAO.address, crudrouter, crudgateway);
-        dao.setERC721(erc721.address).send({from:accounts[0]});
+          DAO.address, crudrouter, crudgateway, crudclient);
+        dao.setERC721(erc721.address,{from:accounts[0]});
         console.log('ERC721: '+erc721.address);
         //return crudrouter, crudgateway
       })

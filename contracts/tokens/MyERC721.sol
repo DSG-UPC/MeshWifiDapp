@@ -17,21 +17,38 @@ contract MyERC721 is ERC721Full, ERC721Mintable, Ownable, usingOracle {
 
   CRUD routers;
   CRUD gateways;
+  CRUD clients;
   //CRUD routers = new CRUD('router');
   //CRUD gateways = new CRUD('gateway');
 
   constructor(string _name, string _symbol, address _lookupContract,
-        address _crudrouter, address _crudgateway)
+        address _crudrouter, address _crudgateway, address _crudclient)
   ERC721Full(_name, _symbol)
   usingOracle(_lookupContract)
   public
   {
     routers = CRUD( _crudrouter);
     gateways = CRUD(_crudgateway);
+    clients = CRUD(_crudclient);
   }
 
 
 //DOC ways to secure that owner owns device for example sharing private key
+  /**
+   * Mint request to the oracle
+   * @dev This function will initatiate the mint process for IPs that are not
+   * already registered.
+   * @param ip The ip address of the decice to be registered
+  */
+  function requestClientMint(string ip) external payable {
+    //TODO how do we prevent users from repeatdly calling this function?
+    //Making it payable is one option, but then we should consider that Ether
+    //has value inside the network
+    //Denies queries for existing MACs to save uncessary requests
+    require(clients.exists(ip) == false);
+    queryOracle('nodedb^mintClient',msg.sender, ip);
+  }
+
 
   /**
    * Mint request to the oracle
@@ -39,13 +56,13 @@ contract MyERC721 is ERC721Full, ERC721Mintable, Ownable, usingOracle {
    * already registered.
    * @param ip The ip address of the decice to be registered
   */
-  function requestMint(string ip) external payable {
+  function requestRouterMint(string ip) external payable {
     //TODO how do we prevent users from repeatdly calling this function?
     //Making it payable is one option, but then we should consider that Ether
     //has value inside the network
     //Denies queries for existing MACs to save uncessary requests
     require(routers.exists(ip) == false);
-    queryOracle('nodedb^mint',msg.sender, ip);
+    queryOracle('nodedb^mintRouter',msg.sender, ip);
   }
 
   function activateGateway(string _ip) external {
@@ -65,7 +82,13 @@ contract MyERC721 is ERC721Full, ERC721Mintable, Ownable, usingOracle {
     return routers;
   }
 
-  function __oracleCallback(uint256 _uid, string _ip, address _address, address _originator) onlyFromOracle external {
+  function __mintClientCallback(uint256 _uid, string _ip, address _address, address _originator) onlyFromOracle external {
+    emit LogCallback();
+    clients.add(_ip, _address, _uid);
+    _mint(_originator, _uid);
+  }
+
+  function __mintRouterCallback(uint256 _uid, string _ip, address _address, address _originator) onlyFromOracle external {
     emit LogCallback();
     routers.add(_ip, _address, _uid);
     _mint(_originator, _uid);

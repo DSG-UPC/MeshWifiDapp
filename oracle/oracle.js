@@ -19,7 +19,7 @@ const oracleContract = new Contract('OracleDispatch', oracleNetwork)
 var account
 
 const getAccount = async () => {
-    console.log(oracleContract.artifact.updatedAt)
+    //console.log(oracleContract.artifact.updatedAt)
     console.log(oracleContract.provider)
     web3.setProvider(oracleContract.provider)
     const accounts = await web3.eth.getAccounts()
@@ -45,7 +45,7 @@ let c = getAccount().then(() => {
 // starts the event listener
 async function startListener(abi, address) {
     console.log("starting event monitoring on contract: " + address)
-    console.log("the abi is:" + JSON.stringify(abi, null, 2))
+    //console.log("the abi is:" + JSON.stringify(abi, null, 2))
     const myContract = await new web3.eth.Contract(jsonInterface = abi, address = address)
     //myContract.events.Incoming({fromBlock: 537025, toBlock: 'latest'
     myContract.events.Incoming({

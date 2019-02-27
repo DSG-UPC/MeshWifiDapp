@@ -2,7 +2,7 @@ const MyERC721 = artifacts.require("MyERC721");
 const Crud = artifacts.require('CRUD');
 const CrudFactory = artifacts.require('CRUDFactory');
 const OracleDispatch = artifacts.require('OracleDispatch');
-const MongoHandler = require('../../database/src/MongoHandler');
+const MongoHandler = require('../database/src/MongoHandler');
 var db = new MongoHandler('production');
 const TestIP = '10.1.24.75';
 const TestIP1 = '10.1.24.76';
@@ -107,7 +107,7 @@ contract("1st MyERC721 test", async function (accounts) {
     const gatewaysAddr = await cfact.getGateways.call();
     let routers = await Crud.at(routersAddr);
     let gateways = await Crud.at(gatewaysAddr);
-    await token.requestMint(TestIP, {
+    await token.requestRouterMint(TestIP, {
       from: account_one,
       gas: web3.utils.numberToHex(600000)
     });
@@ -115,33 +115,19 @@ contract("1st MyERC721 test", async function (accounts) {
 
     console.log('Aquí llego')
     await wait(2000, 'Waiting for mint...');
-
-    const readline = require('readline');
-    const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout
-    });
-
-    rl.question('What do you think of Node.js? ', (answer) => {
-      // TODO: Log the answer in a database
-      console.log(`Thank you for your valuable feedback: ${answer}`);
-
-      rl.close();
-    });
-    console.log('Press any key to continue.');
     //process.stdin.once('data', async function () {
-      const count = await routers.getCount.call();
-      console.log(count);
-      const exists = await routers.exists.call(TestIP);
-      console.log(exists);
-      //assert.isTrue(exists, 'The new IP is not stored in the routers struct');
-      let routersEntry = await routers.getByIP.call(TestIP);
-      console.log(routersEntry);
-      //console.log(routersEntry.uid);
-      let tokenEntry = await token.ownerOf(routersEntry.uid);
-      assert.equal(tokenEntry, account_two,
-        'The owner of the token is  not registered correctly in the ERC721');
-      console.log(tokenEntry);
+    const count = await routers.getCount.call();
+    console.log(count);
+    const exists = await routers.exists.call(TestIP);
+    console.log(exists);
+    //assert.isTrue(exists, 'The new IP is not stored in the routers struct');
+    let routersEntry = await routers.getByIP.call(TestIP);
+    console.log(routersEntry);
+    //console.log(routersEntry.uid);
+    let tokenEntry = await token.ownerOf(routersEntry.uid);
+    assert.equal(tokenEntry, account_two,
+      'The owner of the token is  not registered correctly in the ERC721');
+    console.log(tokenEntry);
     //});
 
   });
