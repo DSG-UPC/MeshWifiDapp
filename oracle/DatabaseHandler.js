@@ -6,10 +6,10 @@ const web3 = require('../web3')
 
 class DatabaseHandler extends OracleHandler {
 
-    constructor(_account, _network) {
+    constructor(_account) {
         super()
         this.account = _account
-        this.handler = new Handler(_network)
+        this.handler = new Handler()
         this.manager = new Manager()
         this.command = ''
     }

@@ -15,16 +15,9 @@ if (typeof window !== 'undefined' && typeof window.web3 !== 'undefined') {
 } else {
   // We are on the server *OR* the user is not running metamask
   ///*
-  var provider;
-  if(config.http_provider){
-    provider = new Web3.providers.HttpProvider(
-      'http://' + config.ethereum_provider
-      );
-  } else{
-     provider = new Web3(
-      'ws://' + config.ethereum_provider
-    );
-  }
+  var provider = new Web3.providers.WebsocketProvider(
+    'ws://10.1.26.10:8602' //config.ethereum_provider
+  );
   //*/
   /* HTTP for deploying and WS for the rest of the process (oracle needs WS)
   const provider = new Web3.providers.HttpProvider('http://10.1.26.10:8502');

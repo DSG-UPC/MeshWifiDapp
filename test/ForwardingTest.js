@@ -39,7 +39,7 @@ contract("Test the forwarding contract", async function () {
   before('Prepare Environment', async function () {
 
     // Start oracle server with test contract address
-    let startOracle = 'screen -S oracle -L -dm node oracle.js --network staging --address ' + OracleDispatch.address
+    let startOracle = 'screen -S oracle -L -dm node oracle/oracle.js --network staging --address ' + OracleDispatch.address
     const {
       stdout,
       stderr
@@ -94,7 +94,7 @@ contract("Test the forwarding contract", async function () {
     // After checking that the device was correctly added to the database
     // we start with the tokens transferring.
 
-    await wait(500, 'Waiting to fill database')
+    await wait(5000, 'Waiting to fill database')
 
     await forwarding.nodeReporting(device_account)
 

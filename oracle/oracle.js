@@ -20,14 +20,14 @@ var account
 
 const getAccount = async () => {
     //console.log(oracleContract.artifact.updatedAt)
-    console.log(oracleContract.provider)
-    web3.setProvider(oracleContract.provider)
-    const accounts = await web3.eth.getAccounts()
+    console.log(oracleContract.provider);
+    web3.setProvider(oracleContract.provider);
+    const accounts = await web3.eth.getAccounts();
     account = accounts[0];
-    databaseHandler = new DatabaseHandler(account)
-    monitorHandler = new MonitorHandler(account)
-    forwardingHandler = new ForwardingHandler(account, databaseHandler.handler, monitorHandler)
-    console.log('Working from account ', account)
+    databaseHandler = new DatabaseHandler(account);
+    monitorHandler = new MonitorHandler(account);
+    forwardingHandler = new ForwardingHandler(account, databaseHandler.getDatabase(), monitorHandler);
+    console.log('Working from account ', account);
 }
 
 let c = getAccount().then(() => {
