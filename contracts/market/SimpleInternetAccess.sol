@@ -45,7 +45,7 @@ contract SimpleInternetAccess is Ownable, usingOracle{
     DAOInterface public DAOContract;
     address public erc20Address;
     EIP20Interface internal tokenContract;
-    event LogContractCreated(address provider, uint maxData, uint pricePerMB);
+    event LogContractCreated(address provider, uint maxData, uint pricePerMB, bytes32 pubKey);
     event LogClientAccepted(address client, bytes32 pubkey);
     event LogActivation(string ticket, string providerIP, uint activationTime);
     event LogRenegotiate(uint debt);
@@ -57,6 +57,13 @@ contract SimpleInternetAccess is Ownable, usingOracle{
       public
       usingOracle(_DAOAddress)
     {
+       /**
+       * @dev The client accepts the contract. To do this the client must have
+       * allowed this contract to manage tokens more than maxData*pricePerMB. Also
+       * the user needs to have provided an allowance <= of the value parameter
+       * @param _pubKey The user's pubkey
+       * TODO maybe only owner can register users? What about the URI generation?
+       */
         // Constructor
         //The provider creates a contract with the proposed maximum amount of data and price,
         //the IP address of his monitoring service as well as the client address.
@@ -66,45 +73,18 @@ contract SimpleInternetAccess is Ownable, usingOracle{
         if (!tokenContract.transferFrom(msg.sender,address(this),allowance)){
           revert();
         }
-          provider.wallet = creator;
-          provider.ip = _providerIP;
-          maxData = _maxData;
-          //provider.monitor = _providerMonitor;
-          client.wallet = _client;
-          client.pubKey = _pubKey;
-          DAOContract =  DAOInterface(_DAOAddress);
-          erc20Address = _erc20Address;
-          //client.monitor = _clientMonitor;  
-          pricePerMB = DAOContract.getPricePerMB();
-          emit LogContractCreated(provider.wallet, maxData, pricePerMB);
-        
-    }
+        provider.wallet = creator;
+        provider.ip = _providerIP;
+        maxData = _maxData;
+        //provider.monitor = _providerMonitor;
+        client.wallet = _client;
+        client.pubKey = _pubKey;
+        DAOContract =  DAOInterface(_DAOAddress);
+        erc20Address = _erc20Address;
+        //client.monitor = _clientMonitor;
+        pricePerMB = DAOContract.getPricePerMB();
+        emit LogContractCreated(client.wallet, maxData, pricePerMB, client.pubKey);
 
-
-    /**
-     * @dev The client accepts the contract. To do this the client must have
-     * allowed this contract to manage tokens more than maxData*pricePerMB. Also
-     * the user needs to have provided an allowance <= of the value parameter
-     * @param _clientMonitor The user monitor URL
-     * @param _pubKey The user's pubkey
-     * @param _value The value to be transfered to this contract as a deposit
-     * TODO maybe only owner can register users? What about the URI generation?
-     */ 
-    function acceptContract_old(string _clientMonitor, bytes32 _pubKey, uint256 _value)
-      public
-      returns (bool success)
-    {
-        //The client accepts the contract providing an amount higher than the
-        //maximum value of the contract (maxData*pricePerMB)
-        //require(client.wallet == msg.sender  && msg.value > maxData*pricePerMB);
-        
-          
-          
-          return true;
-        }
-        else {
-          return false;
-        }
     }
 
     function acceptContract(string newTicket)
@@ -118,7 +98,6 @@ contract SimpleInternetAccess is Ownable, usingOracle{
         accepted = true;
         activationTime = now;
         ticket = newTicket;
-        emit LogClientAccepted(client.wallet, client.pubKey);
         emit LogActivation(newTicket, provider.ip, activationTime);
         return true;
     }
