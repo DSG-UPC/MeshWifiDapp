@@ -9,6 +9,7 @@ const EthCrypto = require('eth-crypto');
 
 const MongoHandler = require('../../database/src/MongoHandler');
 const db = new MongoHandler('production');
+const network = 'meshdapp'
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const path = require('path');
@@ -97,9 +98,16 @@ contract("1st test", async function (accounts) {
     });
 
     it("mint a new device and store it in routers CRUD struct", async function () {
-        const ReserveAccount = accounts[0];
-        const ClientAccount = accounts[1];
-        const ProviderAccount = accounts[2];
+        let ReserveAccount, ClientAccount, ProviderAccount
+        if (network == 'staging'){
+          ReserveAccount = accounts[0];
+          ClientAccount = accounts[1];
+          ProviderAccount = accounts[2];
+        } else {
+          ReserveAccount = accounts[3];
+          ClientAccount = accounts[4];
+          ProviderAccount = accounts[5];
+        }
         // Client Check if device is minted and mint device
         let exists = await clients.exists.call(TestIP);
         if (!exists) {
@@ -141,9 +149,9 @@ contract("1st test", async function (accounts) {
         // provider accept contract
         // var providerBefore = await eip20.balanceOf(ProviderAccount)
         // var clientBefore = await eip20.balanceOf(ClientAccount)
-        var identity = await web3.eth.accounts.create()
-        var rsa = identity.privateKey
-        var rsa_pub = identity.address
+        //var identity = await web3.eth.accounts.create()
+        //var rsa = identity.privateKey
+        //var rsa_pub = identity.address
         // TODO Encrypt message
         await internetAccess.acceptContract('NorthMacedonia', {
             from: ProviderAccount
