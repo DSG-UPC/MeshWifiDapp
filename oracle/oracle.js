@@ -2,7 +2,7 @@
 Based on https://github.com/robinagist/EthereumWeatherOracle
 */
 
-const web3 = require('../web3')
+const web3 = require('./oracleWeb3')
 const MonitorHandler = require('./MonitorHandler')
 const ForwardingHandler = require('./ForwardingHandler')
 const DatabaseHandler = require('./DatabaseHandler')
@@ -20,14 +20,17 @@ var account
 
 const getAccount = async () => {
     //console.log(oracleContract.artifact.updatedAt)
-    console.log(oracleContract.provider)
-    web3.setProvider(oracleContract.provider)
-    const accounts = await web3.eth.getAccounts()
-    account = accounts[0];
-    databaseHandler = new DatabaseHandler(account)
-    monitorHandler = new MonitorHandler(account)
-    forwardingHandler = new ForwardingHandler(account, databaseHandler.handler, monitorHandler)
-    console.log('Working from account ', account)
+    console.log(oracleContract.provider);
+    //web3.setProvider(oracleContract.provider);
+    const accounts = await web3.eth.getAccounts();
+    account = accounts[3];
+    console.log(account);
+    //web3.setProvider(web.provider)
+    console.log(web3.currentProvider);
+    databaseHandler = new DatabaseHandler(account);
+    monitorHandler = new MonitorHandler(account);
+    forwardingHandler = new ForwardingHandler(account, databaseHandler.getDatabase(), monitorHandler);
+    console.log('Working from account ', account);
 }
 
 let c = getAccount().then(() => {

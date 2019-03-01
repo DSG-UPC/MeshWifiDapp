@@ -3,7 +3,8 @@ const Crud = artifacts.require('CRUD');
 const CrudFactory = artifacts.require('CRUDFactory');
 const OracleDispatch = artifacts.require('OracleDispatch');
 const MongoHandler = require('../database/src/MongoHandler');
-var db = new MongoHandler('production');
+const db = new MongoHandler('production');
+const network = 'meshdapp'
 const TestIP = '10.1.24.75';
 const TestIP1 = '10.1.24.76';
 const device = {
@@ -60,10 +61,9 @@ contract("1st MyERC721 test", async function (accounts) {
 
 
   before('Prepare Environment', async function () {
-
     // Start oracle server with test contract address
     console.log('OracleDispatch for Oracle !!! '+OracleDispatch.address);
-    let startOracle = 'screen -S oracle'+randomInt+' -L -dm node oracle.js --network staging --address ' + OracleDispatch.address;
+    let startOracle = 'screen -S oracle'+randomInt+' -L -dm node oracle.js --network '+network+' --address ' + OracleDispatch.address;
     const {
       stdout,
       stderr
@@ -100,29 +100,54 @@ contract("1st MyERC721 test", async function (accounts) {
   });
 
   it("mint a new ROUTER and store it in routers CRUD struct", async function () {
-    const ReserveAccount = accounts[0];
-    const ClientAccount = accounts[1];
-    const ProviderAccount = accounts[2];
+    let ReserveAccount, ClientAccount, ProviderAccount
+    if (network == 'staging'){
+      ReserveAccount = accounts[0];
+      ClientAccount = accounts[1];
+      ProviderAccount = accounts[2];
+    } else {
+      ReserveAccount = accounts[3];
+      ClientAccount = accounts[4];
+      ProviderAccount = accounts[5];
+    }
+    console.log(ProviderAccount);
+    //await web3.eth.personal.unlockAccount(ReserveAccount,'meshdapp', 360000);
+    //await web3.eth.personal.unlockAccount(ClientAccount,'meshdapp', 360000);
+    //await web3.eth.personal.unlockAccount(ProviderAccount,'meshdapp', 360000);
     let token = await MyERC721.deployed();
     let cfact = await CrudFactory.deployed();
-    const routersAddr = await cfact.getRouters.call();
+    const routersAddr = await cfact.getRouters.call({from:ReserveAccount});
     let routers = await Crud.at(routersAddr);
-    await token.requestRouterMint(TestIP, {
+    console.log('Hi');
+    const NS_PER_SEC = 1e9;
+    const MS_PER_NS = 1e-6
+    let time = process.hrtime();
+    let diff = process.hrtime(time);
+    let receipt = await token.requestRouterMint(TestIP, {
       from: ProviderAccount,
-      gas: web3.utils.numberToHex(5000000)
+      gas: web3.utils.numberToHex(5876844)
     });
+    await wait(1000, 'Minted');
+    console.log(`Benchmark took ${diff[0] * NS_PER_SEC + diff[1]} nanoseconds`);
+    console.log(`Benchmark took ${ (diff[0] * NS_PER_SEC + diff[1])  * MS_PER_NS } milliseconds`);
+    let gasUsed = receipt.receipt.gasUsed;
+    console.log(`GasUsed: ${receipt.receipt.gasUsed}`);
+    let tx = await web3.eth.getTransaction(receipt.tx);
+    let gasPrice = tx.gasPrice;
+    console.log(`GasPrice: ${tx.gasPrice}`);
+
     console.log('Waiting for mint...')
-    await wait(3000, 'Minted');
+
     //process.stdin.once('data', async function () {
-    const count = await routers.getCount.call();
+    const count = await routers.getCount.call({from:ReserveAccount});
     console.log(count);
-    const exists = await routers.exists.call(TestIP);
+    const exists = await routers.exists.call(TestIP, {from:ReserveAccount});
     console.log(exists);
     //assert.isTrue(exists, 'The new IP is not stored in the routers struct');
-    let routersEntry = await routers.getByIP.call(TestIP);
+    let routersEntry = await routers.getByIP.call(TestIP, {from:ReserveAccount});
     console.log(routersEntry);
     //console.log(routersEntry.uid);
-    let tokenEntry = await token.ownerOf(routersEntry.uid);
+    let tokenEntry = await token.ownerOf(routersEntry.uid, {from:ReserveAccount});
     assert.equal(tokenEntry, ProviderAccount,
       'The owner of the token is  not registered correctly in the ERC721');
     console.log(tokenEntry);
@@ -130,6 +155,7 @@ contract("1st MyERC721 test", async function (accounts) {
 
   });
 
+  /*
   it("mint a new CLIENT and store it in routers CRUD struct", async function () {
     const ReserveAccount = accounts[0];
     const ClientAccount = accounts[1];
@@ -160,7 +186,9 @@ contract("1st MyERC721 test", async function (accounts) {
     //});
 
   });
+  */
 
+  /*
   it("Activates an existing device as a gateway", async function () {
     const ReserveAccount = accounts[0];
     const ClientAccount = accounts[1];
@@ -187,5 +215,5 @@ contract("1st MyERC721 test", async function (accounts) {
     assert.equal(routersEntry.addr, gatewaysEntry.addr,
       'The same device has different data in the routers and gateways structs ');
   });
-
+   */
 });

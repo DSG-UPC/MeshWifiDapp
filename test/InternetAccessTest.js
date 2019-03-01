@@ -2,10 +2,9 @@ const SimpleInternetAccess = artifacts.require('./contracts/market/SimpleInterne
 const SimpleInternetAccessFactory = artifacts.require('./contracts/market/SimpleInternetAccessFactory.sol')
 const argv = require('minimist')(process.argv.slice(2))
 var jsonLookup = require('../build/contracts/DAO.json')
-var jsonMyERC721 = require('../build/contracts/MyERC721.json')
 
-contract('OracleTest', () => {
-    var oracle, network, net_id, lookupAddress
+contract('Internet Access Test', () => {
+    var network, net_id, lookupAddress
     var accounts = []
     var factory
     network = argv['network']
@@ -31,11 +30,10 @@ contract('OracleTest', () => {
     it('Ensures that a contract between client and provider is accepted', async () => {
         let contracts = [],
             internetContract, pubKey = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCzflA+Y91Bm0LzcvWzkqSLjYo7mUA1rD6Uirk8Z54oKhB94NC8XW3YXPbRwIYGGsmjEEuNsoBq5WPOoomEnawVwhYB8F0ecBV8+JMzNdEmlmiRDjSExYim4UiDp9u9r7JU1/6OuoH+aoaQ/foWxCWATbysGE8KHh/BvrfrJR+gjQIDAQAB'
-        let myERC721Address = jsonMyERC721.networks[net_id].address
 
         // We create the factory to generate new contracts.
 
-        await SimpleInternetAccessFactory.new(lookupAddress, myERC721Address)
+        await SimpleInternetAccessFactory.new(lookupAddress)
             .then(instance => {
                 factory = instance
             })
@@ -62,8 +60,6 @@ contract('OracleTest', () => {
         // both values when creating the contract).
 
         hexPubKey = web3.utils.hexToBytes(web3.utils.asciiToHex(pubKey))
-
-        console.log(hexPubKey)
 
         await internetContract.acceptContract('localhost:9000', hexPubKey, 1023).then(result => {
             assert.isFalse(result)

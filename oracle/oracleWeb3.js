@@ -1,5 +1,6 @@
 const Web3 = require('web3');
-const config = require('./config')
+const config = require('../config')
+
 
 let web3;
 
@@ -15,13 +16,9 @@ if (typeof window !== 'undefined' && typeof window.web3 !== 'undefined') {
 } else {
   // We are on the server *OR* the user is not running metamask
   ///*
-  //const provider1 = new Web3.providers.WebsocketProvider(
-  //  'ws://10.1.24.71:8601' //config.ethereum_provider
-  //);
-  //*/
-  // HTTP for deploying and WS for the rest of the process (oracle needs WS)
-  const provider = new Web3.providers.HttpProvider('http://10.1.24.71:8501');
-
+  const provider = new Web3.providers.WebsocketProvider(
+    'ws://10.1.24.71:8601' //config.ethereum_provider
+  );
   web3 = new Web3(provider);
 }
 
