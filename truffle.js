@@ -13,6 +13,8 @@ module.exports = {
     staging: {
       provider: ganacheWeb3.currentProvider,
       network_id: "7775",
+      gas: 5876844,
+      from: '0x28b17326d08992f16d382db2923d0d8b4ff8adb0',
       //from: "",
     },
     meshdapp: {
@@ -22,11 +24,6 @@ module.exports = {
       from: '0x28b17326d08992f16d382db2923d0d8b4ff8adb0',
       //from: "",
     },
-    production: {
-      provider: web3.currentProvider,
-      network_id: "1516",
-      //from: "",
-    }
   },
   compilers: {
     solc: {

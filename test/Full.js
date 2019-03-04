@@ -7,7 +7,7 @@ const CrudFactory = artifacts.require('CRUDFactory');
 const OracleDispatch = artifacts.require('OracleDispatch');
 const EthCrypto = require('eth-crypto');
 
-const MongoHandler = require('../../database/src/MongoHandler');
+const MongoHandler = require('../database/src/MongoHandler');
 const db = new MongoHandler('production');
 const network = 'meshdapp'
 const util = require('util');
@@ -16,6 +16,7 @@ const path = require('path');
 const parentDir = path.resolve(process.cwd());
 
 const ProviderIP = '10.1.24.75';
+const ClientIP = '10.1.24.74';
 const MaxData = 1024;
 
 function getRandomInt(max) {
@@ -50,19 +51,21 @@ function awaitEvent(event, handler) {
 }
 
 
-function createIdentity() {
+async function createIdentity() {
     const identity = await EthCrypto.createIdentity();
     return identity;
 }
-const Identity = createIdentity();
-const pubKey = EthCrypto.publicKey.compress(Identity.publicKey).slice(2);
+let Identity, pubKey
 
 contract("1st test", async function (accounts) {
 
     before('Prepare Environment', async function () {
+        Identity = await createIdentity();
+        console.log(Identity);
+        pubKey = EthCrypto.publicKey.compress(Identity.publicKey).slice(2);
         // Start oracle server with test contract address
         console.log('OracleDispatch for Oracle !!! ' + OracleDispatch.address);
-        let startOracle = 'screen -S oracle' + randomInt + ' -L -dm node oracle.js --network staging --address ' + OracleDispatch.address;
+        let startOracle = 'screen -S oracle'+randomInt+' -L -dm node oracle.js --network '+network+' --address ' + OracleDispatch.address;
         const {
             stdout,
             stderr
@@ -109,20 +112,23 @@ contract("1st test", async function (accounts) {
           ProviderAccount = accounts[5];
         }
         // Client Check if device is minted and mint device
-        let exists = await clients.exists.call(TestIP);
+        const cfact = await CrudFactory.deployed();
+        console.log(cfact.address);
+        const clientsAddr = await cfact.getClients.call();
+        const clients = await Crud.at(clientsAddr);
+        let exists = await clients.exists.call(ClientIP);
         if (!exists) {
-            const cfact = await CrudFactory.deployed();
-            const clientsAddr = await cfact.getClients.call();
-            const clients = await Crud.at(clientsAddr);
+
             const erc721 = await MyERC721.deployed();
-            await erc721.requestClientMint(TestIP, {
+            await erc721.requestClientMint(ClientIP, {
                 from: ClientAccount,
-                gas: web3.utils.numberToHex(600000)
+                gas: web3.utils.numberToHex(5876844)
             });
             console.log('Waiting for mint...');
-            await wait(2000, '');
-            exists = await clients.exists.call(TestIP);
-            let clientsEntry = await clients.getByIP.call(TestIP);
+            await wait(3000, '');
+            exists = await clients.exists.call(ClientIP);
+            console.log(exists);
+            let clientsEntry = await clients.getByIP.call(ClientIP);
             console.log(clientsEntry);
             let tokenEntry = await erc721.ownerOf(clientsEntry.uid);
             assert.equal(tokenEntry, ClientAccount,
@@ -130,21 +136,30 @@ contract("1st test", async function (accounts) {
             console.log('client device minted');
         }
 
-        // Client allowance to simpleinternet access
-        const eip20 = await EIP.deployed();
-        eip20.approve(internetAccess, MaxData * internetAccess.pricePerMB, {
-            from: ClientAccount
-        })
-
         // Client create identity
 
         // Client deploy Internet contract
-        const internetAccessFactory = SimpleInternetAccessFactory.deployed();
-        const internetAccessAddress = await internetAccessFactory.createContract(
-            ProviderAccount, ProviderIP, MaxData, '0x'+pubKey, {
-                from: ClientAccount
+        const internetAccessFactory = await SimpleInternetAccessFactory.deployed();
+        console.log(internetAccessFactory.address);
+        const testInternet = await internetAccessFactory.createContract(
+            //ProviderAccount, ProviderIP, MaxData, '0x'+pubKey, {
+            ProviderAccount, ProviderIP, MaxData, '0x0', {
+                from: ClientAccount,
+                //gas: web3.utils.numberToHex(5876844)
             })
-        const internetAccess = SimpleInternetAccess.at(internetAccessAddress);
+        console.log(testInternet);
+        console.log('Internet contract created');
+        const internetAccessAddress = await internetAccessFactory.getDeployedContractsbyClient({from:ProviderAccount})
+        console.log(typeof internetAccessAddress);
+        console.log(internetAccessAddress);
+        const internetAccess = await SimpleInternetAccess.at(internetAccessAddress[internetAccessAddress.length()-1]);
+
+        // Client allowance to simpleinternet access
+        const eip20 = await EIP20.deployed();
+        eip20.approve(internetAccess, MaxData * internetAccess.pricePerMB, {
+            from: ClientAccount
+        })
+        console.log('Client transfered to contract');
 
         // provider accept contract
         // var providerBefore = await eip20.balanceOf(ProviderAccount)
@@ -156,11 +171,13 @@ contract("1st test", async function (accounts) {
         await internetAccess.acceptContract('NorthMacedonia', {
             from: ProviderAccount
         })
+        console.log('Provider Accepted contract');
 
         //provider launch monitoring
         await internetAccess.checkUsage({
             from: ProviderAccount
         })
+        console.log('Provider checking usage');
 
         // var clientAfter = await eip20.balanceOf(ClientAccount);
         // var providerAfter = await eip20.balanceOf(ProviderAccount);

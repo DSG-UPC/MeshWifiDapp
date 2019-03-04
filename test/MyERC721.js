@@ -110,10 +110,10 @@ contract("1st MyERC721 test", async function (accounts) {
       ClientAccount = accounts[4];
       ProviderAccount = accounts[5];
     }
-    console.log(ProviderAccount);
-    //await web3.eth.personal.unlockAccount(ReserveAccount,'meshdapp', 360000);
-    //await web3.eth.personal.unlockAccount(ClientAccount,'meshdapp', 360000);
-    //await web3.eth.personal.unlockAccount(ProviderAccount,'meshdapp', 360000);
+    console.log('Unlocking Accounts');
+    //await web3.eth.personal.unlockAccount(ReserveAccount,'meshdapp', 3600000);
+    //await web3.eth.personal.unlockAccount(ClientAccount,'meshdapp', 3600000);
+    //await web3.eth.personal.unlockAccount(ProviderAccount,'meshdapp', 3600000);
     let token = await MyERC721.deployed();
     let cfact = await CrudFactory.deployed();
     const routersAddr = await cfact.getRouters.call({from:ReserveAccount});
@@ -155,11 +155,18 @@ contract("1st MyERC721 test", async function (accounts) {
 
   });
 
-  /*
+
   it("mint a new CLIENT and store it in routers CRUD struct", async function () {
-    const ReserveAccount = accounts[0];
-    const ClientAccount = accounts[1];
-    const ProviderAccount = accounts[2];
+    let ReserveAccount, ClientAccount, ProviderAccount
+    if (network == 'staging'){
+      ReserveAccount = accounts[0];
+      ClientAccount = accounts[1];
+      ProviderAccount = accounts[2];
+    } else {
+      ReserveAccount = accounts[3];
+      ClientAccount = accounts[4];
+      ProviderAccount = accounts[5];
+    }
     let token = await MyERC721.deployed();
     let cfact = await CrudFactory.deployed();
     const clientsAddr = await cfact.getClients.call();
@@ -186,7 +193,7 @@ contract("1st MyERC721 test", async function (accounts) {
     //});
 
   });
-  */
+
 
   /*
   it("Activates an existing device as a gateway", async function () {

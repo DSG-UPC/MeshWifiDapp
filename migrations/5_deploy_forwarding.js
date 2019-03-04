@@ -6,6 +6,8 @@ const Forwarding = artifacts.require("Forwarding");
 module.exports = async function(deployer, network, accounts) {
   let tokenContract = await Token.deployed()
   let lookup = await DAO.deployed()
-  await deployer.deploy(Forwarding, lookup.address, accounts[3])
-  console.log("Deploying Forwarding contract")
+  deployer.deploy(Forwarding, lookup.address, accounts[3])
+  .then(function (instance) {
+    console.log("Forwarding contract:"+ instance.address)
+  })
 };

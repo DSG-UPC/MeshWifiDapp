@@ -8,12 +8,11 @@ module.exports = function(deployer, network, accounts) {
   deployer.deploy(OracleDispatch)
     .then(function (instance) {
       //store.storeArtifact(OracleDispatch);
-      //console.log('Dispatch address: '+instance.address);
+      console.log('Dispatch address: '+instance.address);
       return instance.address;
     })
     .then(function (dispatch) {
       //The "return" in the following line is necessary
-      console.log('Dispatch address: '+dispatch);
       return deployer.deploy(DAO, 1, dispatch)
         .then(function (instance) {
           console.log('DAO address :'+instance.address);
