@@ -50,6 +50,7 @@ contract SimpleInternetAccess is Ownable, usingOracle{
     event LogActivation(string ticket, string providerIP, uint activationTime);
     event LogRenegotiate(uint debt);
     event LogRemainingData(uint remainingData);
+    event LogEntry();
 
     constructor(address _client, string _providerIP, uint _maxData,
                 address creator, address _DAOAddress, address _erc20Address,
@@ -67,17 +68,13 @@ contract SimpleInternetAccess is Ownable, usingOracle{
         // Constructor
         //The provider creates a contract with the proposed maximum amount of data and price,
         //the IP address of his monitoring service as well as the client address.
+        emit LogEntry();
         tokenContract = EIP20Interface(erc20Address);
-        uint allowance = tokenContract.allowance(msg.sender,address(this));
-        require(allowance >= maxData*pricePerMB);
-        if (!tokenContract.transferFrom(msg.sender,address(this),allowance)){
-          revert();
-        }
-        provider.wallet = creator;
+        provider.wallet = _client;
         provider.ip = _providerIP;
         maxData = _maxData;
         //provider.monitor = _providerMonitor;
-        client.wallet = _client;
+        client.wallet = creator;
         client.pubKey = _pubKey;
         DAOContract =  DAOInterface(_DAOAddress);
         erc20Address = _erc20Address;
@@ -95,6 +92,11 @@ contract SimpleInternetAccess is Ownable, usingOracle{
         //in the contract encrypted with the public key of the client
         //The activation time is stored.
         require(msg.sender == provider.wallet);
+        uint allowance = tokenContract.allowance(msg.sender,address(this));
+        require(allowance >= maxData*pricePerMB);
+        if (!tokenContract.transferFrom(msg.sender,address(this),allowance)){
+          revert();
+        }
         accepted = true;
         activationTime = now;
         ticket = newTicket;
