@@ -15,6 +15,7 @@ module.exports = function (deployer, network, accounts) {
     await dao.setERC20(erc20.address);
     await deployer.deploy(CRUDFactory)
       .then(async function (crudfactory) {
+        console.log('crudfactory: '+crudfactory.address);
         const crudrouter = await crudfactory.getRouters.call();
         console.log("crudrouter: " + crudrouter);
         const crudgateway = await crudfactory.getGateways.call();
