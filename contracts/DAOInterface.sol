@@ -8,7 +8,7 @@ contract DAOInterface {
   address public OracleResponse;
   uint256 public pricePerMB;
 
-  function getFlowAccount() public view returns (address);
+  function getReserveAccount() public view returns (address);
 
   function getOracleQueryAddress() public view returns (address);
 

@@ -38,7 +38,7 @@ contract MyERC721 is ERC721Full, ERC721Mintable, Ownable, usingOracle {
    * Mint request to the oracle
    * @dev This function will initatiate the mint process for IPs that are not
    * already registered.
-   * @param ip The ip address of the decice to be registered
+   * @param ip The ip address of the device to be registered
   */
   function requestClientMint(string ip) external payable {
     //TODO how do we prevent users from repeatdly calling this function?
@@ -54,7 +54,7 @@ contract MyERC721 is ERC721Full, ERC721Mintable, Ownable, usingOracle {
    * Mint request to the oracle
    * @dev This function will initatiate the mint process for IPs that are not
    * already registered.
-   * @param ip The ip address of the decice to be registered
+   * @param ip The ip address of the device to be registered
   */
   function requestRouterMint(string ip) external payable {
     //TODO how do we prevent users from repeatdly calling this function?
@@ -78,8 +78,12 @@ contract MyERC721 is ERC721Full, ERC721Mintable, Ownable, usingOracle {
     return gateways;
   }
 
-  function getRouters() external view returns(address gateway){
+  function getRouters() external view returns(address router){
     return routers;
+  }
+
+  function getClients() external view returns(address client){
+    return clients;
   }
 
   function __mintClientCallback(uint256 _uid, string _ip, address _address, address _originator) onlyFromOracle external {

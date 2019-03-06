@@ -1,7 +1,7 @@
 pragma solidity ^0.4.25;
 
-
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
+import "contracts/DAOInterface.sol";
 
 contract DAO is Ownable {
   address public ERC20;
@@ -25,7 +25,6 @@ contract DAO is Ownable {
   function setReserveAccount(address _address)  public onlyOwner {
     ReserveAccount = _address;
   }
-
 
   function getReserveAccount() public view returns (address) {
     return ReserveAccount;
