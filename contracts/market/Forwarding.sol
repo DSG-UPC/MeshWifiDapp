@@ -2,7 +2,6 @@ pragma solidity ^0.4.25;
 
 import "contracts/DAOInterface.sol";
 import "contracts/tokens/EIP20Interface.sol";
-import "contracts/market/SimpleInternetFactory.sol";
 import "contracts/helpers/CRUD.sol";
 import "contracts/tokens/MyERC721.sol";
 // We need to import OracleAPI to be able to communicate
@@ -11,9 +10,11 @@ import "contracts/oracle/OracleAPI.sol";
 
 contract Forwarding is usingOracle{
 
-    mapping(address => uint256) debt;
+    mapping(address => uint256) private debt;
+    mapping(address => uint256) private amount_per_provider;
+    address[] private providers;
     DAOInterface public DAO;
-    SimpleInternetFactory public factory;
+    uint private total_owed;
     address public eip20;
     address public erc721;
     address public entity;
@@ -24,47 +25,53 @@ contract Forwarding is usingOracle{
         eip20 = DAO.getERC20();
         erc721 = DAO.getERC721();
         entity = DAO.getReserveAccount();
+        total_owed = 0;
     }
-
-    function getInvoices() public {
-        MyERC721 erc = MyERC721(erc721);
-        address[] providers;
-        mapping(address => uint256) amount_per_provider;
-
-        // Once we have 'providers' and 'amount_per_provider' filled with data
-
-        uint balance = reserve_funds - total_amount;
+    
+    function getInvoice(string ip) public {
+        // We are omitting the database update with the timestamp by now.
+        // Let's suppose all clients request to get paid at the same time.
+        queryOracle('monitor', msg.sender, ip);
+    }
+    
+    function startPayment() public {
+        uint reserve_funds = eip20.balanceOf(entity);
+        uint balance = reserve_funds - total_owed;
         if (balance >= 0) {
-            for (uint i = 0; i < providers.length; i++)
-                eip20.transfer(providers[i], amount_per_provider[providers[i]]);
-            recalculate_max_price(reserve_funds, total_amount);
-        } else {
-            for (uint i = 0; i < providers.length; i++) {
-                uint proportional = (amount_per_provider[providers[i]] * reserve_funds / total_amount);
-                eip20.transfer(p, proportional);
-                debt[p] = amount_per_provider[p] - proportional;
+            while(providers.length > 0){
+                eip20.transfer(providers[0], amount_per_provider[providers[0]]);
+                debt[providers[0]] = 0;
+                delete providers[0];
             }
-            recalculate_max_price(reserve_funds, total_amount);
+            recalculate_max_price();
+        } else {
+            while(providers.length > 0){
+                uint proportional = amount_per_provider[providers[0]] * reserve_funds / total_owed;
+                eip20.transfer(providers[0], proportional);
+                debt[providers[0]] = amount_per_provider[0] - proportional;
+                delete providers[0];
+            }
+            recalculate_max_price();
         }
     }
 
-    function recalculate_max_price (reserve_funds, total_amount) private {
-    uint threshold = 5;
-    uint balance = reserve_funds - total_amount;
-    uint old_max_price = DAO.getPricePerMB();
-    if (balance > 0) {
-        if (1 - total_amount / reserve_funds >= threshold / 100) {
-            //We raise the max_price_per_mb
-            uint raise = (1 - (total_amount / reserve_funds)) / (threshold / 100);
-            old_max_price += old_max_price * raise * (threshold / 100);
-        } else {
-            //We reduce the max_price_per_mb
-            uint reduce = ((total_amount / reserve_funds) - 1) / threshold;
-            old_max_price -= old_max_price * reduce * (threshold / 100);
+    function recalculate_max_price() private {
+        uint threshold = 5;
+        uint balance = reserve_funds - total_owed;
+        uint old_max_price = DAO.getPricePerMB();
+        if (balance > 0) {
+            if (1 - total_owed / reserve_funds >= threshold / 100) {
+                // We raise the max_price_per_mb
+                uint raise = (1 - (total_owed / reserve_funds));
+                old_max_price += old_max_price * raise;
+            } else {
+                // We reduce the max_price_per_mb
+                uint reduce = (total_owed / reserve_funds - 1);
+                old_max_price -= old_max_price * reduce;
+            }
+            DAO.setPricePerMB(old_max_price);
         }
-        DAO.setPricePerMB(old_max_price);
     }
-}
 
     function __forwardingCallback(uint256 _response, address _originator) onlyFromOracle external {
         // Now we transfer the corresponding tokens to the router that requested
@@ -80,5 +87,11 @@ contract Forwarding is usingOracle{
 
         // Finally we transfer the tokens to the router account.
         token.transferFrom(entity, _originator, _response);
+    }
+
+    function __oracleCallback(uint256 _response, string _originator) onlyFromOracle public {
+        providers.push(originator);
+        amount_per_provider[originator] += _response * DAO.getPricePerMB() + debt[originator];
+        total_owed += amount_per_provider[originator];
     }
 }
