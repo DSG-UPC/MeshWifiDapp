@@ -9,10 +9,10 @@ class ForwardingHandler extends OracleHandler {
         this.monitorHandler = _monitoringHandler
     }
 
-    handle(_id, _recipient, _originator, _data, callback) {
+    handle(_id, _recipient, _originator, _ip, callback) {
         let result = {}
         let _this = this
-        this.mongoHandler.findDeviceByWallet(_data, (_device) => {
+        this.mongoHandler.findDeviceByIP(_ip, (_device) => {
             if (_device) {
                 result.wallet = _device.wallet
                 _this.monitorHandler.monitor(_device.ip, (_traffic) => {
@@ -35,7 +35,7 @@ class ForwardingHandler extends OracleHandler {
                     name: '_response'
                 }, {
                     type: 'address',
-                    name: '_originator'
+                    name: '_provider'
                 }]
             }, [result.traffic, result.wallet]),
             gas: this.getWeb3().utils.numberToHex(300000)

@@ -17,9 +17,9 @@ const testAddress = argv['address']
 const oracleNetwork = argv['network']
 let web3
 if (oracleNetwork == 'meshdapp') {
-  web3 = require('./oracleWeb3')
+    web3 = require('./oracleWeb3')
 } else {
-  web3 = require('../ganache-web3')
+    web3 = require('../ganache-web3')
 }
 const oracleContract = new Contract('OracleDispatch', oracleNetwork)
 var account
@@ -29,10 +29,10 @@ const getAccount = async () => {
     console.log(oracleContract.provider);
     //web3.setProvider(oracleContract.provider);
     const accounts = await web3.eth.getAccounts();
-    if (oracleNetwork == 'staging'){
-      account = accounts[0];
+    if (oracleNetwork == 'staging') {
+        account = accounts[0];
     } else {
-      account = accounts[3];
+        account = accounts[3];
     }
     console.log(account);
     //web3.setProvider(web.provider)

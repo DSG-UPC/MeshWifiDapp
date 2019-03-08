@@ -161,6 +161,7 @@ contract("Test the whole compensation process", async function (accounts) {
     })
 
     var new_reserveAmount = await eip20.balanceOf(ReserveAccount)
+    var providerAmount = await eip20.balanceOf(ProviderAccount)
 
     assert(old_contractAmount < escrow,
       "After the transference, the contract must have less tokens than before")
@@ -178,10 +179,17 @@ contract("Test the whole compensation process", async function (accounts) {
      *      - From this amount of monitored data, we will distribute the tokens (*pricePerMB).
      */
 
-    await forwarding
+    await forwarding.getInvoice(TestIP_provider)
 
+    await wait(500, 'Awaiting to calculate provider compensation')
 
+    await forwarding.startPayment()
 
+    let after_payment_reserve = await eip20.balanceOf(ReserveAccount)
+    let after_payment_provider = await eip20.balanceOf(ProviderAccount)
+
+    assert(new_reserveAmount < after_payment_reserve)
+    assert(providerAmount < after_payment_provider)
 
   })
   after('Clear Environment', async function () {
