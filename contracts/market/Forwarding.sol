@@ -47,7 +47,7 @@ contract Forwarding is usingOracle{
                 delete providers[0];
                 num_providers -= 1;
             }
-            recalculate_max_price(reserve_funds);
+            recalculateMaxPrice(reserve_funds);
         } else {
             while(num_providers > 0){
                 uint proportional = amount_per_provider[providers[0]] * reserve_funds / total_owed_iteration;
@@ -58,12 +58,12 @@ contract Forwarding is usingOracle{
                 delete providers[0];
                 num_providers -= 1;
             }
-            recalculate_max_price(reserve_funds);
+            recalculateMaxPrice(reserve_funds);
         }
         total_owed_iteration = 0;
     }
 
-    function recalculate_max_price(uint reserve_funds) private {
+    function recalculateMaxPrice(uint reserve_funds) private {
         uint threshold = 5;
         uint balance = reserve_funds - total_owed_iteration;
         uint old_max_price = dao.getPricePerMB();
