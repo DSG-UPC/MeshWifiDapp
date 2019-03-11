@@ -47,7 +47,6 @@ contract Forwarding is usingOracle{
                 delete providers[0];
                 num_providers -= 1;
             }
-            recalculateMaxPrice(reserve_funds);
         } else {
             while(num_providers > 0){
                 uint proportional = amount_per_provider[providers[0]] * reserve_funds / total_owed_iteration;
@@ -58,27 +57,31 @@ contract Forwarding is usingOracle{
                 delete providers[0];
                 num_providers -= 1;
             }
-            recalculateMaxPrice(reserve_funds);
         }
+        recalculateMaxPrice(reserve_funds, balance);
         total_owed_iteration = 0;
     }
 
-    function recalculateMaxPrice(uint reserve_funds) private {
+    function recalculateMaxPrice(uint reserve_funds, uint balance) public{
         uint threshold = 5;
-        uint balance = reserve_funds - total_owed_iteration;
-        uint old_max_price = dao.getPricePerMB();
+        uint256 old_max_price = dao.getPricePerMB();
+        uint256 new_max_price = old_max_price;
         if (balance > 0) {
             if (1 - total_owed_iteration / reserve_funds >= threshold / 100) {
                 // We raise the max_price_per_mb
-                uint raise = (1 - (total_owed_iteration / reserve_funds));
-                old_max_price += old_max_price * raise;
-            } else {
-                // We reduce the max_price_per_mb
-                uint reduce = (total_owed_iteration / reserve_funds - 1);
-                old_max_price -= old_max_price * reduce;
+                // uint raise = (1 - (total_owed_iteration / reserve_funds));
+                uint raise = old_max_price * (1 - total_owed_iteration / reserve_funds) / 100;
+                new_max_price = old_max_price + raise;
             }
-            dao.setPricePerMB(old_max_price);
+        } else {
+            // We reduce the max_price_per_mb
+            // uint reduce = (total_owed_iteration / reserve_funds - 1);
+            uint reduce = old_max_price * (total_owed_iteration / reserve_funds - 1) / 100;
+            new_max_price = old_max_price - reduce;
+            if(new_max_price < 0)
+                new_max_price = 1;
         }
+        dao.setPricePerMB(new_max_price);
     }
 
     function __forwardingCallback(uint256 _response, address _provider) onlyFromOracle public {
