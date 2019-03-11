@@ -24,6 +24,7 @@ class ForwardingHandler extends OracleHandler {
     }
 
     getTransaction(account, recipient, result, callback) {
+        console.log(result.wallet)
         let transaction = {
             from: account,
             to: recipient,
