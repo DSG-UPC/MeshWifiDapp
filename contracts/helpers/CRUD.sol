@@ -43,15 +43,17 @@ contract CRUD{
     address addr;
     string ip;
     uint index;
+    uint pricePerMB;
   }
 
   mapping(string => crudStruct) private crudStructs;
   mapping(uint256 => string) public IDtoIP;
   string[] private crudIndex;
 
-  event LogNew(string indexed ip, uint index, address  addr, uint  uid, string devicesType);
-  event LogUpdate(string indexed ip, uint index, address  addr, uint  uid,  string devicesType);
-  event LogDelete(string indexed ip, uint index, address  addr,  string devicesType);
+  event LogNew(string ip, uint index, address  addr, uint price, uint uid, string devicesType);
+  event LogNewPosition(string ip, uint index);
+  event LogUpdate(string ip, uint index, address addr, uint price, uint  uid,  string devicesType);
+  event LogDelete(string ip, uint index);
 
   constructor(string _type) public {
     devicesType = _type;
@@ -69,7 +71,8 @@ contract CRUD{
   function add(
     string ip,
     address addr,
-    uint256 uid)
+    uint256 uid,
+    uint pricePerMB)
     public
     returns(uint index)
   {
@@ -77,12 +80,14 @@ contract CRUD{
     crudStructs[ip].ip = ip;
     crudStructs[ip].addr = addr;
     crudStructs[ip].uid   = uid;
+    crudStructs[ip].pricePerMB = pricePerMB;
     crudStructs[ip].index     = crudIndex.push(ip)-1;
     IDtoIP[uid] = ip;
     emit LogNew(
         ip,
         crudStructs[ip].index,
         addr,
+        pricePerMB,
         uid,
         devicesType);
     return crudIndex.length-1;
@@ -94,67 +99,60 @@ contract CRUD{
   {
     require(exists(ip));
     uint rowToDelete = crudStructs[ip].index;
-    address addr = crudStructs[ip].addr;
     uint256 uid = crudStructs[ip].uid;
-    string storage keyToMove = crudIndex[crudIndex.length-1];
+    string memory keyToMove = crudIndex[crudIndex.length-1];
     crudIndex[rowToDelete] = keyToMove;
     crudStructs[keyToMove].index = rowToDelete;
     crudIndex.length--;
     IDtoIP[uid] = '';
-    emit LogDelete(
-        ip,
-        rowToDelete,
-        addr,
-        devicesType);
-    emit LogUpdate(
-        keyToMove,
-        rowToDelete,
-        crudStructs[keyToMove].addr,
-        crudStructs[keyToMove].uid,
-        devicesType);
+    emit LogDelete(ip, rowToDelete);
+    emit LogNewPosition(keyToMove, index);
     return rowToDelete;
   }
 
   function getByIP(string ip)
     public
-    constant
-    returns(uint uid, uint index, address addr)
+    view
+    returns(uint uid, uint index, address addr, uint pricePerMB)
   {
     require(exists(ip));
     return(
       crudStructs[ip].uid,
       crudStructs[ip].index,
-      crudStructs[ip].addr);
+      crudStructs[ip].addr,
+      crudStructs[ip].pricePerMB);
   }
 
   function getByUID(uint256 uid)
     public
-    constant
-    returns(string ip, uint index, address addr)
+    view
+    returns(string ip, uint index, address addr, uint pricePerMB)
   {
     string storage _ip = IDtoIP[uid];
     require(!compareStrings(_ip,'') && exists(_ip));
     return(
       _ip,
       crudStructs[_ip].index,
-      crudStructs[_ip].addr);
+      crudStructs[_ip].addr,
+      crudStructs[_ip].pricePerMB);
   }
 
-  /*
-  function updateAddress(address addr, string ip)
+  function updatePricePerMB(uint256 uid, uint pricePerMB)
     public
     returns(bool success)
   {
+    string memory ip = IDtoIP[uid];
     require(exists(ip));
-    crudStructs[ip].addr = addr;
+    crudStructs[ip].pricePerMB = pricePerMB;
     emit LogUpdate(
       ip,
       crudStructs[ip].index,
-      addr,
+      crudStructs[ip].addr,
+      pricePerMB,
       crudStructs[ip].uid,
       devicesType);
     return true;
-  }*/
+  }
 
 
   function getCount()
