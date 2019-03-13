@@ -2,10 +2,11 @@
 const DAO = artifacts.require("DAO");
 const Forwarding = artifacts.require("Forwarding");
 
-module.exports = async function(deployer) {
+module.exports = async function (deployer) {
   const lookup = await DAO.deployed()
   await deployer.deploy(Forwarding, lookup.address)
-  .then(function (instance) {
-    console.log("Forwarding contract:"+ instance.address)
-  })
+    .then(function (instance) {
+      console.log("Forwarding contract:" + instance.address)
+      lookup.setForwarding(instance.address);
+    })
 };

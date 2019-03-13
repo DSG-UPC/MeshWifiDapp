@@ -8,6 +8,7 @@ contract DAO is Ownable {
   address public ERC721;
   address public Owners;
   address public OracleQuery;
+  address Forwarding;
   address OracleResponse;
   address ReserveAccount;
   uint256 public pricePerMB;
@@ -73,11 +74,21 @@ contract DAO is Ownable {
     return true;
   }
 
+  function getForwarding() public view returns(address) {
+    return Forwarding;
+  }
+
+  function setForwarding(address _address) public returns(bool) {
+    Forwarding = _address;
+    return true;
+  }
+
   function getPricePerMB() public view returns(uint256) {
     return pricePerMB;
   }
 
-  function setPricePerMB(uint256 _pricePerMB) public onlyOwner returns(bool) {
+  function setPricePerMB(uint256 _pricePerMB) public returns(bool) {
+    require(msg.sender == Forwarding);
     pricePerMB = _pricePerMB;
     return true;
   }

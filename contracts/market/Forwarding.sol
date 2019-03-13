@@ -18,6 +18,7 @@ contract Forwarding is usingOracle{
     DAO public dao;
     address public eip20;
     address public reserve_account;
+    uint public new_money;
 
     constructor(address _DAOAddress)
         usingOracle(_DAOAddress) public {
@@ -26,6 +27,7 @@ contract Forwarding is usingOracle{
         reserve_account = dao.getReserveAccount();
         total_owed_iteration = 0;
         num_providers = 0;
+        new_money = 1;
     }
     
     function getInvoice(string ip) public {
@@ -41,21 +43,23 @@ contract Forwarding is usingOracle{
         if (balance >= 0) {
             while(num_providers > 0){
                 //token.transfer(providers[0], amount_per_provider[providers[0]]);
+                //reserve_funds = token.balanceOf(reserve_account);
                 amount_per_provider[providers[0]] = 0;
                 debt[providers[0]] = 0;
                 is_provider_added[providers[0]] = false;
                 delete providers[0];
-                num_providers -= 1;
+                num_providers--;
             }
         } else {
             while(num_providers > 0){
                 uint proportional = amount_per_provider[providers[0]] * reserve_funds / total_owed_iteration;
                 //token.transfer(providers[0], proportional);
+                //reserve_funds = token.balanceOf(reserve_account);
                 debt[providers[0]] = amount_per_provider[0] - proportional;
                 amount_per_provider[providers[0]] = 0;
                 is_provider_added[providers[0]] = false;
                 delete providers[0];
-                num_providers -= 1;
+                num_providers--;
             }
         }
         recalculateMaxPrice(reserve_funds, balance);
@@ -63,24 +67,28 @@ contract Forwarding is usingOracle{
     }
 
     function recalculateMaxPrice(uint reserve_funds, uint balance) public{
-        uint threshold = 5;
-        uint256 old_max_price = dao.getPricePerMB();
-        uint256 new_max_price = old_max_price;
-        if (balance > 0) {
-            if (1 - total_owed_iteration / reserve_funds >= threshold / 100) {
+        uint precision = 10 ** numDigits(total_owed_iteration);
+        uint threshold = precision - 5 * precision / 100; // 0.95
+        uint old_max_price = dao.getPricePerMB();
+        uint new_max_price = old_max_price;
+        if (balance >= 0) {
+            if(threshold * reserve_funds >= total_owed_iteration * precision){
                 // We raise the max_price_per_mb
                 // uint raise = (1 - (total_owed_iteration / reserve_funds));
-                uint raise = old_max_price * (1 - total_owed_iteration / reserve_funds) / 100;
-                new_max_price = old_max_price + raise;
+                // uint raise = threshold * total_owed_iteration / reserve_funds;
+                // new_max_price += old_max_price * raise / precision;
+                new_max_price *= reserve_funds / total_owed_iteration;
             }
         } else {
             // We reduce the max_price_per_mb
             // uint reduce = (total_owed_iteration / reserve_funds - 1);
-            uint reduce = old_max_price * (total_owed_iteration / reserve_funds - 1) / 100;
-            new_max_price = old_max_price - reduce;
-            if(new_max_price < 0)
+            // uint reduce = threshold * reserve_funds / total_owed_iteration;
+            // new_max_price -= old_max_price * reduce / precision;
+            new_max_price /=  total_owed_iteration / reserve_funds;
+            if(new_max_price < 1)
                 new_max_price = 1;
         }
+        new_money = new_max_price;
         dao.setPricePerMB(new_max_price);
     }
 
@@ -91,5 +99,19 @@ contract Forwarding is usingOracle{
         num_providers += 1;
         amount_per_provider[_provider] = _response * dao.getPricePerMB() + debt[_provider];
         total_owed_iteration += amount_per_provider[_provider];
+    }
+
+    /**
+    * This will be used to calculate the precision level
+    * we want to achieve, we want to use as larger precision
+    * as possible for the initial calculations.
+    */
+    function numDigits(uint number) private pure returns (uint) {
+        uint digits = 0;
+        while (number > 0) {
+            number /= 10;
+            digits++;
+        }
+        return digits;
     }
 }
