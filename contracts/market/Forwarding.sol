@@ -20,8 +20,7 @@ contract Forwarding is usingOracle{
     address public reserve_account;
     uint public new_money;
 
-    constructor(address _DAOAddress)
-        usingOracle(_DAOAddress) public {
+    constructor(address _DAOAddress) usingOracle(_DAOAddress) public {
         dao =  DAO(_DAOAddress);
         eip20 = dao.getERC20();
         reserve_account = dao.getReserveAccount();
@@ -37,6 +36,7 @@ contract Forwarding is usingOracle{
     }
     
     function startPayment() public {
+        require(num_providers > 0, "No providers requested money");
         EIP20Interface token = EIP20Interface(eip20);
         uint reserve_funds = token.balanceOf(reserve_account);
         uint balance = reserve_funds - total_owed_iteration;
@@ -62,34 +62,12 @@ contract Forwarding is usingOracle{
                 num_providers--;
             }
         }
-        recalculateMaxPrice(reserve_funds, balance);
+        recalculateMaxPrice(total_owed_iteration, reserve_funds);
         total_owed_iteration = 0;
     }
 
-    function recalculateMaxPrice(uint reserve_funds, uint balance) public{
-        uint precision = 10 ** numDigits(total_owed_iteration);
-        uint threshold = precision - 5 * precision / 100; // 0.95
-        uint old_max_price = dao.getPricePerMB();
-        uint new_max_price = old_max_price;
-        if (balance >= 0) {
-            if(threshold * reserve_funds >= total_owed_iteration * precision){
-                // We raise the max_price_per_mb
-                // uint raise = (1 - (total_owed_iteration / reserve_funds));
-                // uint raise = threshold * total_owed_iteration / reserve_funds;
-                // new_max_price += old_max_price * raise / precision;
-                new_max_price *= reserve_funds / total_owed_iteration;
-            }
-        } else {
-            // We reduce the max_price_per_mb
-            // uint reduce = (total_owed_iteration / reserve_funds - 1);
-            // uint reduce = threshold * reserve_funds / total_owed_iteration;
-            // new_max_price -= old_max_price * reduce / precision;
-            new_max_price /=  total_owed_iteration / reserve_funds;
-            if(new_max_price < 1)
-                new_max_price = 1;
-        }
-        new_money = new_max_price;
-        dao.setPricePerMB(new_max_price);
+    function recalculateMaxPrice(uint total_owed, uint reserve_funds) public{
+        _queryOracle('recalculate_max_price', msg.sender, total_owed, reserve_funds, dao.getPricePerMB());
     }
 
     function __forwardingCallback(uint256 _response, address _provider) onlyFromOracle public {
@@ -101,17 +79,8 @@ contract Forwarding is usingOracle{
         total_owed_iteration += amount_per_provider[_provider];
     }
 
-    /**
-    * This will be used to calculate the precision level
-    * we want to achieve, we want to use as larger precision
-    * as possible for the initial calculations.
-    */
-    function numDigits(uint number) private pure returns (uint) {
-        uint digits = 0;
-        while (number > 0) {
-            number /= 10;
-            digits++;
-        }
-        return digits;
+    function __priceCalculatorCallback(uint _response) onlyFromOracle public{
+        new_money = _response;
+        dao.setPricePerMB(_response);
     }
 }

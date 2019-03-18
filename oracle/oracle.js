@@ -6,7 +6,8 @@ Based on https://github.com/robinagist/EthereumWeatherOracle
 const MonitorHandler = require('./MonitorHandler')
 const ForwardingHandler = require('./ForwardingHandler')
 const DatabaseHandler = require('./DatabaseHandler')
-var monitorHandler, forwardingHandler, databaseHandler, handler
+const PriceCalculatorHandler = require('./PriceCalculatorHandler')
+var monitorHandler, forwardingHandler, databaseHandler, priceCalculatorHandler, handler
 
 const Contract = require('../contract')
 const minimist = require('minimist'),
@@ -26,7 +27,7 @@ var account
 
 const getAccount = async () => {
     //console.log(oracleContract.artifact.updatedAt)
-    console.log(oracleContract.provider);
+    //console.log(oracleContract.provider);
     //web3.setProvider(oracleContract.provider);
     const accounts = await web3.eth.getAccounts();
     if (oracleNetwork == 'staging') {
@@ -34,12 +35,13 @@ const getAccount = async () => {
     } else {
         account = accounts[3];
     }
-    console.log(account);
+    //console.log(account);
     //web3.setProvider(web.provider)
-    console.log(web3.currentProvider);
+    //console.log(web3.currentProvider);
     databaseHandler = new DatabaseHandler(account);
     monitorHandler = new MonitorHandler(account);
     forwardingHandler = new ForwardingHandler(account, databaseHandler.getDatabase(), monitorHandler);
+    priceCalculatorHandler = new PriceCalculatorHandler(account);
     console.log('Working from account ', account);
 }
 
@@ -70,21 +72,59 @@ async function startListener(abi, address) {
             console.log("event data: " + JSON.stringify(log, undefined, 2))
             logData = log.returnValues;
             query = logData.queryType;
-            //switch (logData.queryType) {
             const [server, command] = query.split('^');
             switch (server) {
                 case 'monitor':
-                    //case String(str.match(/^monitor.*/)):
                     setHandler(monitorHandler)
                     break;
                 case 'nodedb':
-                    //case String(str.match(/^nodedb.*/)):
                     databaseHandler.setCommand(command)
                     setHandler(databaseHandler)
                     break;
                 case 'forwarding':
-                    //case String(str.match(/^nodedb.*/)):
                     setHandler(forwardingHandler)
+                    break;
+                case 'recalculate_max_price':
+                    setHandler(priceCalculatorHandler)
+                    logData.query = [logData.owed, logData.funds, logData.pricePerMB]
+                    break;
+            }
+            handler.handle(logData.id, logData.recipient, logData.originator, logData.query,
+                (transaction) => {
+                    web3.eth.sendTransaction(transaction)
+                        .then((result) => {
+                            console.log(`EVM call result:\n ${result}`)
+                        }, (error) => {
+                            console.log(`Error:\n ${error}`)
+                        })
+                })
+            //handler(abi, address)
+        })
+        .on('changed', (log) => {
+            console.log(`Changed: ${log}`)
+        })
+        .on('error', (log) => {
+            console.log(`error:  ${log}`)
+        })
+
+
+        //// Aqui empieza lo guapo ////
+
+
+        myContract.events._Incoming({
+            fromBlock: 'latest',
+        }, (error, event) => {
+            console.log(">>> " + event)
+        })
+        .on('data', (log) => {
+            console.log("event data: " + JSON.stringify(log, undefined, 2))
+            logData = log.returnValues;
+            query = logData.queryType;
+            const [server, command] = query.split('^');
+            switch (server) {
+                case 'recalculate_max_price':
+                    setHandler(priceCalculatorHandler)
+                    logData.query = [logData.owed, logData.funds, logData.pricePerMB]
                     break;
             }
             handler.handle(logData.id, logData.recipient, logData.originator, logData.query,

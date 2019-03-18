@@ -8,6 +8,7 @@ import "contracts/DAOInterface.sol";
 // This must match the signature in dispatch.sol
 contract Oracle {
   function query(string _queryType, address _originator, string _query) public returns (bytes32);
+  function _query(string _queryType, address _originator, uint _owed, uint _funds, uint _pricePerMB) public returns (bytes32);
 }
 
 
@@ -30,5 +31,11 @@ contract usingOracle {
     DAOInterface lookup = DAOInterface(lookupContract);
     Oracle oracle = Oracle(lookup.getOracleQueryAddress());
     return oracle.query(queryType, originator, query);
+  }
+
+  function _queryOracle(string queryType, address originator, uint owed, uint funds, uint pricePerMB) public returns (bytes32) {
+    DAOInterface lookup = DAOInterface(lookupContract);
+    Oracle oracle = Oracle(lookup.getOracleQueryAddress());
+    return oracle._query(queryType, originator, owed, funds, pricePerMB);
   }
 }
