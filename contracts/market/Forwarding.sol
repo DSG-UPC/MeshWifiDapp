@@ -18,7 +18,6 @@ contract Forwarding is usingOracle{
     DAO public dao;
     address public eip20;
     address public reserve_account;
-    uint public new_money;
 
     constructor(address _DAOAddress) usingOracle(_DAOAddress) public {
         dao =  DAO(_DAOAddress);
@@ -26,7 +25,6 @@ contract Forwarding is usingOracle{
         reserve_account = dao.getReserveAccount();
         total_owed_iteration = 0;
         num_providers = 0;
-        new_money = 1;
     }
     
     function getInvoice(string ip) public {
@@ -80,7 +78,6 @@ contract Forwarding is usingOracle{
     }
 
     function __priceCalculatorCallback(uint _response) onlyFromOracle public{
-        new_money = _response;
         dao.setPricePerMB(_response);
     }
 }

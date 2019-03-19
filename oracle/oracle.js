@@ -108,7 +108,7 @@ async function startListener(abi, address) {
         })
 
 
-        //// Aqui empieza lo guapo ////
+        //// Another event because event overloading fails :_( ////
 
 
         myContract.events._Incoming({
