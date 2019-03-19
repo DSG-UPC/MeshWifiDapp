@@ -7,7 +7,9 @@ const MonitorHandler = require('./MonitorHandler')
 const ForwardingHandler = require('./ForwardingHandler')
 const DatabaseHandler = require('./DatabaseHandler')
 const PriceCalculatorHandler = require('./PriceCalculatorHandler')
-var monitorHandler, forwardingHandler, databaseHandler, priceCalculatorHandler, handler
+const ProportionalCalculatorHandler = require('./ProportionalCalculatorHandler')
+var monitorHandler, forwardingHandler, databaseHandler,
+    priceCalculatorHandler, proportionalCalculatorHandler, handler
 
 const Contract = require('../contract')
 const minimist = require('minimist'),
@@ -37,11 +39,12 @@ const getAccount = async () => {
     }
     //console.log(account);
     //web3.setProvider(web.provider)
-    //console.log(web3.currentProvider);
+    console.log(web3.currentProvider);
     databaseHandler = new DatabaseHandler(account);
     monitorHandler = new MonitorHandler(account);
     forwardingHandler = new ForwardingHandler(account, databaseHandler.getDatabase(), monitorHandler);
     priceCalculatorHandler = new PriceCalculatorHandler(account);
+    proportionalCalculatorHandler = new ProportionalCalculatorHandler(account);
     console.log('Working from account ', account);
 }
 
@@ -60,7 +63,7 @@ let c = getAccount().then(() => {
 // starts the event listener
 async function startListener(abi, address) {
     console.log("starting event monitoring on contract: " + address)
-    //console.log("the abi is:" + JSON.stringify(abi, null, 2))
+    // console.log("the abi is:" + JSON.stringify(abi, null, 2))
     const myContract = await new web3.eth.Contract(jsonInterface = abi, address = address)
     //myContract.events.Incoming({fromBlock: 537025, toBlock: 'latest'
     myContract.events.Incoming({
@@ -69,7 +72,6 @@ async function startListener(abi, address) {
             console.log(">>> " + event)
         })
         .on('data', (log) => {
-            console.log("event data: " + JSON.stringify(log, undefined, 2))
             logData = log.returnValues;
             query = logData.queryType;
             const [server, command] = query.split('^');
@@ -108,10 +110,10 @@ async function startListener(abi, address) {
         })
 
 
-        //// Another event because event overloading fails :_( ////
+    //// Another event because event overloading fails :_( ////
 
 
-        myContract.events._Incoming({
+    myContract.events._Incoming({
             fromBlock: 'latest',
         }, (error, event) => {
             console.log(">>> " + event)
@@ -124,6 +126,10 @@ async function startListener(abi, address) {
             switch (server) {
                 case 'recalculate_max_price':
                     setHandler(priceCalculatorHandler)
+                    logData.query = [logData.owed, logData.funds, logData.pricePerMB]
+                    break;
+                case 'calculate_proportional':
+                    setHandler(proportionalCalculatorHandler)
                     logData.query = [logData.owed, logData.funds, logData.pricePerMB]
                     break;
             }

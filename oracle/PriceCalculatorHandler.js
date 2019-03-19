@@ -9,6 +9,7 @@ class PriceCalculatorHandler extends OracleHandler {
 
     handle(_id, _recipient, _originator, result, callback) {
         let [owed, funds, pricePerMB] = result;
+        console.log(`Owed: ${owed};\nFunds: ${funds};\nPricePerMB: ${pricePerMB};\n`)
         let threshold = 0.95;
         let old_max_price = pricePerMB;
         let new_max_price = old_max_price;

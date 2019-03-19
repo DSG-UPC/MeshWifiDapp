@@ -8,8 +8,8 @@ contract DAO is Ownable {
   address public ERC721;
   address public Owners;
   address public OracleQuery;
-  address Forwarding;
   address OracleResponse;
+  /* To make things easier, the Forwarding will be the reserve account */
   address ReserveAccount;
   uint256 public pricePerMB;
 
@@ -19,7 +19,7 @@ contract DAO is Ownable {
   {
     pricePerMB = _pricePerMB;
     OracleResponse = msg.sender;
-    ReserveAccount = msg.sender;
+    //ReserveAccount = msg.sender;
     OracleQuery = _OracleQuery;
   }
 
@@ -74,21 +74,12 @@ contract DAO is Ownable {
     return true;
   }
 
-  function getForwarding() public view returns(address) {
-    return Forwarding;
-  }
-
-  function setForwarding(address _address) public returns(bool) {
-    Forwarding = _address;
-    return true;
-  }
-
   function getPricePerMB() public view returns(uint256) {
     return pricePerMB;
   }
 
   function setPricePerMB(uint256 _pricePerMB) public returns(bool) {
-    require(msg.sender == Forwarding);
+    require(msg.sender == ReserveAccount);
     pricePerMB = _pricePerMB;
     return true;
   }

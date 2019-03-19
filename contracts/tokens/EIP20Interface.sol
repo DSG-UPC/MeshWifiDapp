@@ -39,13 +39,6 @@ contract EIP20Interface {
     /// @return Whether the approval was successful or not
     function approve(address _spender, uint256 _value) public returns (bool success);
 
-    /// @notice `_owner` approves `_spender` to spend `_value` tokens
-    /// @param _owner The address of the account able to send the tokens
-    /// @param _spender The address of the account able to receive the tokens
-    /// @param _value The amount of tokens to be approved for transfer
-    /// @return Whether the approval was successful or not
-    function approve(address _owner, address _spender, uint256 _value) public returns (bool success);
-
     /// @param _owner The address of the account owning tokens
     /// @param _spender The address of the account able to transfer the tokens
     /// @return Amount of remaining tokens allowed to spent

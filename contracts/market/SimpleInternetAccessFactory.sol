@@ -21,9 +21,7 @@ contract SimpleInternetAccessFactory is Ownable {
     return daoAddress;
   }
 
-  function createContract(address _client, string _providerIP, uint _maxData,
-                          bytes32 _pubKey)
-    public
+  function createContract(address _client, string _providerIP, uint _maxData, bytes32 _pubKey) public
     returns (address newContract)
   {
     newContract = new SimpleInternetAccess(_client, _providerIP,

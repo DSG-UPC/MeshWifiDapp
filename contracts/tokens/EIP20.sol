@@ -51,7 +51,7 @@ contract EIP20 is EIP20Interface, Ownable {
       validDestination(_to)
       returns (bool success)
     {
-        require(balances[msg.sender] >= _value);
+        require(balances[msg.sender] >= _value, "The sending account doesn't have enough funds");
         balances[msg.sender] -= _value;
         balances[_to] += _value;
         emit Transfer(msg.sender, _to, _value); //solhint-disable-line indent, no-unused-vars
@@ -64,7 +64,8 @@ contract EIP20 is EIP20Interface, Ownable {
       returns (bool success)
     {
         uint256 allowance = allowed[_from][msg.sender];
-        require(balances[_from] >= _value && allowance >= _value);
+        require(balances[_from] >= _value && allowance >= _value,
+                                "Either the sending account doesn't have enough funds or the allowance is not enough");
         balances[_to] += _value;
         balances[_from] -= _value;
         if (allowance < MAX_UINT256) {
@@ -81,12 +82,6 @@ contract EIP20 is EIP20Interface, Ownable {
     function approve(address _spender, uint256 _value) public returns (bool success) {
         allowed[msg.sender][_spender] = _value;
         emit Approval(msg.sender, _spender, _value); //solhint-disable-line indent, no-unused-vars
-        return true;
-    }
-
-    function approve(address _owner, address _spender, uint256 _value) public returns (bool success) {
-        allowed[_owner][_spender] = _value;
-        emit Approval(_owner, _spender, _value); //solhint-disable-line indent, no-unused-vars
         return true;
     }
 
