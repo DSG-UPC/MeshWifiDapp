@@ -9,7 +9,12 @@ const EthCrypto = require('eth-crypto');
 
 const MongoHandler = require('../database/src/MongoHandler');
 const db = new MongoHandler('production');
-const network = 'meshdapp'
+const minimist = require('minimist'),
+    argv = minimist(process.argv.slice(2), {
+        string: ['network']
+    })
+const network = argv['network']
+console.log(network);
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const path = require('path');
@@ -60,6 +65,7 @@ let Identity, pubKey
 contract("1st test", async function (accounts) {
 
     before('Prepare Environment', async function () {
+        // Create identity
         Identity = await createIdentity();
         console.log(Identity);
         pubKey = EthCrypto.publicKey.compress(Identity.publicKey).slice(2);
@@ -111,15 +117,21 @@ contract("1st test", async function (accounts) {
           ClientAccount = accounts[4];
           ProviderAccount = accounts[5];
         }
+        // Transfer tokens from reserve account to the other accounts
+        const eip20 = await EIP20.deployed();
+        await eip20.transfer(ClientAccount, 50, {from:ReserveAccount});
+        await eip20.transfer(ProviderAccount, 50,{from:ReserveAccount});
+
+
         // Client Check if device is minted and mint device
         const cfact = await CrudFactory.deployed();
-        console.log(cfact.address);
         const clientsAddr = await cfact.getClients.call();
         const clients = await Crud.at(clientsAddr);
         let exists = await clients.exists.call(ClientIP);
         if (!exists) {
 
             const erc721 = await MyERC721.deployed();
+            console.log('Erc721 '+erc721.address);
             await erc721.requestClientMint(ClientIP, {
                 from: ClientAccount,
                 gas: web3.utils.numberToHex(5876844)
@@ -127,7 +139,7 @@ contract("1st test", async function (accounts) {
             console.log('Waiting for mint...');
             await wait(3000, '');
             exists = await clients.exists.call(ClientIP);
-            console.log(exists);
+            console.log('1');
             let clientsEntry = await clients.getByIP.call(ClientIP);
             console.log(clientsEntry);
             let tokenEntry = await erc721.ownerOf(clientsEntry.uid);
@@ -140,26 +152,23 @@ contract("1st test", async function (accounts) {
 
         // Client deploy Internet contract
         const internetAccessFactory = await SimpleInternetAccessFactory.deployed();
-        console.log(internetAccessFactory.address);
         const testInternet = await internetAccessFactory.createContract(
             //ProviderAccount, ProviderIP, MaxData, '0x'+pubKey, {
             ProviderAccount, ProviderIP, MaxData, '0x0', {
                 from: ClientAccount,
                 //gas: web3.utils.numberToHex(5876844)
             })
-        console.log(testInternet);
         console.log('Internet contract created');
         const internetAccessAddress = await internetAccessFactory.getDeployedContractsbyClient({from:ProviderAccount})
-        console.log(typeof internetAccessAddress);
-        console.log(internetAccessAddress);
-        const internetAccess = await SimpleInternetAccess.at(internetAccessAddress[internetAccessAddress.length()-1]);
-
+        //console.log(internetAccessAddress[0]);
+        const internetAccess = await SimpleInternetAccess.at(internetAccessAddress[0]);
         // Client allowance to simpleinternet access
-        const eip20 = await EIP20.deployed();
-        eip20.approve(internetAccess, MaxData * internetAccess.pricePerMB, {
+        const price = await internetAccess.pricePerMB.call();
+        console.log('Establishing contract with price/MB '+price+' and max MB: '+MaxData);
+        await eip20.approve(internetAccess.address, MaxData * price, {
             from: ClientAccount
         })
-        console.log('Client transfered to contract');
+        console.log('Client approved allowance to contract');
 
         // provider accept contract
         // var providerBefore = await eip20.balanceOf(ProviderAccount)
@@ -183,7 +192,7 @@ contract("1st test", async function (accounts) {
         // var providerAfter = await eip20.balanceOf(ProviderAccount);
 
         //provider poll for check in state of payment
-        var isTransferred = await internetAccess.sentToProvider
+        var isTransferred = await internetAccess.sentToProvider.call()
         assert.isTrue(isTransferred, 'Token transference to the provider went wrong')
         // assert(clientAfter < clientBefore, 'Wrong token amount in user wallet')
         // assert(providerAfter > providerBefore, 'Wrong token amount in provider wallet')

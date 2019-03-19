@@ -4,7 +4,11 @@ const CrudFactory = artifacts.require('CRUDFactory');
 const OracleDispatch = artifacts.require('OracleDispatch');
 const MongoHandler = require('../database/src/MongoHandler');
 const db = new MongoHandler('production');
-const network = 'meshdapp'
+const minimist = require('minimist'),
+    argv = minimist(process.argv.slice(2), {
+        string: ['network']
+    })
+const network = argv['network']
 const TestIP = '10.1.24.75';
 const TestIP1 = '10.1.24.76';
 const device = {
@@ -118,7 +122,6 @@ contract("1st MyERC721 test", async function (accounts) {
     let cfact = await CrudFactory.deployed();
     const routersAddr = await cfact.getRouters.call({from:ReserveAccount});
     let routers = await Crud.at(routersAddr);
-    console.log('Hi');
     const NS_PER_SEC = 1e9;
     const MS_PER_NS = 1e-6
     let time = process.hrtime();
@@ -127,7 +130,7 @@ contract("1st MyERC721 test", async function (accounts) {
       from: ProviderAccount,
       gas: web3.utils.numberToHex(5876844)
     });
-    await wait(1000, 'Minted');
+    await wait(3000, 'Minted');
     console.log(`Benchmark took ${diff[0] * NS_PER_SEC + diff[1]} nanoseconds`);
     console.log(`Benchmark took ${ (diff[0] * NS_PER_SEC + diff[1])  * MS_PER_NS } milliseconds`);
     let gasUsed = receipt.receipt.gasUsed;

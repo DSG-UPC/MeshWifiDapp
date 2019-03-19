@@ -69,9 +69,10 @@ contract MyERC721 is ERC721Full, ERC721Mintable, Ownable, usingOracle {
     uint id;
     uint256 index;
     address addr;
-    (id, index, addr) = routers.getByIP(_ip);
+    uint pricePerMB;
+    (id, index, addr, pricePerMB) = routers.getByIP(_ip);
     require(_isApprovedOrOwner(msg.sender,id));
-    gateways.add(_ip, addr, id);
+    gateways.add(_ip, addr, id, pricePerMB);
   }
 
   function getGateways() external view returns(address gateway){
@@ -88,13 +89,18 @@ contract MyERC721 is ERC721Full, ERC721Mintable, Ownable, usingOracle {
 
   function __mintClientCallback(uint256 _uid, string _ip, address _address, address _originator) onlyFromOracle external {
     emit LogCallback();
-    clients.add(_ip, _address, _uid);
+    clients.add(_ip, _address, _uid, 0);
     _mint(_originator, _uid);
   }
 
   function __mintRouterCallback(uint256 _uid, string _ip, address _address, address _originator) onlyFromOracle external {
     emit LogCallback();
-    routers.add(_ip, _address, _uid);
+    routers.add(_ip, _address, _uid, 0);
     _mint(_originator, _uid);
+  }
+
+  function updateRouterForwardingPrice(uint256 _uid, uint newForwardingPrice) public {
+    require(ownerOf(_uid) == msg.sender);
+    routers.updatePricePerMB(_uid, newForwardingPrice);
   }
 }
