@@ -34,6 +34,10 @@ contract Forwarding is usingOracle{
     function getProvider(uint index) public view returns (address provider){
         return providers[index];
     }
+
+    function getDebt(address provider) public view returns (uint256 result){
+        return debt[provider];
+    }
     
     function startPayment() public {
         require(num_providers > 0, "No providers requested money");
