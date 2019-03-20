@@ -26,6 +26,14 @@ contract Forwarding is usingOracle{
         total_owed_iteration = 0;
         num_providers = 0;
     }
+
+    function getTotalOwed() public view returns (uint owed){
+        return total_owed_iteration;
+    }
+
+    function getProvider(uint index) public view returns (address provider){
+        return providers[index];
+    }
     
     function startPayment() public {
         require(num_providers > 0, "No providers requested money");
@@ -62,6 +70,10 @@ contract Forwarding is usingOracle{
         token.transfer(current_provider, value);
     }
 
+    /*
+    * Oracle calling methods
+    */
+
     function getInvoice(string ip) public {
         queryOracle('forwarding', msg.sender, ip);
     }
@@ -73,6 +85,10 @@ contract Forwarding is usingOracle{
     function recalculateMaxPrice(uint total_owed, uint reserve_funds) private {
         _queryOracle('recalculate_max_price', msg.sender, total_owed, reserve_funds, dao.getPricePerMB());
     }
+
+    /*
+    * Oracle callbacks
+    */
 
     function __forwardingCallback(uint256 _response, address _provider) onlyFromOracle public {
         require(!is_provider_added[_provider], 'This provider has already requested forwarding for this iteration');
