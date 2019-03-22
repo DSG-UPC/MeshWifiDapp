@@ -39,6 +39,25 @@ contract Forwarding is usingOracle{
         return debt[provider];
     }
     
+    /*
+     * The most important method in this contract. Every period of time, this method will be called from an authorized
+     * entity and the compensations payment will start:
+     * - It starts by checking if any provider requested to receive the payments, if no providers asked about this
+     *   it makes no sense to continue with the payment.
+     * - Then we get the current balance (in tokens) of the contract account (the available funds).
+     * - The next step consists in checking whether the contract can afford the total amount of tokens owed for this
+     *   iteration or not.
+     *      - If we can afford it, we proceed with the payment (externalized in transferMoney method).
+     *      - Else, we will not pay the whole owed amount to the owner, but a proportional part of it (in order for
+     *        every provider to get at least a small amount of tokens). As this task requires precise mathematical
+     *        operations, this calculus is performed by the Oracle (explained in calculateProportional).
+     *        We need to keep track of the debt generated during this procedure with this provider.
+     *      - Finally we also remove the current provider information from this contract (externalized in clearProvider
+     *        method).
+     *  - Once this process is finished, we need to recalculate the new price for the MB. This is a crucial part of
+     *    the process because it helps to keep a zero sum game model in the system (if we have debt, we need to reduce
+     *    pricePerMB, else we can raise it). This explanation continues in recalculateMaxPrice.
+     */
     function startPayment() public {
         require(num_providers > 0, "No providers requested money");
         uint reserve_funds = token.balanceOf(reserve_account);
@@ -69,31 +88,64 @@ contract Forwarding is usingOracle{
         delete providers[num_providers-1];
     }
 
+    /*
+     * Performs two tasks:
+     * - Allow the provider to receive tokens (the amount it deserves) from this contract.
+     * - Sending the provider the deserved amount.
+     */
     function transferMoney(address current_provider, uint value) private{
         token.approve(current_provider, value);
         token.transfer(current_provider, value);
     }
 
-    /*
-    * Oracle calling methods
-    */
+    ///// ORACLE CALLING METHODS /////
 
+    /*
+     * This is the entry point of the contract. The provider notifies the contract that he wants to
+     * receive the payment for the last period of forwarding. As we need to get the monitored data from
+     * the provider's node, we need to ask the Oracle for this purpose. This method will be resolved in
+     * __forwardingCallback.
+     */
     function getInvoice(string ip) public {
         queryOracle('forwarding', msg.sender, ip);
     }
 
+    /*
+     * This method generates an event received by the Oracle to calculate the proportional value according to the values
+     * it sends as parameters in _queryOracle.
+     *
+     * This is resolved in __proportionalCallback.
+     */
     function calculateProportional(address provider, uint funds) private {
         _queryOracle('calculate_proportional', provider, amount_per_provider[provider], funds, total_owed_iteration);
     }
 
+    /*
+     * Once the payment process finishes we need to calculate the new price for the MB, such that the result for the next
+     * iteration helps us to reduce (or remove) the debts with the providers (if they exist) and to keep as less tokens
+     * as possible in the contract (there is a threshold of 5%).
+     * The idea is that the amount of tokens owed to the providers in each iteration, and the tokens paid for the internet
+     * access per iteration, are as close as possible, so that we can ensure a zero sum game.
+     *
+     * The response for this method is receive in __priceCalculatorCallback.
+     */
     function recalculateMaxPrice(uint total_owed, uint reserve_funds) private {
         _queryOracle('recalculate_max_price', msg.sender, total_owed, reserve_funds, dao.getPricePerMB());
     }
 
-    /*
-    * Oracle callbacks
-    */
 
+    ///// ORACLE CALLBACKS /////
+
+
+    /*
+     * The first callback. Once a provider requests to be included for the compensation distribution at this iteration:
+     * - First of all, we must check that this provider was not already included for this iteration.
+     * - When this is done, we add the provider to the list of providers and increase the number or providers in 1.
+     * - Then, we need to calculate the amount owed to that provider, that is, multiply the price per MB times the number
+     *   of MBs forwarded by this provider. It is also important to include the debt we have acquired with the provider
+     *   in previous iterations.
+     * - Finally, we add this amount to the total owed (for all providers) in this iteration.
+     */
     function __forwardingCallback(uint256 _response, address _provider) onlyFromOracle public {
         require(!is_provider_added[_provider], 'This provider has already requested forwarding for this iteration');
         providers[num_providers] = _provider;
@@ -107,6 +159,10 @@ contract Forwarding is usingOracle{
         dao.setPricePerMB(_response);
     }
 
+    /*
+     * Once received the proportional value, it is transferred to the corresponding provider and the
+     * debt is updated with the corresponding value.
+     */
     function __proportionalCallback(address _provider, uint _response) onlyFromOracle public {
         transferMoney(_provider, _response);
         debt[_provider] = amount_per_provider[_provider] - _response;

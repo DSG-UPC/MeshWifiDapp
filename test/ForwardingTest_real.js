@@ -145,6 +145,9 @@ contract("Test the forwarding contract", async function () {
 
     //// SECOND ITERATION ////
 
+
+
+
     // We will increase the price per mb 
 
     // We start the monitoring for a given node.
@@ -166,6 +169,9 @@ contract("Test the forwarding contract", async function () {
       funds_after = result.toNumber();
       console.log(`Balance of the forwarding contract after the SECOND iteration: ${funds_after}`)
       let value = funds_second - owed_second;
+
+      // If the balance is negative we will only be able to transfer the maximum number of funds and acquire a debt
+      // with the client (funds can never be negative).
       value = value < 0 ? 0 : value;
       assert.equal(funds_after, value);
     });

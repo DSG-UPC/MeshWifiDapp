@@ -54,9 +54,34 @@ class MonitorHandler extends OracleHandler {
                 console.log("error: " + error)
             console.log("status code: " + response.statusCode)
             let wx = JSON.parse(body)
-            let traffic = Math.round(_this.getTraffic(wx) / 1024)
+            let traffic = Math.round(_this.getTraffic(wx))
             console.log("Traffic (MB): " + traffic)
             callback(traffic)
+        })
+    }
+
+    monitor_fake(data, callback) {
+        console.log("Aqui llegó")
+        var monitor = "http://localhost:3000/monitor?id=" + data;
+        var owner = "http://localhost:3000/owner?id=" + data;
+        var result = {}
+
+        request(monitor, function (error, response, body) {
+            if (error)
+                console.log("error: " + error)
+            console.log("status code: " + response.statusCode)
+            let wx = JSON.parse(body)
+            console.log("Traffic (MB): " + wx[0].value)
+            result.monitor = wx[0].value
+            request(owner, function (error, response, body) {
+                if (error)
+                    console.log("error: " + error)
+                console.log("status code: " + response.statusCode)
+                let wx = JSON.parse(body)
+                console.log("Owner: " + wx[0].value)
+                result.owner = wx[0].value
+                callback(result)
+            })
         })
     }
 

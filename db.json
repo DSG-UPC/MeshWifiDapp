@@ -1,0 +1,14 @@
+{
+	"monitor":
+		[
+			{"id": "1", "value": "3000"},
+			{"id": "2", "value": "2000"}
+		],
+	"owner":
+		[
+			{"id": "1", "value": "0x4C1F8ed81F6F3f602F3ce3d2e6a55Ad3Dca15695"},
+			{"id": "2", "value": "0xe5af626daB849c8acA87FB27c063C5845DBEf244"}
+
+		]
+}
+

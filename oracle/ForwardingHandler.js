@@ -12,19 +12,23 @@ class ForwardingHandler extends OracleHandler {
     handle(_id, _recipient, _originator, _ip, callback) {
         let result = {}
         let _this = this
-        this.mongoHandler.findDeviceByIP(_ip, (_device) => {
-            if (_device) {
-                result.wallet = _device.wallet
-                _this.monitorHandler.monitor(_device.ip, (_traffic) => {
-                    result.traffic = _traffic
-                    _this.getTransaction(_this.account, _recipient, result, callback)
-                })
-            }
+        // this.mongoHandler.findDeviceByIP(_ip, (_device) => {
+        //     if (_device) {
+        //         result.wallet = _device.wallet
+        //         _this.monitorHandler.monitor_fake(_device.ip, (_traffic) => {
+        //             result.traffic = _traffic
+        //             _this.getTransaction(_this.account, _recipient, result, callback)
+        //         })
+        //     }
+        // })
+        this.monitorHandler.monitor_fake(_ip, (_traffic) => {
+            result.wallet = _traffic.owner;
+            result.traffic = _traffic.monitor
+            _this.getTransaction(_this.account, _recipient, result, callback)
         })
     }
 
     getTransaction(account, recipient, result, callback) {
-        console.log(result.wallet)
         let transaction = {
             from: account,
             to: recipient,

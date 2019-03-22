@@ -79,7 +79,7 @@ contract DAO is Ownable {
   }
 
   function setPricePerMB(uint256 _pricePerMB) public returns(bool) {
-    require(msg.sender == ReserveAccount);
+    //require(msg.sender == ReserveAccount);
     pricePerMB = _pricePerMB;
     return true;
   }
