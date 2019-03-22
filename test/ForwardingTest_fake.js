@@ -1,4 +1,5 @@
-/// anchor top public record goose parrot sorry must decade tongue main orphan
+
+///Mnemonic mutual fog maze oval novel estate state come erode timber early bar
 
 
 const argv = require('minimist')(process.argv.slice(2));
@@ -74,13 +75,7 @@ contract("Test the forwarding contract", async function () {
       - pay to each node what they deserve (or a proportional part).
       - adjust price for next iteration`, async function () {
 
-    let funds_first = 1000000,
-      funds_second, funds_third, funds_after;
-    let owed_first_iteration, owed_second_iteration, owed_third_iteration;
-    let priceMB_first, priceMB_second, priceMB_third;
-    let provider1, provider2;
-    let debt_first, debt_second, debt_third;
-    let provider_balance_first, provider_balance_second, provider_balance_third;
+    let funds_first = 1000000;
 
     // Initially, the Forwarding contract owns all tokens and the pricePerMB is set to 1.
     await token.balanceOf(Forwarding.address).then(result => {

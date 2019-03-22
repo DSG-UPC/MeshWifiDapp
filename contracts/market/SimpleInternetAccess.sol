@@ -41,7 +41,7 @@ contract SimpleInternetAccess is Ownable, usingOracle{
     uint activationTime;
     uint public monitoredUsage;
     bool public accepted = false;
-    bool public sentToProvider;
+    bool public isTransferred;
     DAOInterface public DAOContract;
     address public erc20Address;
     EIP20Interface internal tokenContract;
@@ -163,7 +163,7 @@ contract SimpleInternetAccess is Ownable, usingOracle{
                 }
               }
               // Tokens not used are send back to the client
-              sentToProvider = tokenContract.transfer(provider.wallet,totalAmount);
+              isTransferred = tokenContract.transfer(provider.wallet,totalAmount);
               tokenContract.transfer(client.wallet,contractBalance-totalAmount);
               emit LogRenegotiate(0);
             } else {
@@ -181,7 +181,7 @@ contract SimpleInternetAccess is Ownable, usingOracle{
                     debt = totalAmount - clientBalance;
                     tokens = clientBalance;
                 }
-                sentToProvider = tokenContract.transferFrom(client.wallet, provider.wallet, tokens);
+                isTransferred = tokenContract.transferFrom(client.wallet, provider.wallet, tokens);
                 clientDebt = debt;
                 emit LogRenegotiate(debt);
             }
