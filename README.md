@@ -84,3 +84,11 @@ OracleTest.new(OracleLookup.address).then(instance => {oracle = instance})
 
 oracle.methods
 ```
+
+3. For some tests (Forwarding_fake) instead of using the Scraper and the Prometheus server, a json-server will be needed. To have this running, we have to execute the following command:
+
+```
+json-server db.json
+```
+
+Needless to say that `json-server` npm package has to be installed to execute the above command.
