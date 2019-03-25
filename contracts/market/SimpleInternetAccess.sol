@@ -45,7 +45,7 @@ contract SimpleInternetAccess is Ownable, usingOracle{
     DAOInterface public DAOContract;
     address public erc20Address;
     EIP20Interface internal tokenContract;
-    event LogContractCreated(address provider, uint maxData, uint pricePerMB, bytes32 pubKey);
+    event LogContractCreated(address provider, uint maxData, uint pricePerMB, bytes32 pubKey, address erc20);
     event LogClientAccepted(address client, bytes32 pubkey);
     event LogActivation(string ticket, string providerIP, uint activationTime);
     event LogRenegotiate(uint debt);
@@ -68,8 +68,8 @@ contract SimpleInternetAccess is Ownable, usingOracle{
         // Constructor
         //The provider creates a contract with the proposed maximum amount of data and price,
         //the IP address of his monitoring service as well as the client address.
-        emit LogEntry();
-        tokenContract = EIP20Interface(erc20Address);
+        erc20Address = _erc20Address;
+        tokenContract = EIP20Interface(_erc20Address);
         provider.wallet = _client;
         provider.ip = _providerIP;
         maxData = _maxData;
@@ -77,31 +77,28 @@ contract SimpleInternetAccess is Ownable, usingOracle{
         client.wallet = creator;
         client.pubKey = _pubKey;
         DAOContract =  DAOInterface(_DAOAddress);
-        erc20Address = _erc20Address;
         //client.monitor = _clientMonitor;
         pricePerMB = DAOContract.getPricePerMB();
-        emit LogContractCreated(client.wallet, maxData, pricePerMB, client.pubKey);
+        emit LogContractCreated(client.wallet, maxData, pricePerMB, client.pubKey, erc20Address);
 
     }
 
     function acceptContract(string newTicket)
       public
-      returns (bool success)
     {
         //After the contract is accepted by the client the provider store a ticket
         //in the contract encrypted with the public key of the client
         //The activation time is stored.
-        require(msg.sender == provider.wallet);
-        uint allowance = tokenContract.allowance(msg.sender,address(this));
-        require(allowance >= maxData*pricePerMB);
-        if (!tokenContract.transferFrom(msg.sender,address(this),allowance)){
-          revert();
+        require(msg.sender == provider.wallet,"Only the provider should call this");
+        uint allowance = tokenContract.allowance(client.wallet,address(this));
+        require(allowance >= maxData*pricePerMB,"Client has not made the necessary allowance");
+        if (!tokenContract.transferFrom(client.wallet,address(this),maxData*pricePerMB)){
+          revert("Transfer of allowance from client to Internet contract failed");
         }
         accepted = true;
         activationTime = now;
         ticket = newTicket;
         emit LogActivation(newTicket, provider.ip, activationTime);
-        return true;
     }
 
     function checkUsage() public {
