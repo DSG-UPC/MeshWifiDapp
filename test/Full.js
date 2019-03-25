@@ -24,7 +24,7 @@ const parentDir = path.resolve(process.cwd());
 
 const ProviderIP = '10.1.24.75';
 const ClientIP = '10.1.24.74';
-const MaxData = 1024;
+const MaxData = 512;
 
 function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
@@ -55,6 +55,7 @@ function awaitEvent(event, handler) {
         event.watch(wrappedHandler);
     });
 }
+
 
 
 async function createIdentity() {
@@ -109,6 +110,27 @@ contract("1st test", async function (accounts) {
 
     it("mint a new device and store it in routers CRUD struct", async function () {
         let AdminAccount, ReserveAccount, ClientAccount, ProviderAccount
+        async function printBalances(eip20, forwarding, iaccess) {
+          if (eip20) {
+            await eip20.balanceOf(AdminAccount).then(i => {
+                console.log('Admin: '+AdminAccount+'\tTokens: '+i);
+            });
+            await eip20.balanceOf(ProviderAccount).then(i => {
+                console.log('Provider: '+ProviderAccount+'\tTokens: '+i);
+            });
+            await eip20.balanceOf(ClientAccount).then(i => {
+                console.log('Client: '+ClientAccount+'\tTokens: '+i);
+            });
+          }
+          if (forwarding) {
+            await eip20.balanceOf(forwarding.address).then(i => {
+              console.log('Forwarding/Reserve: '+forwarding.address+'\tTokens: '+i);
+            })};
+          if (iaccess) {
+            await eip20.balanceOf(iaccess.address).then(i => {
+              console.log('Internet Access: '+iaccess.address+'\tTokens: '+i);
+            })};
+        }
         const dao = await DAO.deployed();
         await dao.getReserveAccount().then(i => {
             ReserveAccount = i;
@@ -124,18 +146,16 @@ contract("1st test", async function (accounts) {
         }
         // Transfer tokens from reserve account to the other accounts
         const eip20 = await EIP20.deployed();
-        await eip20.balanceOf(AdminAccount).then(i => {
-            console.log('Admin: '+AdminAccount+'\tTokens: '+i);
-        });
-        await eip20.balanceOf(Forwarding.address).then(i => {
-            console.log('Forwarding/Reserve: '+Forwarding.address+'\tTokens: '+i);
-        });
-        await eip20.transfer(ClientAccount, 50, {
+
+        printBalances(eip20);
+        await eip20.transfer(ClientAccount, 1024, {
             from: AdminAccount
         });
+        /*
         await eip20.transfer(ProviderAccount, 50, {
             from: AdminAccount
         });
+        */
 
         // Client Check if device is minted and mint device
         const cfact = await CrudFactory.deployed();
@@ -153,9 +173,8 @@ contract("1st test", async function (accounts) {
             console.log('Waiting for mint...');
             await wait(3000, '');
             exists = await clients.exists.call(ClientIP);
-            console.log('1');
             let clientsEntry = await clients.getByIP.call(ClientIP);
-            console.log(clientsEntry);
+            //console.log(clientsEntry);
             let tokenEntry = await erc721.ownerOf(clientsEntry.uid);
             assert.equal(tokenEntry, ClientAccount,
                 'The owner of the token is  not registered correctly in the ERC721');
@@ -172,21 +191,30 @@ contract("1st test", async function (accounts) {
                 from: ClientAccount,
                 //gas: web3.utils.numberToHex(5876844)
             })
-        console.log('Internet contract created');
         const internetAccessAddress = await internetAccessFactory.getDeployedContractsbyClient({
             from: ProviderAccount
         })
-        //console.log(internetAccessAddress[0]);
+        console.log('Internet contract created: '+ internetAccessAddress[0]);
         const internetAccess = await SimpleInternetAccess.at(internetAccessAddress[0]);
+
         // Client allowance to simpleinternet access
         const price = await internetAccess.pricePerMB.call();
         console.log('Establishing contract with price/MB ' + price + ' and max MB: ' + MaxData);
         await eip20.approve(internetAccess.address, MaxData * price, {
             from: ClientAccount
         })
-        console.log('Client approved allowance to contract');
+        let allowance = await eip20.allowance.call(ClientAccount,internetAccess.address)
+        await eip20.balanceOf(ClientAccount).then(i => {
+            console.log('Client Tokens: '+i);
+            assert.isAtLeast(parseInt(i),parseInt(allowance), 'Client allowance higher than total tokens')
+        });
+        assert.equal(parseInt(allowance), parseInt(MaxData*price), 'Token transfer to the Internet contract went wrong');
+        console.log('Client approved allowance to contract: '+allowance+' tokens');
 
-        console.log('Point 4');
+        printBalances(eip20,Forwarding, internetAccess);
+        //let testlog = await internetAccess.getUsers.call()
+        //console.log(JSON.stringify(testlog, null, "  "));
+
         // provider accept contract
         // var providerBefore = await eip20.balanceOf(ProviderAccount)
         // var clientBefore = await eip20.balanceOf(ClientAccount)
@@ -210,7 +238,7 @@ contract("1st test", async function (accounts) {
 
         //provider poll for check in state of payment
         var isTransferred = await internetAccess.sentToProvider.call();
-        assert.isTrue(isTransferred, 'Token transference to the provider went wrong');
+        assert.isTrue(isTransferred, 'Token transfer to the provider went wrong');
         // assert(clientAfter < clientBefore, 'Wrong token amount in user wallet')
         // assert(providerAfter > providerBefore, 'Wrong token amount in provider wallet')
         /*await internetAccess.acceptContract();*/
