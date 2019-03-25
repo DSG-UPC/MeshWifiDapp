@@ -91,9 +91,9 @@ contract SimpleInternetAccess is Ownable, usingOracle{
         //After the contract is accepted by the client the provider store a ticket
         //in the contract encrypted with the public key of the client
         //The activation time is stored.
-        require(msg.sender == provider.wallet);
+        require(msg.sender == provider.wallet, "The message sender is not the provider");
         uint allowance = tokenContract.allowance(msg.sender,address(this));
-        require(allowance >= maxData*pricePerMB);
+        require(allowance >= maxData * pricePerMB, "The allowance is lower than maxData * pricePerMB");
         if (!tokenContract.transferFrom(msg.sender,address(this),allowance)){
           revert();
         }
@@ -111,7 +111,8 @@ contract SimpleInternetAccess is Ownable, usingOracle{
         // Alternatively DELAYS can be used to automatically check usage
         // periodically see: https://github.com/johnhckuo/Oraclize-Tutorial
 
-        require(msg.sender == provider.wallet || msg.sender == client.wallet);
+        require(msg.sender == provider.wallet || msg.sender == client.wallet,
+                  "The message sender is neither the client nor the provider");
 
         //queryOracle('client',"http://localhost/monitor/client:4000");
         //queryOracle('monitor', msg.sender, client.monitor);
@@ -139,7 +140,7 @@ contract SimpleInternetAccess is Ownable, usingOracle{
         //3) If maxData is not reached the amount of remaining data is pushed in the log
         //4) Function to solve dispute should be called
 
-        require(monitoredUsage != 0);
+        require(monitoredUsage != 0, "Monitored usage is equals zero");
         if (monitoredUsage >= maxData) {
             //maxData is reached, time to pay
             uint totalAmount = monitoredUsage*pricePerMB;
@@ -291,7 +292,7 @@ contract SimpleInternetAccess is Ownable, usingOracle{
     }
 
     function returnTokens() public {
-      require(msg.sender == provider.wallet);
+      require(msg.sender == provider.wallet, "The message sender is not the provider");
       uint contractBalance = tokenContract.balanceOf(address(this));
       tokenContract.transferFrom(address(this), client.wallet, contractBalance);
     }
