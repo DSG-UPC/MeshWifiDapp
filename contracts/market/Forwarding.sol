@@ -137,6 +137,7 @@ contract Forwarding is usingOracle{
      * - Finally, we add this amount to the total owed (for all providers) in this iteration.
      */
     function __forwardingCallback(uint256 _response, address _provider) onlyFromOracle public {
+        require(_provider != 0x0, "This provider address is not a valid one");
         require(!is_provider_added[_provider], 'This provider has already requested forwarding for this iteration');
         providers[num_providers] = _provider;
         is_provider_added[_provider] = true;

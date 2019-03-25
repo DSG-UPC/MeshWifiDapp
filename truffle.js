@@ -20,7 +20,7 @@ module.exports = {
     meshdapp: {
       provider: web3.currentProvider,
       network_id: "7775",
-      gas: 5876844,
+      gas: 8076844,
       from: '0x28b17326d08992f16d382db2923d0d8b4ff8adb0',
       //from: "",
     },

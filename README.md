@@ -85,7 +85,8 @@ OracleTest.new(OracleLookup.address).then(instance => {oracle = instance})
 oracle.methods
 ```
 
-3. For some tests (Forwarding_fake) instead of using the Scraper and the Prometheus server, a json-server will be needed. To have this running, we have to execute the following command:
+3. For some tests (Forwarding_fake) instead of using the Scraper and the Prometheus server, a json-server will be needed. This server is already
+running on an external server (VPN connection needed). It can be either ran locally updating config.js and with the following command:
 
 ```
 json-server db.json

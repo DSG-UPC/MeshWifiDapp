@@ -76,7 +76,7 @@ contract CRUD{
     public
     returns(uint index)
   {
-    require(!exists(ip));
+    require(!exists(ip), "The IP does exist");
     crudStructs[ip].ip = ip;
     crudStructs[ip].addr = addr;
     crudStructs[ip].uid   = uid;
@@ -97,7 +97,7 @@ contract CRUD{
     public
     returns(uint index)
   {
-    require(exists(ip));
+    require(exists(ip), "The IP does not exists");
     uint rowToDelete = crudStructs[ip].index;
     uint256 uid = crudStructs[ip].uid;
     string memory keyToMove = crudIndex[crudIndex.length-1];
@@ -115,7 +115,7 @@ contract CRUD{
     view
     returns(uint uid, uint index, address addr, uint pricePerMB)
   {
-    require(exists(ip));
+    require(exists(ip), "The IP does not exists");
     return(
       crudStructs[ip].uid,
       crudStructs[ip].index,
@@ -129,7 +129,7 @@ contract CRUD{
     returns(string ip, uint index, address addr, uint pricePerMB)
   {
     string storage _ip = IDtoIP[uid];
-    require(!compareStrings(_ip,'') && exists(_ip));
+    require(!compareStrings(_ip,'') && exists(_ip), "The IP is either empty or it does not exist or ");
     return(
       _ip,
       crudStructs[_ip].index,
@@ -142,7 +142,7 @@ contract CRUD{
     returns(bool success)
   {
     string memory ip = IDtoIP[uid];
-    require(exists(ip));
+    require(exists(ip), "The IP does not exists");
     crudStructs[ip].pricePerMB = pricePerMB;
     emit LogUpdate(
       ip,

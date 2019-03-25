@@ -41,10 +41,12 @@ const getAccount = async () => {
     //web3.setProvider(web.provider)
     console.log(web3.currentProvider);
     databaseHandler = new DatabaseHandler(account);
+    console.log("Esto va dpm")
     monitorHandler = new MonitorHandler(account);
     forwardingHandler = new ForwardingHandler(account, databaseHandler.getDatabase(), monitorHandler);
     priceCalculatorHandler = new PriceCalculatorHandler(account);
     proportionalCalculatorHandler = new ProportionalCalculatorHandler(account);
+    console.log("Esto va dpm")
     console.log('Working from account ', account);
 }
 

@@ -28,7 +28,7 @@ contract Ownable {
    * @dev Throws if called by any account other than the owner.
    */
   modifier onlyOwner() {
-    require(msg.sender == owner);
+    require(msg.sender == owner, "The message sender is not the owner");
     _;
   }
 
@@ -56,7 +56,7 @@ contract Ownable {
    * @param _newOwner The address to transfer ownership to.
    */
   function _transferOwnership(address _newOwner) internal {
-    require(_newOwner != address(0));
+    require(_newOwner != address(0), "The new owner cannot be the default address 0x0");
     emit OwnershipTransferred(owner, _newOwner);
     owner = _newOwner;
   }

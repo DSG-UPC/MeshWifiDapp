@@ -33,7 +33,10 @@ contract OracleDispatch {
 
   address owner;
 
-  modifier owneronly { require(msg.sender == owner); _; }
+  modifier owneronly {
+    require(msg.sender == owner, "This operation is restricted only to the owner");
+    _;
+  }
 
   function setOwner(address _owner) public owneronly {
     owner = _owner;

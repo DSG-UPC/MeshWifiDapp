@@ -144,6 +144,9 @@ contract("1st test", async function (accounts) {
             ClientAccount = accounts[4];
             ProviderAccount = accounts[5];
         }
+        console.log(`Admin account: ${AdminAccount};
+                    \nClient account: ${ClientAccount};
+                    \nProvider account: ${ProviderAccount}`)
         // Transfer tokens from reserve account to the other accounts
         const eip20 = await EIP20.deployed();
 
@@ -242,6 +245,12 @@ contract("1st test", async function (accounts) {
         // assert(clientAfter < clientBefore, 'Wrong token amount in user wallet')
         // assert(providerAfter > providerBefore, 'Wrong token amount in provider wallet')
         /*await internetAccess.acceptContract();*/
+
+
+
+
+
+        ////// FORWARDING //////
 
         // Once the client has accepted the contract we can continue with the Forwarding process.
 

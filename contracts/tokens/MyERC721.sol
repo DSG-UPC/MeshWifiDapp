@@ -45,7 +45,7 @@ contract MyERC721 is ERC721Full, ERC721Mintable, Ownable, usingOracle {
     //Making it payable is one option, but then we should consider that Ether
     //has value inside the network
     //Denies queries for existing MACs to save uncessary requests
-    require(clients.exists(ip) == false);
+    require(!clients.exists(ip), "A client with this IP already exists");
     queryOracle('nodedb^mintClient',msg.sender, ip);
   }
 
@@ -61,7 +61,7 @@ contract MyERC721 is ERC721Full, ERC721Mintable, Ownable, usingOracle {
     //Making it payable is one option, but then we should consider that Ether
     //has value inside the network
     //Denies queries for existing MACs to save uncessary requests
-    require(routers.exists(ip) == false);
+    require(!routers.exists(ip), "A router with this IP already exists");
     queryOracle('nodedb^mintRouter',msg.sender, ip);
   }
 
@@ -71,7 +71,7 @@ contract MyERC721 is ERC721Full, ERC721Mintable, Ownable, usingOracle {
     address addr;
     uint pricePerMB;
     (id, index, addr, pricePerMB) = routers.getByIP(_ip);
-    require(_isApprovedOrOwner(msg.sender,id));
+    require(_isApprovedOrOwner(msg.sender, id), "The token with the given ID cannot be transferred to the given message sender");
     gateways.add(_ip, addr, id, pricePerMB);
   }
 
@@ -100,7 +100,7 @@ contract MyERC721 is ERC721Full, ERC721Mintable, Ownable, usingOracle {
   }
 
   function updateRouterForwardingPrice(uint256 _uid, uint newForwardingPrice) public {
-    require(ownerOf(_uid) == msg.sender);
+    require(ownerOf(_uid) == msg.sender, "");
     routers.updatePricePerMB(_uid, newForwardingPrice);
   }
 }

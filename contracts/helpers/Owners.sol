@@ -26,7 +26,7 @@ contract Users is Ownable {
    * TODO maybe only owner can register users? What about the URI generation?
    */
   function addUser(string _uri) internal {
-    require(!userExists[msg.sender]);
+    require(!userExists[msg.sender], "The message sender already exists");
     userExists[msg.sender] = true;
     users[msg.sender] = User(_uri);
     emit LogUserAdded(msg.sender);
@@ -39,7 +39,7 @@ contract Users is Ownable {
    * TODO maybe only owner can register users? What about the URI generation?
    */
   function addUser(string _uri, address _address) internal onlyOwner {
-    require(!userExists[msg.sender]);
+    require(!userExists[msg.sender], "The message sender already exists");
     userExists[ _address] = true;
     users[ _address] = User(_uri);
     emit LogUserAdded(_address);
@@ -51,7 +51,7 @@ contract Users is Ownable {
    * TODO Is that ok for deleting?
    */
   function deleteUser() internal {
-    require(userExists[msg.sender]);
+    require(userExists[msg.sender], "The message sender is not an existing user");
     userExists[msg.sender] = false;
     users[msg.sender] = User('');
     //userExists[msg.sender]
@@ -63,7 +63,7 @@ contract Users is Ownable {
    * TODO Is that ok for deleting?
    */
   function deleteUser(address _address) internal onlyOwner {
-    require(userExists[_address]);
+    require(userExists[_address], "The message sender is not an existing user");
     userExists[_address] = false;
     users[msg.sender] = User('');
     //userExists[msg.sender]
