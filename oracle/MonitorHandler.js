@@ -61,9 +61,11 @@ class MonitorHandler extends OracleHandler {
     }
 
     monitor_fake(data, callback) {
-        console.log("Aqui llegó")
-        var monitor = "http://localhost:3000/monitor?id=" + data;
-        var owner = "http://localhost:3000/owner?id=" + data;
+        var url = config.json_server
+        console.log(url);
+        var monitor = `${url}/monitor?id=${data}`;
+        var owner = `${url}/owner?id=${data}`;
+        console.log(owner);
         var result = {}
 
         request(monitor, function (error, response, body) {

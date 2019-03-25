@@ -45,7 +45,6 @@ contract EIP20 is EIP20Interface, Ownable {
         decimals = _decimalUnits;                            // Amount of decimals for display purposes
         symbol = _tokenSymbol;                               // Set the symbol for display purposes
     }
-
     function transfer(address _to, uint256 _value)
       public
       validDestination(_to)
@@ -63,6 +62,7 @@ contract EIP20 is EIP20Interface, Ownable {
       validDestination(_to)
       returns (bool success)
     {
+        // Use along with approve, only when we want to transfer from one account to a third account.
         uint256 allowance = allowed[_from][msg.sender];
         require(balances[_from] >= _value && allowance >= _value,
                                 "Either the sending account doesn't have enough funds or the allowance is not enough");

@@ -47,7 +47,7 @@ contract Forwarding is usingOracle{
      * - Then we get the current balance (in tokens) of the contract account (the available funds).
      * - The next step consists in checking whether the contract can afford the total amount of tokens owed for this
      *   iteration or not.
-     *      - If we can afford it, we proceed with the payment (externalized in transferMoney method).
+     *      - If we can afford it, we proceed with the payment.
      *      - Else, we will not pay the whole owed amount to the owner, but a proportional part of it (in order for
      *        every provider to get at least a small amount of tokens). As this task requires precise mathematical
      *        operations, this calculus is performed by the Oracle (explained in calculateProportional).
@@ -66,7 +66,7 @@ contract Forwarding is usingOracle{
         if (int(reserve_funds - total_owed_iteration) >= 0) {
             while(num_providers > 0){
                 current_provider = providers[num_providers-1];
-                transferMoney(current_provider, amount_per_provider[current_provider]);
+                token.transfer(current_provider, amount_per_provider[current_provider]);
                 debt[current_provider] = 0;
                 clearProvider(current_provider);
                 num_providers--;
@@ -86,16 +86,6 @@ contract Forwarding is usingOracle{
         amount_per_provider[current_provider] = 0;
         is_provider_added[current_provider] = false;
         delete providers[num_providers-1];
-    }
-
-    /*
-     * Performs two tasks:
-     * - Allow the provider to receive tokens (the amount it deserves) from this contract.
-     * - Sending the provider the deserved amount.
-     */
-    function transferMoney(address current_provider, uint value) private{
-        token.approve(current_provider, value);
-        token.transfer(current_provider, value);
     }
 
     ///// ORACLE CALLING METHODS /////
@@ -164,7 +154,7 @@ contract Forwarding is usingOracle{
      * debt is updated with the corresponding value.
      */
     function __proportionalCallback(address _provider, uint _response) onlyFromOracle public {
-        transferMoney(_provider, _response);
+        token.transfer(_provider, _response);
         debt[_provider] = amount_per_provider[_provider] - _response;
         clearProvider(_provider);
     }
