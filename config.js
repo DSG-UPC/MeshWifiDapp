@@ -6,7 +6,7 @@ var config = {
 };
 
 function getMongoIP() {
-    let ip = process.env.MONGO_IP || 'http://localhost:27017'
+    let ip = process.env.MONGO_IP || 'localhost:27017'
     return `mongodb://ammbr:4mmBr_P4ssW0rd@${ip}/ammbr`;
 }
 
