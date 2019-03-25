@@ -108,36 +108,34 @@ contract("1st test", async function (accounts) {
     });
 
     it("mint a new device and store it in routers CRUD struct", async function () {
-        let ReserveAccount, ClientAccount, ProviderAccount
+        let AdminAccount, ReserveAccount, ClientAccount, ProviderAccount
         const dao = await DAO.deployed();
+        await dao.getReserveAccount().then(i => {
+            ReserveAccount = i;
+        })
         if (network == 'staging') {
-            await dao.getReserveAccount().then(i => {
-                ReserveAccount = i;
-            })
+            AdminAccount = accounts[0];
             ClientAccount = accounts[1];
             ProviderAccount = accounts[2];
         } else {
-            ReserveAccount = accounts[3];
+            AdminAccount = accounts[3];
             ClientAccount = accounts[4];
             ProviderAccount = accounts[5];
         }
         // Transfer tokens from reserve account to the other accounts
         const eip20 = await EIP20.deployed();
-        await eip20.balanceOf(ReserveAccount).then(i => {
-            console.log(ReserveAccount);
-            console.log(i);
+        await eip20.balanceOf(AdminAccount).then(i => {
+            console.log('Admin: '+AdminAccount+'\tTokens: '+i);
         });
         await eip20.balanceOf(Forwarding.address).then(i => {
-            console.log(Forwarding.address);
-            console.log(i);
+            console.log('Forwarding/Reserve: '+Forwarding.address+'\tTokens: '+i);
         });
         await eip20.transfer(ClientAccount, 50, {
-            from: ReserveAccount
+            from: AdminAccount
         });
         await eip20.transfer(ProviderAccount, 50, {
-            from: ReserveAccount
+            from: AdminAccount
         });
-
 
         // Client Check if device is minted and mint device
         const cfact = await CrudFactory.deployed();
@@ -188,6 +186,7 @@ contract("1st test", async function (accounts) {
         })
         console.log('Client approved allowance to contract');
 
+        console.log('Point 4');
         // provider accept contract
         // var providerBefore = await eip20.balanceOf(ProviderAccount)
         // var clientBefore = await eip20.balanceOf(ClientAccount)
