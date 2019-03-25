@@ -44,7 +44,7 @@ contract SimpleInternetAccessFactory is Ownable {
   }
 
   function killContract(address _contract) public{
-    require(msg.sender == Ownable.owner);
+    require(msg.sender == Ownable.owner, "Only the owner can perform this operation");
     SimpleInternetAccess todie = SimpleInternetAccess(_contract);
     todie.kill();
     //TODO remove contract from local Factory structure

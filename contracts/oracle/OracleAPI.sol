@@ -23,7 +23,7 @@ contract usingOracle {
 
   modifier onlyFromOracle() {
     DAOInterface lookup = DAOInterface(lookupContract);
-    require(msg.sender == lookup.getOracleResponseAddress());
+    require(msg.sender == lookup.getOracleResponseAddress(), "This operation is only allowed from Oracle response address");
     _;
   }
 

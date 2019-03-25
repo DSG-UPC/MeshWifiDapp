@@ -25,8 +25,8 @@ contract EIP20 is EIP20Interface, Ownable {
     string public symbol;                 //An identifier: eg SBX
 
     modifier validDestination( address to ) {
-        require(to != address(0x0));
-        require(to != address(this) );
+        require(to != address(0x0), "The given address is not a valid destination");
+        require(to != address(this), "This contract is not a valid destination");
         _;
     }
 

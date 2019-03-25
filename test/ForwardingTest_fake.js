@@ -1,17 +1,26 @@
-
 ///Mnemonic mutual fog maze oval novel estate state come erode timber early bar
 
 
-const argv = require('minimist')(process.argv.slice(2));
+// const argv = require('minimist')(process.argv.slice(2));
 const util = require('util');
 const OracleDispatch = artifacts.require('OracleDispatch');
 const exec = util.promisify(require('child_process').exec);
 const path = require('path');
 const parentDir = path.resolve(process.cwd());
-const stopOracle = 'screen -X -S oracle quit';
 let options = {
   'cwd': parentDir
 };
+const minimist = require('minimist'),
+    argv = minimist(process.argv.slice(2), {
+        string: ['network']
+    })
+const network = argv['network']
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
+const randomInt = getRandomInt(10000)
+const stopOracle = 'screen -X -S oracle' + randomInt + ' quit';
 
 const DAO = artifacts.require('DAO');
 const EIP20 = artifacts.require('EIP20');
@@ -42,7 +51,7 @@ contract("Test the forwarding contract", async function () {
   before('Prepare Environment', async function () {
 
     // Start oracle server with test contract address
-    let startOracle = 'screen -S oracle -L -dm node oracle/oracle.js --network staging --address ' + OracleDispatch.address
+    let startOracle = 'screen -S oracle' + randomInt + ' -L -dm node oracle/oracle.js --network ' + network + ' --address ' + OracleDispatch.address;
     const {
       stdout,
       stderr
@@ -90,7 +99,7 @@ contract("Test the forwarding contract", async function () {
     await forwarding.getInvoice("1");
     await forwarding.getInvoice("2");
 
-    await wait(200, `\n\nObtaining monitoring values for the FIRST iteration\n\n`);
+    await wait(500, `\n\nObtaining monitoring values for the FIRST iteration\n\n`);
 
 
     await forwarding.getProvider(0).then(result => {
@@ -120,7 +129,7 @@ contract("Test the forwarding contract", async function () {
 
     // We proceed with the payment
     await forwarding.startPayment();
-    await wait(200, `\n\nResolving payments for the FIRST iteration\n\n`);
+    await wait(500, `\n\nResolving payments for the FIRST iteration\n\n`);
 
     // Now we should check the results of the forwarding process.
 
@@ -184,7 +193,7 @@ contract("Test the forwarding contract", async function () {
     await forwarding.getInvoice("1");
     await forwarding.getInvoice("2");
 
-    await wait(200, `\n\nObtaining monitoring values for the SECOND iteration\n\n`);
+    await wait(500, `\n\nObtaining monitoring values for the SECOND iteration\n\n`);
 
     await forwarding.amount_per_provider(provider1).then(result => {
       owed_first_provider = result.toNumber();
@@ -203,7 +212,7 @@ contract("Test the forwarding contract", async function () {
 
     // We proceed with the payment
     await forwarding.startPayment();
-    await wait(200, `\n\nResolving payments for the SECOND iteration\n\n`);
+    await wait(500, `\n\nResolving payments for the SECOND iteration\n\n`);
 
     // Now we should check the results of the forwarding process.
 
@@ -268,7 +277,7 @@ contract("Test the forwarding contract", async function () {
     await forwarding.getInvoice("1");
     await forwarding.getInvoice("2");
 
-    await wait(200, `\n\nObtaining monitoring values for the THIRD iteration\n\n`);
+    await wait(500, `\n\nObtaining monitoring values for the THIRD iteration\n\n`);
 
     await forwarding.amount_per_provider(provider1).then(result => {
       owed_first_provider = result.toNumber();
@@ -287,7 +296,7 @@ contract("Test the forwarding contract", async function () {
 
     // We proceed with the payment
     await forwarding.startPayment();
-    await wait(200, `\n\nResolving payments for the THIRD iteration\n\n`);
+    await wait(500, `\n\nResolving payments for the THIRD iteration\n\n`);
 
     // Now we should check the results of the forwarding process.
 
