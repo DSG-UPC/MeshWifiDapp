@@ -43,7 +43,7 @@ class ForwardingHandler extends OracleHandler {
                     name: '_provider'
                 }]
             }, [result.traffic, result.wallet]),
-            gas: this.getWeb3().utils.numberToHex(300000)
+            gas: this.getWeb3().utils.numberToHex(500000)
         }
         callback(transaction)
     }

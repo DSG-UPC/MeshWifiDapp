@@ -84,6 +84,8 @@ contract("Test the forwarding contract", async function () {
       - pay to each node what they deserve (or a proportional part).
       - adjust price for next iteration`, async function () {
 
+    await wait(25000, "\n\nFirst wait after migration\n\n")
+
     let funds_first = 1000000;
 
     // Initially, the Forwarding contract owns all tokens and the pricePerMB is set to 1.
@@ -110,6 +112,16 @@ contract("Test the forwarding contract", async function () {
     await forwarding.getProvider(1).then(result => {
       provider2 = result;
       console.log(`Second provider address: ${provider2}`)
+    })
+
+    await token.balanceOf(provider1).then(result => {
+      initial_provider1 = result.toNumber();
+      console.log(`First provider initial balance: ${initial_provider1}`);
+    })
+
+    await token.balanceOf(provider2).then(result => {
+      initial_provider2 = result.toNumber();
+      console.log(`Second provider initial balance: ${initial_provider2}`);
     })
 
     await forwarding.getTotalOwed().then(result => {
@@ -145,14 +157,14 @@ contract("Test the forwarding contract", async function () {
     await token.balanceOf(provider1).then(result => {
       provider1_balance_first = result.toNumber()
       console.log(`Balance of the first provider after the FIRST iteration: ${provider1_balance_first}`)
-      assert.equal(provider1_balance_first, 3000);
+      assert.equal(provider1_balance_first, 3000 + initial_provider1);
     })
 
     // Then check if the provider has received the tokens.
     await token.balanceOf(provider2).then(result => {
       provider2_balance_first = result.toNumber()
       console.log(`Balance of the second provider after the FIRST iteration: ${provider2_balance_first}`)
-      assert.equal(provider2_balance_first, 2000);
+      assert.equal(provider2_balance_first, 2000 + initial_provider2);
     })
 
     // Then check if the debt with the provider is 0.
@@ -175,7 +187,7 @@ contract("Test the forwarding contract", async function () {
       priceMB_first = result.toNumber()
       console.log(`New pricePerMB after the FIRST iteration: ${priceMB_first}`)
       assert(pricePerMB < priceMB_first, "The price per mb now is greater than before");
-      assert.equal(priceMB_first, 200);
+      assert.equal(priceMB_first, Math.floor(funds_first / owed_first_iteration));
       funds_first = funds_second = funds_after;
     });
 
@@ -258,7 +270,6 @@ contract("Test the forwarding contract", async function () {
       priceMB_second = result.toNumber()
       console.log(`New pricePerMB after the SECOND iteration: ${priceMB_second}`)
       assert.equal(priceMB_second, 191);
-      assert.equal(priceMB_second, priceMB_second);
       funds_second = funds_third = funds_after;
     });
 
@@ -347,6 +358,8 @@ contract("Test the forwarding contract", async function () {
       assert(priceMB_third < priceMB_second);
       funds_third = funds_after;
     });
+
+    await wait(25000, "\n\nFinal wait after Forwarding\n\n")
 
   })
 

@@ -17,7 +17,7 @@ class MonitorHandler extends OracleHandler {
 
     handle(_id, _recipient, _originator, _data, callback) {
         let _this = this
-        this.monitor(_data, (_traffic) => {
+        this.monitor_fake(_data, (_traffic) => {
             _this.getTransaction(_recipient, _traffic, _originator, callback)
         })
     }
@@ -36,7 +36,7 @@ class MonitorHandler extends OracleHandler {
                     type: 'string',
                     name: '_originator'
                 }]
-            }, [traffic, originator]),
+            }, [traffic.monitor, originator]),
             gas: this.getWeb3().utils.numberToHex(300000)
         }
         callback(transaction)
@@ -62,10 +62,9 @@ class MonitorHandler extends OracleHandler {
 
     monitor_fake(data, callback) {
         var url = config.json_server
-        console.log(url);
+        console.log(data);
         var monitor = `${url}/monitor?id=${data}`;
         var owner = `${url}/owner?id=${data}`;
-        console.log(owner);
         var result = {}
 
         request(monitor, function (error, response, body) {
@@ -75,6 +74,7 @@ class MonitorHandler extends OracleHandler {
             let wx = JSON.parse(body)
             console.log("Traffic (MB): " + wx[0].value)
             result.monitor = wx[0].value
+            console.log(result.monitor);
             request(owner, function (error, response, body) {
                 if (error)
                     console.log("error: " + error)
@@ -82,6 +82,7 @@ class MonitorHandler extends OracleHandler {
                 let wx = JSON.parse(body)
                 console.log("Owner: " + wx[0].value)
                 result.owner = wx[0].value
+                console.log(result.owner);
                 callback(result)
             })
         })

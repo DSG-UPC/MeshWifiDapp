@@ -109,27 +109,33 @@ contract("1st test", async function (accounts) {
     });
 
     it("mint a new device and store it in routers CRUD struct", async function () {
+        
+        
+        await wait(15000, 'Finishing migrations')
+        
         let AdminAccount, ReserveAccount, ClientAccount, ProviderAccount
         async function printBalances(eip20, forwarding, iaccess) {
-          if (eip20) {
-            await eip20.balanceOf(AdminAccount).then(i => {
-                console.log('Admin: '+AdminAccount+'\tTokens: '+i);
-            });
-            await eip20.balanceOf(ProviderAccount).then(i => {
-                console.log('Provider: '+ProviderAccount+'\tTokens: '+i);
-            });
-            await eip20.balanceOf(ClientAccount).then(i => {
-                console.log('Client: '+ClientAccount+'\tTokens: '+i);
-            });
-          }
-          if (forwarding) {
-            await eip20.balanceOf(forwarding.address).then(i => {
-              console.log('Forwarding/Reserve: '+forwarding.address+'\tTokens: '+i);
-            })};
-          if (iaccess) {
-            await eip20.balanceOf(iaccess.address).then(i => {
-              console.log('Internet Access: '+iaccess.address+'\tTokens: '+i);
-            })};
+            if (eip20) {
+                await eip20.balanceOf(AdminAccount).then(i => {
+                    console.log('Admin: ' + AdminAccount + '\tTokens: ' + i);
+                });
+                await eip20.balanceOf(ProviderAccount).then(i => {
+                    console.log('Provider: ' + ProviderAccount + '\tTokens: ' + i);
+                });
+                await eip20.balanceOf(ClientAccount).then(i => {
+                    console.log('Client: ' + ClientAccount + '\tTokens: ' + i);
+                });
+            }
+            if (forwarding) {
+                await eip20.balanceOf(forwarding.address).then(i => {
+                    console.log('Forwarding/Reserve: ' + forwarding.address + '\tTokens: ' + i);
+                })
+            };
+            if (iaccess) {
+                await eip20.balanceOf(iaccess.address).then(i => {
+                    console.log('Internet Access: ' + iaccess.address + '\tTokens: ' + i);
+                })
+            };
         }
         const dao = await DAO.deployed();
         await dao.getReserveAccount().then(i => {
@@ -166,7 +172,6 @@ contract("1st test", async function (accounts) {
         const clients = await Crud.at(clientsAddr);
         let exists = await clients.exists.call(ClientIP);
         if (!exists) {
-
             const erc721 = await MyERC721.deployed();
             console.log('Erc721 ' + erc721.address);
             await erc721.requestClientMint(ClientIP, {
@@ -184,6 +189,11 @@ contract("1st test", async function (accounts) {
             console.log('client device minted');
         }
 
+
+
+
+        await wait(15000, 'Finishing client minting')
+
         // Client create identity
 
         // Client deploy Internet contract
@@ -197,7 +207,7 @@ contract("1st test", async function (accounts) {
         const internetAccessAddress = await internetAccessFactory.getDeployedContractsbyClient({
             from: ProviderAccount
         })
-        console.log('Internet contract created: '+ internetAccessAddress[0]);
+        console.log('Internet contract created: ' + internetAccessAddress[0]);
         const internetAccess = await SimpleInternetAccess.at(internetAccessAddress[0]);
 
         // Client allowance to simpleinternet access
@@ -206,15 +216,15 @@ contract("1st test", async function (accounts) {
         await eip20.approve(internetAccess.address, MaxData * price, {
             from: ClientAccount
         })
-        let allowance = await eip20.allowance.call(ClientAccount,internetAccess.address)
+        let allowance = await eip20.allowance.call(ClientAccount, internetAccess.address)
         await eip20.balanceOf(ClientAccount).then(i => {
-            console.log('Client Tokens: '+i);
-            assert.isAtLeast(parseInt(i),parseInt(allowance), 'Client allowance higher than total tokens')
+            console.log('Client Tokens: ' + i);
+            assert.isAtLeast(parseInt(i), parseInt(allowance), 'Client allowance higher than total tokens')
         });
-        assert.equal(parseInt(allowance), parseInt(MaxData*price), 'Token transfer to the Internet contract went wrong');
-        console.log('Client approved allowance to contract: '+allowance+' tokens');
+        assert.equal(parseInt(allowance), parseInt(MaxData * price), 'Token transfer to the Internet contract went wrong');
+        console.log('Client approved allowance to contract: ' + allowance + ' tokens');
 
-        printBalances(eip20,Forwarding, internetAccess);
+        printBalances(eip20, Forwarding, internetAccess);
         //let testlog = await internetAccess.getUsers.call()
         //console.log(JSON.stringify(testlog, null, "  "));
 
@@ -236,12 +246,14 @@ contract("1st test", async function (accounts) {
         })
         console.log('Provider checking usage');
 
-        // var clientAfter = await eip20.balanceOf(ClientAccount);
-        // var providerAfter = await eip20.balanceOf(ProviderAccount);
+        await eip20.balanceOf(ClientAccount).then(result => {
+            assert(result.toNumber(), 512);
+        })
 
-        //provider poll for check in state of payment
-        var isTransferred = await internetAccess.sentToProvider.call();
-        assert.isTrue(isTransferred, 'Token transfer to the provider went wrong');
+        await eip20.balanceOf(internetAccess.address).then(result => {
+            assert(result.toNumber(), 512);
+        });
+
         // assert(clientAfter < clientBefore, 'Wrong token amount in user wallet')
         // assert(providerAfter > providerBefore, 'Wrong token amount in provider wallet')
         /*await internetAccess.acceptContract();*/
@@ -249,6 +261,8 @@ contract("1st test", async function (accounts) {
 
 
 
+
+        await wait(15000, 'Finishing Internet Contract accepting')
 
         ////// FORWARDING //////
 
@@ -261,7 +275,7 @@ contract("1st test", async function (accounts) {
         // Initially, the Forwarding contract (which is the reserve account) owns all tokens
         // and the pricePerMB is set to 1.
         await eip20.balanceOf(Forwarding.address).then(result => {
-            assert.equal(result, funds_first);
+            funds_first = result.toNumber();
         })
         await dao.getPricePerMB().then(result => {
             pricePerMB = result.toNumber();
@@ -270,7 +284,7 @@ contract("1st test", async function (accounts) {
         // We start the monitoring for the provider node.
         await forwarding.getInvoice(ProviderIP);
 
-        await wait(100, `\n\nObtaining monitoring values for the FIRST iteration\n\n`);
+        await wait(500, `\n\nObtaining monitoring values for the FIRST iteration\n\n`);
 
         await forwarding.getProvider(0).then(result => {
             provider1 = result;
@@ -321,6 +335,140 @@ contract("1st test", async function (accounts) {
             assert(pricePerMB < priceMB_first, "The price per mb now is greater than before");
             funds_first = funds_second = funds_after;
         });
+
+
+
+
+        /// SECOND ITERATION ///
+
+
+
+
+        // First of all we need to reduce the price into 331 to get a
+        // fair result where the price doesn't change.
+
+        await dao.setPricePerMB(331);
+
+        // We start the monitoring for two nodes.
+        await forwarding.getInvoice(ProviderIP);
+
+        await wait(1000, `\n\nObtaining monitoring values for the SECOND iteration\n\n`);
+
+        await forwarding.amount_per_provider(provider1).then(result => {
+            owed_first_provider = result.toNumber();
+            console.log(`Owed to the first provider in this iteration: ${owed_first_provider}`)
+        })
+
+        await forwarding.getTotalOwed().then(result => {
+            owed_second_iteration = result.toNumber();
+            console.log(`Monitoring result for the SECOND iteration: ${owed_second_iteration}`)
+        })
+
+        // We proceed with the payment
+        await forwarding.startPayment();
+        await wait(1000, `\n\nResolving payments for the SECOND iteration\n\n`);
+
+        // Now we should check the results of the forwarding process.
+
+        // First of all, check if the forwarded amount was deduced from the funds.
+        await eip20.balanceOf(Forwarding.address).then(result => {
+            funds_after = result.toNumber();
+            console.log(`Balance of the forwarding contract after the SECOND iteration: ${funds_after}`)
+            let value = funds_second - owed_second_iteration;
+            assert.equal(funds_after, value);
+        })
+
+        // Then check if the provider has received the tokens.
+        await eip20.balanceOf(provider1).then(result => {
+            provider1_balance_second = result.toNumber()
+            console.log(`Balance of the first provider after the SECOND iteration: ${provider1_balance_second}`)
+            assert.equal(provider1_balance_second, provider1_balance_first + owed_first_provider);
+        })
+
+        // Then check if the debt with the provider is 0.
+        await forwarding.getDebt(provider1).then(result => {
+            debt_second_provider1 = result.toNumber();
+            console.log(`Debt with the first provider after the SECOND iteration: ${debt_second_provider1}`)
+            assert.equal(debt_second_provider1, 0);
+        });
+
+        // Finally, check if the pricePerMB has changed into the expected
+        // value.
+        await dao.getPricePerMB().then(result => {
+            priceMB_second = result.toNumber()
+            console.log(`New pricePerMB after the SECOND iteration: ${priceMB_second}`)
+            assert.equal(priceMB_second, 331);
+            funds_second = funds_third = funds_after;
+        });
+
+
+
+
+
+        //// THIRD ITERATION ////
+
+        // First of all we need to reduce the price into 10 to get a
+        // fair result where the price doesn't change.
+
+        await dao.setPricePerMB(3);
+
+        // We start the monitoring for two nodes.
+        await forwarding.getInvoice(ProviderIP);
+
+        await wait(1000, `\n\nObtaining monitoring values for the THIRD iteration\n\n`);
+
+        await forwarding.amount_per_provider(provider1).then(result => {
+            owed_first_provider = result.toNumber();
+            console.log(`Owed to the first provider in this iteration: ${owed_first_provider}`)
+        })
+
+        await forwarding.getTotalOwed().then(result => {
+            owed_third_iteration = result.toNumber();
+            console.log(`Monitoring result for the THIRD iteration: ${owed_third_iteration}`)
+        })
+
+        // We proceed with the payment
+        await forwarding.startPayment();
+        await wait(1000, `\n\nResolving payments for the THIRD iteration\n\n`);
+
+        // Now we should check the results of the forwarding process.
+
+        // First of all, check if the forwarded amount was deduced from the funds.
+        await eip20.balanceOf(Forwarding.address).then(result => {
+            funds_after = result.toNumber();
+            console.log(`Balance of the forwarding contract after the THIRD iteration: ${funds_after}`)
+            let value = funds_third - owed_third_iteration;
+            if (value < 0)
+                value = 0;
+            assert.equal(funds_after, value);
+        })
+
+        // Then check if the provider has received the tokens.
+        await eip20.balanceOf(provider1).then(result => {
+            provider1_balance_third = result.toNumber()
+            console.log(`Balance of the first provider after the THIRD iteration: ${provider1_balance_third}, less than expected`)
+            assert(provider1_balance_third < provider1_balance_second + owed_first_provider, "Only a proportional part is being paid");
+        })
+
+        // Then check if the debt with the provider is 0.
+        await forwarding.getDebt(provider1).then(result => {
+            debt_third_provider1 = result.toNumber();
+            console.log(`Debt with the first provider after the THIRD iteration: ${debt_third_provider1}`)
+            assert(debt_third_provider1 > 0, "There must be some debt");
+        });
+
+        // Finally, check if the pricePerMB has changed into the expected
+        // value.
+        await dao.getPricePerMB().then(result => {
+            priceMB_third = result.toNumber();
+            console.log(`New pricePerMB after the THIRD iteration: ${priceMB_third}`);
+            assert.equal(priceMB_third, 1);
+            assert(priceMB_third < priceMB_second);
+            funds_third = funds_after;
+        });
+
+        await wait(15000, 'Waiting after finishing all tests')
+
     });
 
 });
