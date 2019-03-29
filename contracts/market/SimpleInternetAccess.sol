@@ -95,7 +95,7 @@ contract SimpleInternetAccess is Ownable, usingOracle{
         require(msg.sender == provider.wallet,"The message sender is not the provider");
         uint allowance = tokenContract.allowance(client.wallet,address(this));
         require(allowance >= maxData*pricePerMB,"The allowance is lower than maxData * pricePerMB");
-        if (!tokenContract.transferFrom(client.wallet,address(this),maxData*pricePerMB)){
+        if (!tokenContract.transferFrom(client.wallet, address(this), maxData*pricePerMB)){
           revert("Transfer of allowance from client to Internet contract failed");
         }
         accepted = true;

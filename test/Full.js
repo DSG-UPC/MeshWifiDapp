@@ -10,13 +10,12 @@ const DAO = artifacts.require("DAO");
 const EthCrypto = require('eth-crypto');
 
 const MongoHandler = require('../database/src/MongoHandler');
-const db = new MongoHandler('production');
+const moment = require('moment')
 const minimist = require('minimist'),
     argv = minimist(process.argv.slice(2), {
         string: ['network']
     })
 const network = argv['network']
-console.log(network);
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const path = require('path');
@@ -27,6 +26,8 @@ const fs = require('fs');
 const ProviderIP = '10.1.24.75';
 const ClientIP = '10.1.24.74';
 const MaxData = 512;
+const NS_PER_SEC = 1e9;
+const MS_PER_NS = 1e-6;
 
 function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
@@ -64,12 +65,11 @@ function awaitEvent(event, handler) {
 }
 
 
-
 async function createIdentity() {
     const identity = await EthCrypto.createIdentity();
     return identity;
 }
-let Identity, pubKey
+let Identity, pubKey;
 
 contract("1st test", async function (accounts) {
 
@@ -131,8 +131,7 @@ contract("1st test", async function (accounts) {
 
     it("mint a new device and store it in routers CRUD struct", async function () {
 
-
-        await wait(15000, 'Finishing migrations')
+        await wait(6000, 'Starting the minting process');
 
         let AdminAccount, ReserveAccount, ClientAccount, ProviderAccount
         async function printBalances(eip20, forwarding, iaccess) {
@@ -192,10 +191,11 @@ contract("1st test", async function (accounts) {
         const clientsAddr = await cfact.getClients.call();
         const clients = await Crud.at(clientsAddr);
         let exists = await clients.exists.call(ClientIP);
+        time = process.hrtime();
         if (!exists) {
             const erc721 = await MyERC721.deployed();
             console.log('Erc721 ' + erc721.address);
-            await erc721.requestClientMint(ClientIP, {
+            receipt = await erc721.requestClientMint(ClientIP, {
                 from: ClientAccount,
                 gas: web3.utils.numberToHex(5876844)
             });
@@ -210,21 +210,37 @@ contract("1st test", async function (accounts) {
             console.log('client device minted');
         }
 
+        diff = process.hrtime(time);
+
+        let gasUsed = receipt.receipt.gasUsed;
+        console.log(`GasUsed for minting : ${gasUsed}`);
+        let tx = await web3.eth.getTransaction(receipt.tx);
+        let gasPrice = tx.gasPrice;
+        console.log(`GasPrice: ${gasPrice}`);
+
+        minting_time = (diff[0] * NS_PER_SEC + diff[1]) * MS_PER_NS
+
+        console.log(`\n\nBenchmark for Minting took ${minting_time} milliseconds\n\n`);
+        await wait(6000, 'Starting Internet contract creation between client and provider')
 
 
 
-        await wait(15000, 'Finishing client minting')
 
         // Client create identity
 
         // Client deploy Internet contract
+        time = process.hrtime();
+
+
         const internetAccessFactory = await SimpleInternetAccessFactory.deployed();
         const testInternet = await internetAccessFactory.createContract(
             //ProviderAccount, ProviderIP, MaxData, '0x'+pubKey, {
             ProviderAccount, ProviderIP, MaxData, '0x0', {
                 from: ClientAccount,
                 //gas: web3.utils.numberToHex(5876844)
-            })
+            }
+        )
+
         const internetAccessAddress = await internetAccessFactory.getDeployedContractsbyClient({
             from: ProviderAccount
         })
@@ -294,6 +310,9 @@ contract("1st test", async function (accounts) {
         await internetAccess.checkUsage({
             from: ProviderAccount
         })
+
+        diff = process.hrtime(time);
+
         console.log('Provider checking usage');
 
         await eip20.balanceOf(ClientAccount).then(result => {
@@ -308,13 +327,20 @@ contract("1st test", async function (accounts) {
         // assert(providerAfter > providerBefore, 'Wrong token amount in provider wallet')
         /*await internetAccess.acceptContract();*/
 
+        internet_contract_time = (diff[0] * NS_PER_SEC + diff[1]) * MS_PER_NS
+
+        console.log(`\n\nBenchmark for Internet Contract acceptance took ${internet_contract_time} milliseconds\n\n`);
 
 
 
 
-        await wait(15000, 'Finishing Internet Contract accepting')
+
+
+        await wait(6000, 'Starting Forwarding process');
 
         ////// FORWARDING //////
+
+        time = process.hrtime();
 
         // Once the client has accepted the contract we can continue with the Forwarding process.
 
@@ -334,11 +360,11 @@ contract("1st test", async function (accounts) {
         // We start the monitoring for the provider node.
         await forwarding.getInvoice(ProviderIP);
 
-        await wait(500, `\n\nObtaining monitoring values for the FIRST iteration\n\n`);
+        await wait(1000, `\n\nObtaining monitoring values for the FIRST iteration\n\n`);
 
         await forwarding.getProvider(0).then(result => {
             provider1 = result;
-            console.log(`First provider address: ${provider1}`)
+            console.log(`Provider address: ${provider1}`)
         })
 
         await forwarding.getTotalOwed().then(result => {
@@ -348,12 +374,12 @@ contract("1st test", async function (accounts) {
 
         await forwarding.amount_per_provider(provider1).then(result => {
             owed_first_provider = result.toNumber();
-            console.log(`Owed to the first provider in this iteration: ${owed_first_provider}`)
+            console.log(`Owed to the provider in this iteration: ${owed_first_provider}`)
         })
 
         // We proceed with the payment
         await forwarding.startPayment();
-        await wait(100, `\n\nResolving payments for the FIRST iteration\n\n`);
+        await wait(1000, `\n\nResolving payments for the FIRST iteration\n\n`);
 
         // First of all, check if the forwarded amount was deduced from the funds.
         await eip20.balanceOf(Forwarding.address).then(result => {
@@ -366,14 +392,14 @@ contract("1st test", async function (accounts) {
         // Then check if the provider has received the tokens.
         await eip20.balanceOf(provider1).then(result => {
             provider1_balance_first = result.toNumber()
-            console.log(`Balance of the first provider after the FIRST iteration: ${provider1_balance_first}`)
+            console.log(`Balance of the provider after the FIRST iteration: ${provider1_balance_first}`)
             assert.equal(provider1_balance_first, 3000);
         })
 
         // Then check if the debt with the provider is 0.
         await forwarding.getDebt(provider1).then(result => {
             debt_first_provider1 = result.toNumber();
-            console.log(`Debt with the first provider after the FIRST iteration: ${debt_first_provider1}`)
+            console.log(`Debt with the provider after the FIRST iteration: ${debt_first_provider1}`)
             assert.equal(debt_first_provider1, 0);
         });
 
@@ -385,6 +411,12 @@ contract("1st test", async function (accounts) {
             assert(pricePerMB < priceMB_first, "The price per mb now is greater than before");
             funds_first = funds_second = funds_after;
         });
+
+        diff = process.hrtime(time);
+
+        forwarding_contract_time = (diff[0] * NS_PER_SEC + diff[1]) * MS_PER_NS
+
+        console.log(`\n\nBenchmark for Forwarding took ${forwarding_contract_time} milliseconds\n\n`);
 
 
 
@@ -406,7 +438,7 @@ contract("1st test", async function (accounts) {
 
         await forwarding.amount_per_provider(provider1).then(result => {
             owed_first_provider = result.toNumber();
-            console.log(`Owed to the first provider in this iteration: ${owed_first_provider}`)
+            console.log(`Owed to the provider in this iteration: ${owed_first_provider}`)
         })
 
         await forwarding.getTotalOwed().then(result => {
@@ -469,7 +501,7 @@ contract("1st test", async function (accounts) {
 
         await forwarding.amount_per_provider(provider1).then(result => {
             owed_first_provider = result.toNumber();
-            console.log(`Owed to the first provider in this iteration: ${owed_first_provider}`)
+            console.log(`Owed to the provider in this iteration: ${owed_first_provider}`)
         })
 
         await forwarding.getTotalOwed().then(result => {
@@ -496,14 +528,14 @@ contract("1st test", async function (accounts) {
         // Then check if the provider has received the tokens.
         await eip20.balanceOf(provider1).then(result => {
             provider1_balance_third = result.toNumber()
-            console.log(`Balance of the first provider after the THIRD iteration: ${provider1_balance_third}, less than expected`)
+            console.log(`Balance of the provider after the THIRD iteration: ${provider1_balance_third}, less than expected`)
             assert(provider1_balance_third < provider1_balance_second + owed_first_provider, "Only a proportional part is being paid");
         })
 
         // Then check if the debt with the provider is 0.
         await forwarding.getDebt(provider1).then(result => {
             debt_third_provider1 = result.toNumber();
-            console.log(`Debt with the first provider after the THIRD iteration: ${debt_third_provider1}`)
+            console.log(`Debt with the provider after the THIRD iteration: ${debt_third_provider1}`)
             assert(debt_third_provider1 > 0, "There must be some debt");
         });
 
@@ -517,7 +549,7 @@ contract("1st test", async function (accounts) {
             funds_third = funds_after;
         });
 
-        await wait(15000, 'Waiting after finishing all tests')
+        await wait(6000, 'Full process is finished')
 
     });
 

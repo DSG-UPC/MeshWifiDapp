@@ -33,12 +33,14 @@ class MonitorHandler extends OracleHandler {
                     type: 'uint256',
                     name: '_response'
                 }, {
-                    type: 'string',
+                    type: 'address',
                     name: '_originator'
                 }]
             }, [traffic.monitor, originator]),
             gas: this.getWeb3().utils.numberToHex(300000)
         }
+        console.log(transaction);
+        console.log('Sending transaction from MonitorHandler')
         callback(transaction)
     }
 
@@ -54,8 +56,10 @@ class MonitorHandler extends OracleHandler {
                 console.log("error: " + error)
             console.log("status code: " + response.statusCode)
             let wx = JSON.parse(body)
-            let traffic = Math.round(_this.getTraffic(wx))
-            console.log("Traffic (MB): " + traffic)
+            let traffic = {};
+            traffic.monitor = Math.round(_this.getTraffic(wx));
+            console.log("Traffic (MB): " + traffic.monitor);
+
             callback(traffic)
         })
     }

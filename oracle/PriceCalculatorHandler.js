@@ -42,6 +42,7 @@ class PriceCalculatorHandler extends OracleHandler {
             }, [result]),
             gas: this.getWeb3().utils.numberToHex(300000)
         };
+        console.log('Sending transaction from PriceCalculatorHandler')
         callback(transaction);
     }
 }

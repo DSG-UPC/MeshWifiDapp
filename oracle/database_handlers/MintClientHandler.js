@@ -53,6 +53,7 @@ class MintClientHandler extends OracleHandler {
       }, [web3.utils.toBN(id), ip, web3.utils.toChecksumAddress(wallet), originator]),
       gas: web3.utils.numberToHex(5000000)
     }
+    console.log('Sending transaction from MintClientHandler')
     callback(transaction)
   }
 

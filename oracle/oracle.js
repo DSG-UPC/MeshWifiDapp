@@ -137,10 +137,13 @@ async function startListener(abi, address) {
                 (transaction) => {
                     web3.eth.sendTransaction(transaction)
                         .then((result) => {
-                            console.log(`EVM call result:\n ${result}`)
+                            console.log(`EVM call result:\n ${JSON.stringify(result, null, 2)}`)
                         }, (error) => {
                             console.log(`Error:\n ${error}`)
-                        })
+                        }) //.on('receipt', (trx) => {
+                    //     console.log(`Transaction:\n\n ${trx}\n\n`);
+                    //     console.log(`Gas used: ${trx.receipt.gasUsed}`);
+                    // });
                 })
             //handler(abi, address)
         })
