@@ -34,6 +34,7 @@ class ProportionalCalculatorHandler extends OracleHandler {
             }, [result.provider, result.proportional]),
             gas: this.getWeb3().utils.numberToHex(300000)
         };
+        console.log('Sending transaction from ProportionalCalculatorHandler')
         callback(transaction);
     }
 }

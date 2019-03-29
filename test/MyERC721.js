@@ -123,7 +123,7 @@ contract("1st MyERC721 test", async function (accounts) {
     const routersAddr = await cfact.getRouters.call({from:ReserveAccount});
     let routers = await Crud.at(routersAddr);
     const NS_PER_SEC = 1e9;
-    const MS_PER_NS = 1e-6
+    const MS_PER_NS = 1e-6;
     let time = process.hrtime();
     let diff = process.hrtime(time);
     let receipt = await token.requestRouterMint(TestIP, {

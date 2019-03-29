@@ -84,8 +84,6 @@ contract("Test the forwarding contract", async function () {
       - pay to each node what they deserve (or a proportional part).
       - adjust price for next iteration`, async function () {
 
-    await wait(25000, "\n\nFirst wait after migration\n\n")
-
     let funds_first = 1000000;
 
     // Initially, the Forwarding contract owns all tokens and the pricePerMB is set to 1.
@@ -101,7 +99,7 @@ contract("Test the forwarding contract", async function () {
     await forwarding.getInvoice("1");
     await forwarding.getInvoice("2");
 
-    await wait(500, `\n\nObtaining monitoring values for the FIRST iteration\n\n`);
+    await wait(100, `\n\nObtaining monitoring values for the FIRST iteration\n\n`);
 
 
     await forwarding.getProvider(0).then(result => {
@@ -141,7 +139,7 @@ contract("Test the forwarding contract", async function () {
 
     // We proceed with the payment
     await forwarding.startPayment();
-    await wait(500, `\n\nResolving payments for the FIRST iteration\n\n`);
+    await wait(100, `\n\nResolving payments for the FIRST iteration\n\n`);
 
     // Now we should check the results of the forwarding process.
 
@@ -190,176 +188,6 @@ contract("Test the forwarding contract", async function () {
       assert.equal(priceMB_first, Math.floor(funds_first / owed_first_iteration));
       funds_first = funds_second = funds_after;
     });
-
-
-
-
-    //// SECOND ITERATION ////
-
-    // First of all we need to reduce the price into 191 to get a
-    // fair result where the price doesn't change.
-
-    await dao.setPricePerMB(191);
-
-    // We start the monitoring for two nodes.
-    await forwarding.getInvoice("1");
-    await forwarding.getInvoice("2");
-
-    await wait(500, `\n\nObtaining monitoring values for the SECOND iteration\n\n`);
-
-    await forwarding.amount_per_provider(provider1).then(result => {
-      owed_first_provider = result.toNumber();
-      console.log(`Owed to the first provider in this iteration: ${owed_first_provider}`)
-    })
-
-    await forwarding.amount_per_provider(provider2).then(result => {
-      owed_second_provider = result.toNumber();
-      console.log(`Owed to the second provider in this iteration: ${owed_second_provider}`)
-    })
-
-    await forwarding.getTotalOwed().then(result => {
-      owed_second_iteration = result.toNumber();
-      console.log(`Monitoring result for the SECOND iteration: ${owed_second_iteration}`)
-    })
-
-    // We proceed with the payment
-    await forwarding.startPayment();
-    await wait(500, `\n\nResolving payments for the SECOND iteration\n\n`);
-
-    // Now we should check the results of the forwarding process.
-
-    // First of all, check if the forwarded amount was deduced from the funds.
-    await token.balanceOf(Forwarding.address).then(result => {
-      funds_after = result.toNumber();
-      console.log(`Balance of the forwarding contract after the SECOND iteration: ${funds_after}`)
-      let value = funds_second - owed_second_iteration;
-      assert.equal(funds_after, value);
-    })
-
-    // Then check if the provider has received the tokens.
-    await token.balanceOf(provider1).then(result => {
-      provider1_balance_second = result.toNumber()
-      console.log(`Balance of the first provider after the SECOND iteration: ${provider1_balance_second}`)
-      assert.equal(provider1_balance_second, provider1_balance_first + owed_first_provider);
-    })
-
-    // Then check if the provider has received the tokens.
-    await token.balanceOf(provider2).then(result => {
-      provider2_balance_second = result.toNumber()
-      console.log(`Balance of the second provider after the SECOND iteration: ${provider2_balance_second}`)
-      assert.equal(provider2_balance_second, provider2_balance_first + owed_second_provider);
-    })
-
-    // Then check if the debt with the provider is 0.
-    await forwarding.getDebt(provider1).then(result => {
-      debt_second_provider1 = result.toNumber();
-      console.log(`Debt with the first provider after the SECOND iteration: ${debt_second_provider1}`)
-      assert.equal(debt_second_provider1, 0);
-    });
-
-    // Then check if the debt with the provider is 0.
-    await forwarding.getDebt(provider2).then(result => {
-      debt_second_provider2 = result.toNumber();
-      console.log(`Debt with the second provider after the SECOND iteration: ${debt_second_provider2}`)
-      assert.equal(debt_second_provider2, 0);
-    });
-
-    // Finally, check if the pricePerMB has changed into the expected
-    // value.
-    await dao.getPricePerMB().then(result => {
-      priceMB_second = result.toNumber()
-      console.log(`New pricePerMB after the SECOND iteration: ${priceMB_second}`)
-      assert.equal(priceMB_second, 191);
-      funds_second = funds_third = funds_after;
-    });
-
-
-
-
-
-    //// THIRD ITERATION ////
-
-    // First of all we need to reduce the price into 10 to get a
-    // fair result where the price doesn't change.
-
-    await dao.setPricePerMB(10);
-
-    // We start the monitoring for two nodes.
-    await forwarding.getInvoice("1");
-    await forwarding.getInvoice("2");
-
-    await wait(500, `\n\nObtaining monitoring values for the THIRD iteration\n\n`);
-
-    await forwarding.amount_per_provider(provider1).then(result => {
-      owed_first_provider = result.toNumber();
-      console.log(`Owed to the first provider in this iteration: ${owed_first_provider}`)
-    })
-
-    await forwarding.amount_per_provider(provider2).then(result => {
-      owed_second_provider = result.toNumber();
-      console.log(`Owed to the second provider in this iteration: ${owed_second_provider}`)
-    })
-
-    await forwarding.getTotalOwed().then(result => {
-      owed_third_iteration = result.toNumber();
-      console.log(`Monitoring result for the THIRD iteration: ${owed_third_iteration}`)
-    })
-
-    // We proceed with the payment
-    await forwarding.startPayment();
-    await wait(500, `\n\nResolving payments for the THIRD iteration\n\n`);
-
-    // Now we should check the results of the forwarding process.
-
-    // First of all, check if the forwarded amount was deduced from the funds.
-    await token.balanceOf(Forwarding.address).then(result => {
-      funds_after = result.toNumber();
-      console.log(`Balance of the forwarding contract after the THIRD iteration: ${funds_after}`)
-      let value = funds_third - owed_third_iteration;
-      if (value < 0)
-        value = 0;
-      assert.equal(funds_after, value);
-    })
-
-    // Then check if the provider has received the tokens.
-    await token.balanceOf(provider1).then(result => {
-      provider1_balance_third = result.toNumber()
-      console.log(`Balance of the first provider after the THIRD iteration: ${provider1_balance_third}, less than expected`)
-      assert(provider1_balance_third < provider1_balance_second + owed_first_provider, "Only a proportional part is being paid");
-    })
-
-    // Then check if the provider has received the tokens.
-    await token.balanceOf(provider2).then(result => {
-      provider2_balance_third = result.toNumber()
-      console.log(`Balance of the second provider after the THIRD iteration: ${provider2_balance_third}, less than expected`)
-      assert(provider2_balance_third < provider2_balance_second + owed_second_provider, "Only a proportional part is being paid");
-    })
-
-    // Then check if the debt with the provider is 0.
-    await forwarding.getDebt(provider1).then(result => {
-      debt_third_provider1 = result.toNumber();
-      console.log(`Debt with the first provider after the THIRD iteration: ${debt_third_provider1}`)
-      assert(debt_third_provider1 > 0, "There must be some debt");
-    });
-
-    // Then check if the debt with the provider is 0.
-    await forwarding.getDebt(provider2).then(result => {
-      debt_third_provider2 = result.toNumber();
-      console.log(`Debt with the second provider after the THIRD iteration: ${debt_third_provider2}`)
-      assert(debt_third_provider2 > 0, "There must be some debt");
-    });
-
-    // Finally, check if the pricePerMB has changed into the expected
-    // value.
-    await dao.getPricePerMB().then(result => {
-      priceMB_third = result.toNumber();
-      console.log(`New pricePerMB after the THIRD iteration: ${priceMB_third}`);
-      assert.equal(priceMB_third, 8);
-      assert(priceMB_third < priceMB_second);
-      funds_third = funds_after;
-    });
-
-    await wait(25000, "\n\nFinal wait after Forwarding\n\n")
 
   })
 
