@@ -22,6 +22,8 @@ const exec = util.promisify(require('child_process').exec);
 const path = require('path');
 const parentDir = path.resolve(process.cwd());
 
+const fs = require('fs');
+
 const ProviderIP = '10.1.24.75';
 const ClientIP = '10.1.24.74';
 const MaxData = 512;
@@ -32,9 +34,14 @@ function getRandomInt(max) {
 const randomInt = getRandomInt(10000)
 
 const stopOracle = 'screen -X -S oracle' + randomInt + ' quit';
-let options = {
+let oracleOptions = {
     //'cwd': parentDir+'/ethereum/'
     'cwd': parentDir + '/oracle/' //+'/ethereum/'
+};
+const stopEventListener = 'screen -X -S events' + randomInt + ' quit';
+let eventOptions = {
+    //'cwd': parentDir+'/ethereum/'
+    'cwd': parentDir + '/test/' //+'/ethereum/'
 };
 
 async function wait(ms, text) {
@@ -77,7 +84,7 @@ contract("1st test", async function (accounts) {
         const {
             stdout,
             stderr
-        } = await exec(startOracle, options);
+        } = await exec(startOracle, oracleOptions);
         console.log('Starting Oracle');
         if (stderr) {
             console.error('Starting Oracle Error');
@@ -86,6 +93,8 @@ contract("1st test", async function (accounts) {
         console.log(stdout);
         await wait(1000, 'Started Oracle');
         //db.removeAllData();
+        // Starting event logging
+
     });
 
     /*
@@ -99,20 +108,32 @@ contract("1st test", async function (accounts) {
         const {
             stdout,
             stderr
-        } = await exec(stopOracle, options);
+        } = await exec(stopOracle, oracleOptions);
         console.log('Stop Oracle');
         if (stderr) {
             console.log('Stop Oracle Error');
             console.error(stderr);
         }
         console.log(stdout);
+        /*
+        const {
+            stdout1,
+            stderr1
+        } = await exec(stopEventListener, eventOptions);
+        console.log('Stop EventListener');
+        if (stderr1) {
+            console.log('Stop EventListener Error');
+            console.error(stderr1);
+        }
+        console.log(stdout1);
+        */
     });
 
     it("mint a new device and store it in routers CRUD struct", async function () {
-        
-        
+
+
         await wait(15000, 'Finishing migrations')
-        
+
         let AdminAccount, ReserveAccount, ClientAccount, ProviderAccount
         async function printBalances(eip20, forwarding, iaccess) {
             if (eip20) {
@@ -209,6 +230,35 @@ contract("1st test", async function (accounts) {
         })
         console.log('Internet contract created: ' + internetAccessAddress[0]);
         const internetAccess = await SimpleInternetAccess.at(internetAccessAddress[0]);
+
+        const myContract = await new web3.eth.Contract(jsonInterface = internetAccess.abi, address = internetAccess.address)
+        //myContract.events.Incoming({fromBlock: 537025, toBlock: 'latest'
+        myContract.events.allEvents({
+                fromBlock: 'latest',
+            }, (error, event) => {
+                console.log(">>> " + JSON.stringify(event))
+        })
+        .on('data', (log) => {
+            //logData = log.returnValues;
+            console.log(log);
+        })
+        .on('changed', (log) => {
+          console.log(`Changed: ${log}`)
+        })
+        .on('error', (log) => {
+            console.log(`error:  ${log}`)
+        })
+        /*
+        // Start event monitoring
+        let startEventLogging = 'screen  -S events' + randomInt + ' -L -dm node eventListener.js --network ' + network + ' --address ' + internetAccessAddress[0];
+        const {
+            stdout1,
+            stderr1
+        } = await exec(startEventLogging, eventOptions);
+        await stdout1.on('data', function(data) {
+            console.log('EventLogger: '+data);
+        });
+        */
 
         // Client allowance to simpleinternet access
         const price = await internetAccess.pricePerMB.call();
