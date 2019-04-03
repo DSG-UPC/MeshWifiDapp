@@ -44,7 +44,9 @@ contract SimpleInternetAccess is Ownable, usingOracle{
     bool public oracleResult = false;
     DAOInterface public DAOContract;
     address public erc20Address;
+    address public reserveAccount;
     EIP20Interface internal tokenContract;
+    bool public concluded;
     event LogContractCreated(address provider, uint maxData, uint pricePerMB, bytes32 pubKey, address erc20);
     event LogClientAccepted(address client, bytes32 pubkey);
     event LogActivation(string ticket, string providerIP, uint activationTime);
@@ -79,6 +81,8 @@ contract SimpleInternetAccess is Ownable, usingOracle{
         DAOContract =  DAOInterface(_DAOAddress);
         //client.monitor = _clientMonitor;
         pricePerMB = DAOContract.getPricePerMB();
+        reserveAccount = DAOContract.getReserveAccount();
+        concluded = false;
         emit LogContractCreated(client.wallet, maxData, pricePerMB, client.pubKey, erc20Address);
 
     }
@@ -164,15 +168,16 @@ contract SimpleInternetAccess is Ownable, usingOracle{
                 // Therefore it is easier to transfer first to this contract
                 bool success = tokenContract.transferFrom(
                                 client.wallet,
-                                address(this),
+                                reserveAccount,
                                 totalAmount-contractBalance);
                 if (!success){
                   return false;
                 }
               }
               // Tokens not used are send back to the client
-              tokenContract.transfer(provider.wallet,totalAmount);
+              tokenContract.transfer(reserveAccount,totalAmount);
               tokenContract.transfer(client.wallet,contractBalance-totalAmount);
+              concluded = true;
               emit LogRenegotiate(0);
             } else {
                 uint debt = 0;
@@ -189,14 +194,16 @@ contract SimpleInternetAccess is Ownable, usingOracle{
                     debt = totalAmount - clientBalance;
                     tokens = clientBalance;
                 }
-                tokenContract.transferFrom(client.wallet, provider.wallet, tokens);
+                tokenContract.transferFrom(client.wallet, reserveAccount, tokens);
                 clientDebt = debt;
+                concluded = true;
                 emit LogRenegotiate(debt);
             }
             selfdestruct(client.wallet);
         } else{
           //maxData is not reached
           uint remaining = maxData - monitoredUsage;
+
           emit LogRemainingData(remaining);
           return true;
         }

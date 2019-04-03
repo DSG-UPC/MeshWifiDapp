@@ -104,6 +104,7 @@ contract("1st MyERC721 test", async function (accounts) {
   });
 
   it("mint a new ROUTER and store it in routers CRUD struct", async function () {
+    // @TODO Update accounts setup
     let ReserveAccount, ClientAccount, ProviderAccount
     if (network == 'staging'){
       ReserveAccount = accounts[0];
