@@ -41,6 +41,7 @@ contract SimpleInternetAccess is Ownable, usingOracle{
     uint activationTime;
     uint public monitoredUsage;
     bool public accepted = false;
+    bool public oracleResult = false;
     DAOInterface public DAOContract;
     address public erc20Address;
     EIP20Interface internal tokenContract;
@@ -100,6 +101,18 @@ contract SimpleInternetAccess is Ownable, usingOracle{
         emit LogActivation(newTicket, provider.ip, activationTime);
     }
 
+    function getClientDebt() public view returns (uint debt){
+      return clientDebt;
+    }
+
+    function getClientWallet() public view returns (address addr){
+      return client.wallet;
+    }
+
+    function getOracleResult() public view returns (bool result){
+      return oracleResult;
+    }
+
     function checkUsage() public {
         //The provider or the client can initiate the process to check the usage.
         //An oracle is being used to retrieve the values from the monitoring
@@ -109,22 +122,21 @@ contract SimpleInternetAccess is Ownable, usingOracle{
 
         require(msg.sender == provider.wallet || msg.sender == client.wallet,
                   "The message sender is neither the client nor the provider");
-
-        //queryOracle('client',"http://localhost/monitor/client:4000");
-        //queryOracle('monitor', msg.sender, client.monitor);
+        
         queryOracle('monitor', msg.sender, provider.ip);
     }
 
     function __oracleCallback(uint _response, address _originator) onlyFromOracle external {
         // Callback to recieve the monitoring values and trigger usageResult()
+        
         monitoredUsage = _response;
         if (_originator == client.wallet){
             client.monitoredUsage = _response;
-            usageResult();
+            oracleResult = usageResult();
         }
         if (_originator == provider.wallet){
             provider.monitoredUsage = _response;
-            usageResult();
+            oracleResult = usageResult();
         }
     }
 
@@ -169,7 +181,7 @@ contract SimpleInternetAccess is Ownable, usingOracle{
                 // In order to avoid exceptions we need to make the following
                 //separation:
                 if (clientBalance >= clientAllowance){
-                    // Balance mor than allowance so tranfer all allow
+                    // Balance more than allowance so tranfer all allow
                     debt = totalAmount-clientAllowance;
                     tokens = clientAllowance;
                 }

@@ -8,9 +8,6 @@ const OracleDispatch = artifacts.require('OracleDispatch');
 const Forwarding = artifacts.require("Forwarding");
 const DAO = artifacts.require("DAO");
 const EthCrypto = require('eth-crypto');
-
-const MongoHandler = require('../database/src/MongoHandler');
-const moment = require('moment')
 const minimist = require('minimist'),
     argv = minimist(process.argv.slice(2), {
         string: ['network']
@@ -34,8 +31,7 @@ const randomInt = getRandomInt(10000)
 
 const stopOracle = 'screen -X -S oracle' + randomInt + ' quit';
 let options = {
-    //'cwd': parentDir+'/ethereum/'
-    'cwd': parentDir + '/oracle/' //+'/ethereum/'
+    'cwd': parentDir + '/oracle/'
 };
 
 async function wait(ms, text) {
@@ -85,14 +81,7 @@ contract("1st test", async function (accounts) {
         }
         console.log(stdout);
         await wait(1000, 'Started Oracle');
-        //db.removeAllData();
     });
-
-    /*
-    beforeEach('setup variables', async () => {
-      let a = 1;
-    });
-    */
 
     after('Clear Environment', async function () {
         // Stop Oracle server
@@ -110,7 +99,9 @@ contract("1st test", async function (accounts) {
 
     it("mint a new device and store it in routers CRUD struct", async function () {
 
-        await wait(6000, 'Starting the minting process');
+        afterTime = new Date();
+
+        await wait(50000, 'Starting the minting process');
 
         let AdminAccount, ReserveAccount, ClientAccount, ProviderAccount
         async function printBalances(eip20, forwarding, iaccess) {
@@ -170,7 +161,10 @@ contract("1st test", async function (accounts) {
         const clientsAddr = await cfact.getClients.call();
         const clients = await Crud.at(clientsAddr);
         let exists = await clients.exists.call(ClientIP);
+
+        beforeTime = new Date();
         time = process.hrtime();
+
         if (!exists) {
             const erc721 = await MyERC721.deployed();
             console.log('Erc721 ' + erc721.address);
@@ -179,7 +173,7 @@ contract("1st test", async function (accounts) {
                 gas: web3.utils.numberToHex(5876844)
             });
             console.log('Waiting for mint...');
-            await wait(3000, '');
+            await wait(1000, '');
             exists = await clients.exists.call(ClientIP);
             let clientsEntry = await clients.getByIP.call(ClientIP);
             //console.log(clientsEntry);
@@ -190,6 +184,9 @@ contract("1st test", async function (accounts) {
         }
 
         diff = process.hrtime(time);
+        afterTime = new Date();
+
+        console.log(`\n\nMinting client started at ${dateFormat(beforeTime)} and finished at ${dateFormat(afterTime)}\n\n`)
 
         let gasUsed = receipt.receipt.gasUsed;
         console.log(`GasUsed for minting : ${gasUsed}`);
@@ -197,18 +194,15 @@ contract("1st test", async function (accounts) {
         let gasPrice = tx.gasPrice;
         console.log(`GasPrice: ${gasPrice}`);
 
-        minting_time = (diff[0] * NS_PER_SEC + diff[1]) * MS_PER_NS
-
-        console.log(`\n\nBenchmark for Minting took ${minting_time} milliseconds\n\n`);
-        await wait(6000, 'Starting Internet contract creation between client and provider')
+        console.log(`\n\nBenchmark for Minting took ${getTime(diff)} milliseconds\n\n`);
+        await wait(50000, 'Starting Internet contract creation between client and provider')
 
 
 
-
-        // Client create identity
 
         // Client deploy Internet contract
-        time = process.hrtime();
+        beforeTime = new Date()
+        time = process.hrtime(diff);
 
 
         const internetAccessFactory = await SimpleInternetAccessFactory.deployed();
@@ -256,41 +250,51 @@ contract("1st test", async function (accounts) {
         })
         console.log('Provider Accepted contract');
 
+        await eip20.balanceOf(internetAccess.address).then(result => {
+            console.log(`Internet access contract balance: ${result.toNumber()}`);
+        })
+
         //provider launch monitoring
         await internetAccess.checkUsage({
             from: ProviderAccount
-        })
+        });
+
+        await wait(1000, "Waiting for the usage checking");
 
         diff = process.hrtime(time);
+        afterTime = new Date()
+
 
         console.log('Provider checking usage');
 
         await eip20.balanceOf(ClientAccount).then(result => {
             assert(result.toNumber(), 512);
-        })
+        });
+
+        await eip20.balanceOf(ProviderAccount).then(result => {
+            console.log(result.toNumber());
+        });
 
         await eip20.balanceOf(internetAccess.address).then(result => {
             assert(result.toNumber(), 512);
         });
 
-        // assert(clientAfter < clientBefore, 'Wrong token amount in user wallet')
-        // assert(providerAfter > providerBefore, 'Wrong token amount in provider wallet')
-        /*await internetAccess.acceptContract();*/
+        // internet_contract_time = (diff[0] * NS_PER_SEC + diff[1]) * MS_PER_NS
 
-        internet_contract_time = (diff[0] * NS_PER_SEC + diff[1]) * MS_PER_NS
-
-        console.log(`\n\nBenchmark for Internet Contract acceptance took ${internet_contract_time} milliseconds\n\n`);
+        console.log(`\n\nInternet Access process started at ${dateFormat(beforeTime)} and finished at ${dateFormat(afterTime)}\n\n`)
+        console.log(`\n\nBenchmark for Internet Contract acceptance took ${getTime(diff)} milliseconds\n\n`);
 
 
 
 
 
 
-        await wait(6000, 'Starting Forwarding process');
+        await wait(50000, 'Starting Forwarding process');
 
         ////// FORWARDING //////
 
-        time = process.hrtime();
+        beforeTime = await new Date()
+        // time = process.hrtime(diff);
 
         // Once the client has accepted the contract we can continue with the Forwarding process.
 
@@ -362,11 +366,12 @@ contract("1st test", async function (accounts) {
             funds_first = funds_second = funds_after;
         });
 
-        diff = process.hrtime(time);
+        // diff = process.hrtime(time);
+        afterTime = await new Date()
 
-        forwarding_contract_time = (diff[0] * NS_PER_SEC + diff[1]) * MS_PER_NS
+        console.log(`\n\nFirst Forwarding iteration started at ${dateFormat(beforeTime)} and finished at ${dateFormat(afterTime)}\n\n`)
 
-        console.log(`\n\nBenchmark for Forwarding took ${forwarding_contract_time} milliseconds\n\n`);
+        console.log(`\n\nBenchmark for Forwarding took ${afterTime.getTime() - beforeTime.getTime()} milliseconds\n\n`);
 
 
 
@@ -499,8 +504,16 @@ contract("1st test", async function (accounts) {
             funds_third = funds_after;
         });
 
-        await wait(6000, 'Full process is finished')
+        await wait(50000, 'Full process is finished')
 
     });
 
 });
+
+function getTime(time) {
+    return (time[0] * NS_PER_SEC + time[1]) * MS_PER_NS
+}
+
+function dateFormat(date) {
+    return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}:${date.getMilliseconds()}`
+}
