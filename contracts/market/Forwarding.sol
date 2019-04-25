@@ -3,8 +3,6 @@ pragma solidity ^0.4.25;
 import "contracts/DAO.sol";
 import "contracts/tokens/EIP20Interface.sol";
 import "contracts/helpers/CRUD.sol";
-// We need to import OracleAPI to be able to communicate
-// with the oracle
 import "contracts/oracle/OracleAPI.sol";
 
 contract Forwarding is usingOracle{
@@ -61,7 +59,6 @@ contract Forwarding is usingOracle{
     function startPayment() public {
         require(num_providers > 0, "No providers requested money");
         uint reserve_funds = token.balanceOf(reserve_account);
-        // int balance = reserve_funds - total_owed_iteration;
         address current_provider;
         if (int(reserve_funds - total_owed_iteration) >= 0) {
             while(num_providers > 0){

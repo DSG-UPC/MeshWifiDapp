@@ -54,6 +54,10 @@ contract SimpleInternetAccess is Ownable, usingOracle{
     event LogRemainingData(uint remainingData);
     event LogEntry();
 
+    /*
+    * The provider creates a contract with the proposed maximum amount of data and price,
+    * the IP address of his monitoring service as well as the client address.
+    */
     constructor(address _client, string _providerIP, uint _maxData,
                 address creator, address _DAOAddress, address _erc20Address,
                 bytes32 _pubKey)
@@ -67,29 +71,21 @@ contract SimpleInternetAccess is Ownable, usingOracle{
        * @param _pubKey The user's pubkey
        * TODO maybe only owner can register users? What about the URI generation?
        */
-        // Constructor
-        //The provider creates a contract with the proposed maximum amount of data and price,
-        //the IP address of his monitoring service as well as the client address.
         erc20Address = _erc20Address;
         tokenContract = EIP20Interface(_erc20Address);
         provider.wallet = _client;
         provider.ip = _providerIP;
         maxData = _maxData;
-        //provider.monitor = _providerMonitor;
         client.wallet = creator;
         client.pubKey = _pubKey;
         DAOContract =  DAOInterface(_DAOAddress);
-        //client.monitor = _clientMonitor;
         pricePerMB = DAOContract.getPricePerMB();
         reserveAccount = DAOContract.getReserveAccount();
         concluded = false;
         emit LogContractCreated(client.wallet, maxData, pricePerMB, client.pubKey, erc20Address);
-
     }
 
-    function acceptContract(string newTicket)
-      public
-    {
+    function acceptContract(string newTicket) public {
         //After the contract is accepted by the client the provider store a ticket
         //in the contract encrypted with the public key of the client
         //The activation time is stored.

@@ -10,7 +10,7 @@ contract OracleTest is usingOracle {
   bytes32 public id;
   string public entryId;
   bool _exists;
-  string _originator_;
+  address _originator_;
   string _mint;
   string _register;
   string _deviceExists;
@@ -48,7 +48,7 @@ contract OracleTest is usingOracle {
     return _traffic;
   }
 
-  function __oracleCallback(uint256 _response, string _originator) onlyFromOracle public {
+  function __oracleCallback(uint256 _response, address _originator) onlyFromOracle public {
     _traffic = _response;
     _originator_ = _originator;
   }
