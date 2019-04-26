@@ -9,7 +9,7 @@ class MonitorHandler extends OracleHandler {
         super()
         this.account = _account
         this.ip = config.prometheus
-        this.monitorServer = `http://${this.ip}/api/v1/`
+        this.monitorServer = `${this.ip}/api/v1/`
         this.stepTime = '1m'
         this.step = `step=${this.stepTime}`
         this.state = 'total'
@@ -17,7 +17,7 @@ class MonitorHandler extends OracleHandler {
 
     handle(_id, _recipient, _originator, _data, callback) {
         let _this = this
-        this.monitor_fake(_data, (_traffic) => {
+        this.monitor(_data, (_traffic) => {
             _this.getTransaction(_recipient, _traffic, _originator, callback)
         })
     }
@@ -106,7 +106,7 @@ class MonitorHandler extends OracleHandler {
     }
 
     lastMinute() {
-        return this.unixTimestamp(moment().utc().subtract(1, 'minutes').format('YYYY-MM-DD HH:mm:ss'));
+        return this.unixTimestamp(moment().utc().subtract(3, 'minutes').format('YYYY-MM-DD HH:mm:ss'));
     }
 
     getTraffic(json) {

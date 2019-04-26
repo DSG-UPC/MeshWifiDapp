@@ -1,0 +1,811 @@
+/home/sergio/workspace/Ammbr/MeshWifiDappOracle/contract.js:18
+  const network_id = truffle.networks[_network].network_id;
+                                                ^
+
+TypeError: Cannot read property 'network_id' of undefined
+    at _loadContractAddress (/home/sergio/workspace/Ammbr/MeshWifiDappOracle/contract.js:18:49)
+    at new Contract (/home/sergio/workspace/Ammbr/MeshWifiDappOracle/contract.js:10:20)
+    at Object.<anonymous> (/home/sergio/workspace/Ammbr/MeshWifiDappOracle/oracle/oracle.js:27:24)
+    at Module._compile (internal/modules/cjs/loader.js:707:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:718:10)
+    at Module.load (internal/modules/cjs/loader.js:605:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:544:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:536:3)
+    at Function.Module.runMain (internal/modules/cjs/loader.js:760:12)
+    at startup (internal/bootstrap/node.js:303:19)
+    at bootstrapNodeJSCore (internal/bootstrap/node.js:872:3)
+/home/sergio/workspace/Ammbr/MeshWifiDappOracle/contract.js:18
+  const network_id = truffle.networks[_network].network_id;
+                                                ^
+
+TypeError: Cannot read property 'network_id' of undefined
+    at _loadContractAddress (/home/sergio/workspace/Ammbr/MeshWifiDappOracle/contract.js:18:49)
+    at new Contract (/home/sergio/workspace/Ammbr/MeshWifiDappOracle/contract.js:10:20)
+    at Object.<anonymous> (/home/sergio/workspace/Ammbr/MeshWifiDappOracle/oracle/oracle.js:27:24)
+    at Module._compile (internal/modules/cjs/loader.js:707:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:718:10)
+    at Module.load (internal/modules/cjs/loader.js:605:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:544:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:536:3)
+    at Function.Module.runMain (internal/modules/cjs/loader.js:760:12)
+    at startup (internal/bootstrap/node.js:303:19)
+    at bootstrapNodeJSCore (internal/bootstrap/node.js:872:3)
+WebsocketProvider {
+  responseCallbacks: {},
+  notificationCallbacks:
+   [ [36m[Function: requestManagerNotification][39m,
+     [36m[Function: requestManagerNotification][39m,
+     [36m[Function: requestManagerNotification][39m,
+     [36m[Function: requestManagerNotification][39m,
+     [36m[Function: requestManagerNotification][39m,
+     [36m[Function: requestManagerNotification][39m,
+     [36m[Function: requestManagerNotification][39m,
+     [36m[Function: requestManagerNotification][39m,
+     [36m[Function: requestManagerNotification][39m ],
+  connection:
+   W3CWebSocket {
+     _listeners: {},
+     addEventListener: [36m[Function: _addEventListener][39m,
+     removeEventListener: [36m[Function: _removeEventListener][39m,
+     dispatchEvent: [36m[Function: _dispatchEvent][39m,
+     _url: [32m'ws://localhost:8545'[39m,
+     _readyState: [33m1[39m,
+     _protocol: [90mundefined[39m,
+     _extensions: [],
+     _bufferedAmount: [33m0[39m,
+     _binaryType: [32m'arraybuffer'[39m,
+     _connection:
+      WebSocketConnection {
+        _debug:
+         { [Function: debug]
+           namespace: [32m'websocket:connection'[39m,
+           enabled: [33mfalse[39m,
+           useColors: [33mtrue[39m,
+           color: [33m2[39m,
+           inspectOpts: {},
+           printOutput: [36m[Function][39m },
+        _events:
+         [Object: null prototype] {
+           newListener: [36m[Function][39m,
+           removeListener: [36m[Function][39m,
+           close: [36m[Function][39m,
+           message: [36m[Function][39m },
+        _eventsCount: [33m4[39m,
+        _maxListeners: [90mundefined[39m,
+        _pingListenerCount: [33m0[39m,
+        config:
+         { maxReceivedFrameSize: [33m1048576[39m,
+           maxReceivedMessageSize: [33m8388608[39m,
+           fragmentOutgoingMessages: [33mtrue[39m,
+           fragmentationThreshold: [33m16384[39m,
+           webSocketVersion: [33m13[39m,
+           assembleFragments: [33mtrue[39m,
+           disableNagleAlgorithm: [33mtrue[39m,
+           closeTimeout: [33m5000[39m,
+           tlsOptions: {} },
+        socket:
+         Socket {
+           connecting: [33mfalse[39m,
+           _hadError: [33mfalse[39m,
+           _handle:
+            TCP {
+              reading: [33mtrue[39m,
+              onread: [36m[Function: onStreamRead][39m,
+              onconnection: [1mnull[22m,
+              [[32mSymbol(owner)[39m]: [36m[Circular][39m },
+           _parent: [1mnull[22m,
+           _host: [32m'localhost'[39m,
+           _readableState:
+            ReadableState {
+              objectMode: [33mfalse[39m,
+              highWaterMark: [33m16384[39m,
+              buffer: BufferList { head: [1mnull[22m, tail: [1mnull[22m, length: [33m0[39m },
+              length: [33m0[39m,
+              pipes: [1mnull[22m,
+              pipesCount: [33m0[39m,
+              flowing: [33mtrue[39m,
+              ended: [33mfalse[39m,
+              endEmitted: [33mfalse[39m,
+              reading: [33mtrue[39m,
+              sync: [33mfalse[39m,
+              needReadable: [33mtrue[39m,
+              emittedReadable: [33mfalse[39m,
+              readableListening: [33mfalse[39m,
+              resumeScheduled: [33mfalse[39m,
+              emitClose: [33mfalse[39m,
+              destroyed: [33mfalse[39m,
+              defaultEncoding: [32m'utf8'[39m,
+              awaitDrain: [33m0[39m,
+              readingMore: [33mfalse[39m,
+              decoder: [1mnull[22m,
+              encoding: [1mnull[22m },
+           readable: [33mtrue[39m,
+           _events:
+            [Object: null prototype] {
+              end: [ [36m[Function: onReadableStreamEnd][39m, [36m[Function: bound ][39m ],
+              error: [36m[Function: bound ][39m,
+              close: [36m[Function: bound ][39m,
+              drain: [36m[Function: bound ][39m,
+              pause: [36m[Function: bound ][39m,
+              resume: [36m[Function: bound ][39m,
+              data: [36m[Function: bound ][39m },
+           _eventsCount: [33m7[39m,
+           _maxListeners: [90mundefined[39m,
+           _writableState:
+            WritableState {
+              objectMode: [33mfalse[39m,
+              highWaterMark: [33m16384[39m,
+              finalCalled: [33mfalse[39m,
+              needDrain: [33mfalse[39m,
+              ending: [33mfalse[39m,
+              ended: [33mfalse[39m,
+              finished: [33mfalse[39m,
+              destroyed: [33mfalse[39m,
+              decodeStrings: [33mfalse[39m,
+              defaultEncoding: [32m'utf8'[39m,
+              length: [33m0[39m,
+              writing: [33mfalse[39m,
+              corked: [33m0[39m,
+              sync: [33mfalse[39m,
+              bufferProcessing: [33mfalse[39m,
+              onwrite: [36m[Function: bound onwrite][39m,
+              writecb: [1mnull[22m,
+              writelen: [33m0[39m,
+              bufferedRequest: [1mnull[22m,
+              lastBufferedRequest: [1mnull[22m,
+              pendingcb: [33m0[39m,
+              prefinished: [33mfalse[39m,
+              errorEmitted: [33mfalse[39m,
+              emitClose: [33mfalse[39m,
+              bufferedRequestCount: [33m0[39m,
+              corkedRequestsFree:
+               { next: [1mnull[22m,
+                 entry: [1mnull[22m,
+                 finish: [36m[Function: bound onCorkedFinish][39m } },
+           writable: [33mtrue[39m,
+           allowHalfOpen: [33mfalse[39m,
+           _sockname: [1mnull[22m,
+           _pendingData: [1mnull[22m,
+           _pendingEncoding: [32m''[39m,
+           server: [1mnull[22m,
+           _server: [1mnull[22m,
+           parser: [1mnull[22m,
+           _httpMessage: [1mnull[22m,
+           _peername: { address: [32m'127.0.0.1'[39m, family: [32m'IPv4'[39m, port: [33m8545[39m },
+           timeout: [33m0[39m,
+           [[32mSymbol(asyncId)[39m]: [33m6[39m,
+           [[32mSymbol(lastWriteQueueSize)[39m]: [33m0[39m,
+           [[32mSymbol(timeout)[39m]: [1mnull[22m,
+           [[32mSymbol(kBytesRead)[39m]: [33m0[39m,
+           [[32mSymbol(kBytesWritten)[39m]: [33m0[39m },
+        protocol: [90mundefined[39m,
+        extensions: [],
+        remoteAddress: [32m'127.0.0.1'[39m,
+        closeReasonCode: [33m-1[39m,
+        closeDescription: [1mnull[22m,
+        closeEventEmitted: [33mfalse[39m,
+        maskOutgoingPackets: [33mtrue[39m,
+        maskBytes: <Buffer 1e 2d 51 00>,
+        frameHeader: <Buffer 81 7e 01 e5 00 00 00 00 00 00>,
+        bufferList:
+         BufferList {
+           _events: [Object: null prototype] {},
+           _eventsCount: [33m0[39m,
+           _maxListeners: [90mundefined[39m,
+           encoding: [90mundefined[39m,
+           construct:
+            { [Function: Buffer]
+              poolSize: [33m8192[39m,
+              from: [36m[Function: from][39m,
+              of: [36m[Function: of][39m,
+              alloc: [36m[Function: alloc][39m,
+              allocUnsafe: [36m[Function: allocUnsafe][39m,
+              allocUnsafeSlow: [36m[Function: allocUnsafeSlow][39m,
+              isBuffer: [36m[Function: isBuffer][39m,
+              compare: [36m[Function: compare][39m,
+              isEncoding: [36m[Function: isEncoding][39m,
+              concat: [36m[Function: concat][39m,
+              byteLength: [36m[Function: byteLength][39m,
+              [[32mSymbol(kIsEncodingSymbol)[39m]: [36m[Function: isEncoding][39m },
+           length: [36m[Getter][39m,
+           write: [36m[Function][39m,
+           end: [36m[Function][39m,
+           push: [36m[Function][39m,
+           forEach: [36m[Function][39m,
+           join: [36m[Function][39m,
+           joinInto: [36m[Function][39m,
+           advance: [36m[Function][39m,
+           take: [36m[Function][39m,
+           toString: [36m[Function][39m },
+        currentFrame:
+         WebSocketFrame {
+           maskBytes: <Buffer 1e 2d 51 00>,
+           frameHeader: <Buffer 81 7e 01 e5 00 00 00 00 00 00>,
+           config:
+            { maxReceivedFrameSize: [33m1048576[39m,
+              maxReceivedMessageSize: [33m8388608[39m,
+              fragmentOutgoingMessages: [33mtrue[39m,
+              fragmentationThreshold: [33m16384[39m,
+              webSocketVersion: [33m13[39m,
+              assembleFragments: [33mtrue[39m,
+              disableNagleAlgorithm: [33mtrue[39m,
+              closeTimeout: [33m5000[39m,
+              tlsOptions: {} },
+           maxReceivedFrameSize: [33m1048576[39m,
+           protocolError: [33mfalse[39m,
+           frameTooLarge: [33mfalse[39m,
+           invalidCloseFrameLength: [33mfalse[39m,
+           parseState: [33m1[39m,
+           closeStatus: [33m-1[39m },
+        fragmentationSize: [33m0[39m,
+        frameQueue: [],
+        connected: [33mtrue[39m,
+        state: [32m'open'[39m,
+        waitingForCloseResponse: [33mfalse[39m,
+        receivedEnd: [33mfalse[39m,
+        closeTimeout: [33m5000[39m,
+        assembleFragments: [33mtrue[39m,
+        maxReceivedMessageSize: [33m8388608[39m,
+        outputBufferFull: [33mfalse[39m,
+        inputPaused: [33mfalse[39m,
+        receivedDataHandler: [36m[Function: bound ][39m,
+        _closeTimerHandler: [36m[Function: bound ][39m,
+        webSocketVersion: [33m13[39m },
+     _client:
+      WebSocketClient {
+        _events:
+         [Object: null prototype] { connect: [36m[Function][39m, connectFailed: [36m[Function][39m },
+        _eventsCount: [33m2[39m,
+        _maxListeners: [90mundefined[39m,
+        config:
+         { maxReceivedFrameSize: [33m1048576[39m,
+           maxReceivedMessageSize: [33m8388608[39m,
+           fragmentOutgoingMessages: [33mtrue[39m,
+           fragmentationThreshold: [33m16384[39m,
+           webSocketVersion: [33m13[39m,
+           assembleFragments: [33mtrue[39m,
+           disableNagleAlgorithm: [33mtrue[39m,
+           closeTimeout: [33m5000[39m,
+           tlsOptions: {} },
+        _req: [1mnull[22m,
+        protocols: [],
+        origin: [90mundefined[39m,
+        url:
+         Url {
+           protocol: [32m'ws:'[39m,
+           slashes: [33mtrue[39m,
+           auth: [1mnull[22m,
+           host: [32m'localhost:8545'[39m,
+           port: [32m'8545'[39m,
+           hostname: [32m'localhost'[39m,
+           hash: [1mnull[22m,
+           search: [1mnull[22m,
+           query: [1mnull[22m,
+           pathname: [1mnull[22m,
+           path: [1mnull[22m,
+           href: [32m'ws://localhost:8545'[39m },
+        secure: [33mfalse[39m,
+        base64nonce: [32m'rX5cKsU7l3wTdYFtsWA42g=='[39m,
+        socket:
+         Socket {
+           connecting: [33mfalse[39m,
+           _hadError: [33mfalse[39m,
+           _handle:
+            TCP {
+              reading: [33mtrue[39m,
+              onread: [36m[Function: onStreamRead][39m,
+              onconnection: [1mnull[22m,
+              [[32mSymbol(owner)[39m]: [36m[Circular][39m },
+           _parent: [1mnull[22m,
+           _host: [32m'localhost'[39m,
+           _readableState:
+            ReadableState {
+              objectMode: [33mfalse[39m,
+              highWaterMark: [33m16384[39m,
+              buffer: BufferList { head: [1mnull[22m, tail: [1mnull[22m, length: [33m0[39m },
+              length: [33m0[39m,
+              pipes: [1mnull[22m,
+              pipesCount: [33m0[39m,
+              flowing: [33mtrue[39m,
+              ended: [33mfalse[39m,
+              endEmitted: [33mfalse[39m,
+              reading: [33mtrue[39m,
+              sync: [33mfalse[39m,
+              needReadable: [33mtrue[39m,
+              emittedReadable: [33mfalse[39m,
+              readableListening: [33mfalse[39m,
+              resumeScheduled: [33mfalse[39m,
+              emitClose: [33mfalse[39m,
+              destroyed: [33mfalse[39m,
+              defaultEncoding: [32m'utf8'[39m,
+              awaitDrain: [33m0[39m,
+              readingMore: [33mfalse[39m,
+              decoder: [1mnull[22m,
+              encoding: [1mnull[22m },
+           readable: [33mtrue[39m,
+           _events:
+            [Object: null prototype] {
+              end: [ [36m[Function: onReadableStreamEnd][39m, [36m[Function: bound ][39m ],
+              error: [36m[Function: bound ][39m,
+              close: [36m[Function: bound ][39m,
+              drain: [36m[Function: bound ][39m,
+              pause: [36m[Function: bound ][39m,
+              resume: [36m[Function: bound ][39m,
+              data: [36m[Function: bound ][39m },
+           _eventsCount: [33m7[39m,
+           _maxListeners: [90mundefined[39m,
+           _writableState:
+            WritableState {
+              objectMode: [33mfalse[39m,
+              highWaterMark: [33m16384[39m,
+              finalCalled: [33mfalse[39m,
+              needDrain: [33mfalse[39m,
+              ending: [33mfalse[39m,
+              ended: [33mfalse[39m,
+              finished: [33mfalse[39m,
+              destroyed: [33mfalse[39m,
+              decodeStrings: [33mfalse[39m,
+              defaultEncoding: [32m'utf8'[39m,
+              length: [33m0[39m,
+              writing: [33mfalse[39m,
+              corked: [33m0[39m,
+              sync: [33mfalse[39m,
+              bufferProcessing: [33mfalse[39m,
+              onwrite: [36m[Function: bound onwrite][39m,
+              writecb: [1mnull[22m,
+              writelen: [33m0[39m,
+              bufferedRequest: [1mnull[22m,
+              lastBufferedRequest: [1mnull[22m,
+              pendingcb: [33m0[39m,
+              prefinished: [33mfalse[39m,
+              errorEmitted: [33mfalse[39m,
+              emitClose: [33mfalse[39m,
+              bufferedRequestCount: [33m0[39m,
+              corkedRequestsFree:
+               { next: [1mnull[22m,
+                 entry: [1mnull[22m,
+                 finish: [36m[Function: bound onCorkedFinish][39m } },
+           writable: [33mtrue[39m,
+           allowHalfOpen: [33mfalse[39m,
+           _sockname: [1mnull[22m,
+           _pendingData: [1mnull[22m,
+           _pendingEncoding: [32m''[39m,
+           server: [1mnull[22m,
+           _server: [1mnull[22m,
+           parser: [1mnull[22m,
+           _httpMessage: [1mnull[22m,
+           _peername: { address: [32m'127.0.0.1'[39m, family: [32m'IPv4'[39m, port: [33m8545[39m },
+           timeout: [33m0[39m,
+           [[32mSymbol(asyncId)[39m]: [33m6[39m,
+           [[32mSymbol(lastWriteQueueSize)[39m]: [33m0[39m,
+           [[32mSymbol(timeout)[39m]: [1mnull[22m,
+           [[32mSymbol(kBytesRead)[39m]: [33m0[39m,
+           [[32mSymbol(kBytesWritten)[39m]: [33m0[39m },
+        response:
+         IncomingMessage {
+           _readableState:
+            ReadableState {
+              objectMode: [33mfalse[39m,
+              highWaterMark: [33m16384[39m,
+              buffer: BufferList { head: [1mnull[22m, tail: [1mnull[22m, length: [33m0[39m },
+              length: [33m0[39m,
+              pipes: [1mnull[22m,
+              pipesCount: [33m0[39m,
+              flowing: [1mnull[22m,
+              ended: [33mtrue[39m,
+              endEmitted: [33mfalse[39m,
+              reading: [33mfalse[39m,
+              sync: [33mtrue[39m,
+              needReadable: [33mfalse[39m,
+              emittedReadable: [33mtrue[39m,
+              readableListening: [33mfalse[39m,
+              resumeScheduled: [33mfalse[39m,
+              emitClose: [33mtrue[39m,
+              destroyed: [33mfalse[39m,
+              defaultEncoding: [32m'utf8'[39m,
+              awaitDrain: [33m0[39m,
+              readingMore: [33mtrue[39m,
+              decoder: [1mnull[22m,
+              encoding: [1mnull[22m },
+           readable: [33mtrue[39m,
+           _events: [Object: null prototype] {},
+           _eventsCount: [33m0[39m,
+           _maxListeners: [90mundefined[39m,
+           socket:
+            Socket {
+              connecting: [33mfalse[39m,
+              _hadError: [33mfalse[39m,
+              _handle:
+               TCP {
+                 reading: [33mtrue[39m,
+                 onread: [36m[Function: onStreamRead][39m,
+                 onconnection: [1mnull[22m,
+                 [[32mSymbol(owner)[39m]: [36m[Circular][39m },
+              _parent: [1mnull[22m,
+              _host: [32m'localhost'[39m,
+              _readableState:
+               ReadableState {
+                 objectMode: [33mfalse[39m,
+                 highWaterMark: [33m16384[39m,
+                 buffer: BufferList { head: [1mnull[22m, tail: [1mnull[22m, length: [33m0[39m },
+                 length: [33m0[39m,
+                 pipes: [1mnull[22m,
+                 pipesCount: [33m0[39m,
+                 flowing: [33mtrue[39m,
+                 ended: [33mfalse[39m,
+                 endEmitted: [33mfalse[39m,
+                 reading: [33mtrue[39m,
+                 sync: [33mfalse[39m,
+                 needReadable: [33mtrue[39m,
+                 emittedReadable: [33mfalse[39m,
+                 readableListening: [33mfalse[39m,
+                 resumeScheduled: [33mfalse[39m,
+                 emitClose: [33mfalse[39m,
+                 destroyed: [33mfalse[39m,
+                 defaultEncoding: [32m'utf8'[39m,
+                 awaitDrain: [33m0[39m,
+                 readingMore: [33mfalse[39m,
+                 decoder: [1mnull[22m,
+                 encoding: [1mnull[22m },
+              readable: [33mtrue[39m,
+              _events:
+               [Object: null prototype] {
+                 end: [ [36m[Function: onReadableStreamEnd][39m, [36m[Function: bound ][39m ],
+                 error: [36m[Function: bound ][39m,
+                 close: [36m[Function: bound ][39m,
+                 drain: [36m[Function: bound ][39m,
+                 pause: [36m[Function: bound ][39m,
+                 resume: [36m[Function: bound ][39m,
+                 data: [36m[Function: bound ][39m },
+              _eventsCount: [33m7[39m,
+              _maxListeners: [90mundefined[39m,
+              _writableState:
+               WritableState {
+                 objectMode: [33mfalse[39m,
+                 highWaterMark: [33m16384[39m,
+                 finalCalled: [33mfalse[39m,
+                 needDrain: [33mfalse[39m,
+                 ending: [33mfalse[39m,
+                 ended: [33mfalse[39m,
+                 finished: [33mfalse[39m,
+                 destroyed: [33mfalse[39m,
+                 decodeStrings: [33mfalse[39m,
+                 defaultEncoding: [32m'utf8'[39m,
+                 length: [33m0[39m,
+                 writing: [33mfalse[39m,
+                 corked: [33m0[39m,
+                 sync: [33mfalse[39m,
+                 bufferProcessing: [33mfalse[39m,
+                 onwrite: [36m[Function: bound onwrite][39m,
+                 writecb: [1mnull[22m,
+                 writelen: [33m0[39m,
+                 bufferedRequest: [1mnull[22m,
+                 lastBufferedRequest: [1mnull[22m,
+                 pendingcb: [33m0[39m,
+                 prefinished: [33mfalse[39m,
+                 errorEmitted: [33mfalse[39m,
+                 emitClose: [33mfalse[39m,
+                 bufferedRequestCount: [33m0[39m,
+                 corkedRequestsFree:
+                  { next: [1mnull[22m,
+                    entry: [1mnull[22m,
+                    finish: [36m[Function: bound onCorkedFinish][39m } },
+              writable: [33mtrue[39m,
+              allowHalfOpen: [33mfalse[39m,
+              _sockname: [1mnull[22m,
+              _pendingData: [1mnull[22m,
+              _pendingEncoding: [32m''[39m,
+              server: [1mnull[22m,
+              _server: [1mnull[22m,
+              parser: [1mnull[22m,
+              _httpMessage: [1mnull[22m,
+              _peername: { address: [32m'127.0.0.1'[39m, family: [32m'IPv4'[39m, port: [33m8545[39m },
+              timeout: [33m0[39m,
+              [[32mSymbol(asyncId)[39m]: [33m6[39m,
+              [[32mSymbol(lastWriteQueueSize)[39m]: [33m0[39m,
+              [[32mSymbol(timeout)[39m]: [1mnull[22m,
+              [[32mSymbol(kBytesRead)[39m]: [33m0[39m,
+              [[32mSymbol(kBytesWritten)[39m]: [33m0[39m },
+           connection:
+            Socket {
+              connecting: [33mfalse[39m,
+              _hadError: [33mfalse[39m,
+              _handle:
+               TCP {
+                 reading: [33mtrue[39m,
+                 onread: [36m[Function: onStreamRead][39m,
+                 onconnection: [1mnull[22m,
+                 [[32mSymbol(owner)[39m]: [36m[Circular][39m },
+              _parent: [1mnull[22m,
+              _host: [32m'localhost'[39m,
+              _readableState:
+               ReadableState {
+                 objectMode: [33mfalse[39m,
+                 highWaterMark: [33m16384[39m,
+                 buffer: BufferList { head: [1mnull[22m, tail: [1mnull[22m, length: [33m0[39m },
+                 length: [33m0[39m,
+                 pipes: [1mnull[22m,
+                 pipesCount: [33m0[39m,
+                 flowing: [33mtrue[39m,
+                 ended: [33mfalse[39m,
+                 endEmitted: [33mfalse[39m,
+                 reading: [33mtrue[39m,
+                 sync: [33mfalse[39m,
+                 needReadable: [33mtrue[39m,
+                 emittedReadable: [33mfalse[39m,
+                 readableListening: [33mfalse[39m,
+                 resumeScheduled: [33mfalse[39m,
+                 emitClose: [33mfalse[39m,
+                 destroyed: [33mfalse[39m,
+                 defaultEncoding: [32m'utf8'[39m,
+                 awaitDrain: [33m0[39m,
+                 readingMore: [33mfalse[39m,
+                 decoder: [1mnull[22m,
+                 encoding: [1mnull[22m },
+              readable: [33mtrue[39m,
+              _events:
+               [Object: null prototype] {
+                 end: [ [36m[Function: onReadableStreamEnd][39m, [36m[Function: bound ][39m ],
+                 error: [36m[Function: bound ][39m,
+                 close: [36m[Function: bound ][39m,
+                 drain: [36m[Function: bound ][39m,
+                 pause: [36m[Function: bound ][39m,
+                 resume: [36m[Function: bound ][39m,
+                 data: [36m[Function: bound ][39m },
+              _eventsCount: [33m7[39m,
+              _maxListeners: [90mundefined[39m,
+              _writableState:
+               WritableState {
+                 objectMode: [33mfalse[39m,
+                 highWaterMark: [33m16384[39m,
+                 finalCalled: [33mfalse[39m,
+                 needDrain: [33mfalse[39m,
+                 ending: [33mfalse[39m,
+                 ended: [33mfalse[39m,
+                 finished: [33mfalse[39m,
+                 destroyed: [33mfalse[39m,
+                 decodeStrings: [33mfalse[39m,
+                 defaultEncoding: [32m'utf8'[39m,
+                 length: [33m0[39m,
+                 writing: [33mfalse[39m,
+                 corked: [33m0[39m,
+                 sync: [33mfalse[39m,
+                 bufferProcessing: [33mfalse[39m,
+                 onwrite: [36m[Function: bound onwrite][39m,
+                 writecb: [1mnull[22m,
+                 writelen: [33m0[39m,
+                 bufferedRequest: [1mnull[22m,
+                 lastBufferedRequest: [1mnull[22m,
+                 pendingcb: [33m0[39m,
+                 prefinished: [33mfalse[39m,
+                 errorEmitted: [33mfalse[39m,
+                 emitClose: [33mfalse[39m,
+                 bufferedRequestCount: [33m0[39m,
+                 corkedRequestsFree:
+                  { next: [1mnull[22m,
+                    entry: [1mnull[22m,
+                    finish: [36m[Function: bound onCorkedFinish][39m } },
+              writable: [33mtrue[39m,
+              allowHalfOpen: [33mfalse[39m,
+              _sockname: [1mnull[22m,
+              _pendingData: [1mnull[22m,
+              _pendingEncoding: [32m''[39m,
+              server: [1mnull[22m,
+              _server: [1mnull[22m,
+              parser: [1mnull[22m,
+              _httpMessage: [1mnull[22m,
+              _peername: { address: [32m'127.0.0.1'[39m, family: [32m'IPv4'[39m, port: [33m8545[39m },
+              timeout: [33m0[39m,
+              [[32mSymbol(asyncId)[39m]: [33m6[39m,
+              [[32mSymbol(lastWriteQueueSize)[39m]: [33m0[39m,
+              [[32mSymbol(timeout)[39m]: [1mnull[22m,
+              [[32mSymbol(kBytesRead)[39m]: [33m0[39m,
+              [[32mSymbol(kBytesWritten)[39m]: [33m0[39m },
+           httpVersionMajor: [33m1[39m,
+           httpVersionMinor: [33m1[39m,
+           httpVersion: [32m'1.1'[39m,
+           complete: [33mtrue[39m,
+           headers:
+            { upgrade: [32m'websocket'[39m,
+              connection: [32m'Upgrade'[39m,
+              [32m'sec-websocket-accept'[39m: [32m'fKdFnKxDfbRV+hje/IexFFHQRAk='[39m },
+           rawHeaders:
+            [ [32m'Upgrade'[39m,
+              [32m'websocket'[39m,
+              [32m'Connection'[39m,
+              [32m'Upgrade'[39m,
+              [32m'Sec-WebSocket-Accept'[39m,
+              [32m'fKdFnKxDfbRV+hje/IexFFHQRAk='[39m ],
+           trailers: {},
+           rawTrailers: [],
+           aborted: [33mfalse[39m,
+           upgrade: [33mtrue[39m,
+           url: [32m''[39m,
+           method: [1mnull[22m,
+           statusCode: [33m101[39m,
+           statusMessage: [32m'Switching Protocols'[39m,
+           client:
+            Socket {
+              connecting: [33mfalse[39m,
+              _hadError: [33mfalse[39m,
+              _handle:
+               TCP {
+                 reading: [33mtrue[39m,
+                 onread: [36m[Function: onStreamRead][39m,
+                 onconnection: [1mnull[22m,
+                 [[32mSymbol(owner)[39m]: [36m[Circular][39m },
+              _parent: [1mnull[22m,
+              _host: [32m'localhost'[39m,
+              _readableState:
+               ReadableState {
+                 objectMode: [33mfalse[39m,
+                 highWaterMark: [33m16384[39m,
+                 buffer: BufferList { head: [1mnull[22m, tail: [1mnull[22m, length: [33m0[39m },
+                 length: [33m0[39m,
+                 pipes: [1mnull[22m,
+                 pipesCount: [33m0[39m,
+                 flowing: [33mtrue[39m,
+                 ended: [33mfalse[39m,
+                 endEmitted: [33mfalse[39m,
+                 reading: [33mtrue[39m,
+                 sync: [33mfalse[39m,
+                 needReadable: [33mtrue[39m,
+                 emittedReadable: [33mfalse[39m,
+                 readableListening: [33mfalse[39m,
+                 resumeScheduled: [33mfalse[39m,
+                 emitClose: [33mfalse[39m,
+                 destroyed: [33mfalse[39m,
+                 defaultEncoding: [32m'utf8'[39m,
+                 awaitDrain: [33m0[39m,
+                 readingMore: [33mfalse[39m,
+                 decoder: [1mnull[22m,
+                 encoding: [1mnull[22m },
+              readable: [33mtrue[39m,
+              _events:
+               [Object: null prototype] {
+                 end: [ [36m[Function: onReadableStreamEnd][39m, [36m[Function: bound ][39m ],
+                 error: [36m[Function: bound ][39m,
+                 close: [36m[Function: bound ][39m,
+                 drain: [36m[Function: bound ][39m,
+                 pause: [36m[Function: bound ][39m,
+                 resume: [36m[Function: bound ][39m,
+                 data: [36m[Function: bound ][39m },
+              _eventsCount: [33m7[39m,
+              _maxListeners: [90mundefined[39m,
+              _writableState:
+               WritableState {
+                 objectMode: [33mfalse[39m,
+                 highWaterMark: [33m16384[39m,
+                 finalCalled: [33mfalse[39m,
+                 needDrain: [33mfalse[39m,
+                 ending: [33mfalse[39m,
+                 ended: [33mfalse[39m,
+                 finished: [33mfalse[39m,
+                 destroyed: [33mfalse[39m,
+                 decodeStrings: [33mfalse[39m,
+                 defaultEncoding: [32m'utf8'[39m,
+                 length: [33m0[39m,
+                 writing: [33mfalse[39m,
+                 corked: [33m0[39m,
+                 sync: [33mfalse[39m,
+                 bufferProcessing: [33mfalse[39m,
+                 onwrite: [36m[Function: bound onwrite][39m,
+                 writecb: [1mnull[22m,
+                 writelen: [33m0[39m,
+                 bufferedRequest: [1mnull[22m,
+                 lastBufferedRequest: [1mnull[22m,
+                 pendingcb: [33m0[39m,
+                 prefinished: [33mfalse[39m,
+                 errorEmitted: [33mfalse[39m,
+                 emitClose: [33mfalse[39m,
+                 bufferedRequestCount: [33m0[39m,
+                 corkedRequestsFree:
+                  { next: [1mnull[22m,
+                    entry: [1mnull[22m,
+                    finish: [36m[Function: bound onCorkedFinish][39m } },
+              writable: [33mtrue[39m,
+              allowHalfOpen: [33mfalse[39m,
+              _sockname: [1mnull[22m,
+              _pendingData: [1mnull[22m,
+              _pendingEncoding: [32m''[39m,
+              server: [1mnull[22m,
+              _server: [1mnull[22m,
+              parser: [1mnull[22m,
+              _httpMessage: [1mnull[22m,
+              _peername: { address: [32m'127.0.0.1'[39m, family: [32m'IPv4'[39m, port: [33m8545[39m },
+              timeout: [33m0[39m,
+              [[32mSymbol(asyncId)[39m]: [33m6[39m,
+              [[32mSymbol(lastWriteQueueSize)[39m]: [33m0[39m,
+              [[32mSymbol(timeout)[39m]: [1mnull[22m,
+              [[32mSymbol(kBytesRead)[39m]: [33m0[39m,
+              [[32mSymbol(kBytesWritten)[39m]: [33m0[39m },
+           _consuming: [33mfalse[39m,
+           _dumped: [33mfalse[39m },
+        firstDataChunk: [1mnull[22m },
+     onerror: [36m[Function][39m,
+     onclose: [36m[Function][39m,
+     onmessage: [36m[Function][39m },
+  lastChunk: [1mnull[22m }
+Working from account  0x28b17326D08992f16D382DB2923d0D8B4ff8AdB0
+contract address: 0xDadF3ae03219177284c870F620e4CBC8a6EDB552
+starting event monitoring on contract: 0x3c669835Ec2e27bE11ee08ceb8f1a29105c3F65F
+(node:28822) DeprecationWarning: collection.ensureIndex is deprecated. Use createIndexes instead.
+1
+>>> [object Object]
+status code: 200
+Traffic (MB): 3000
+3000
+status code: 200
+Owner: 0x28b17326d08992f16d382db2923d0d8b4ff8adb0
+0x28b17326d08992f16d382db2923d0d8b4ff8adb0
+2
+>>> [object Object]
+status code: 200
+Traffic (MB): 2000
+2000
+EVM call result:
+ [object Object]
+status code: 200
+Owner: 0x77bf44c84ab15150baa1ae772836349788a7cf01
+0x77bf44c84ab15150baa1ae772836349788a7cf01
+EVM call result:
+ [object Object]
+event data: {
+  "logIndex": 2,
+  "transactionIndex": 0,
+  "transactionHash": "0xbabad4b29a434813d05ed8e1cde80b64ebde444095dddb22f253e18cdf802292",
+  "blockHash": "0x1a5eb5ebc3c7bd8ffa047cc7e79163e142c9cb20ad2a32881995b1d962b84ba2",
+  "blockNumber": 56,
+  "address": "0x3c669835Ec2e27bE11ee08ceb8f1a29105c3F65F",
+  "type": "mined",
+  "id": "log_8bc4d7bf",
+  "returnValues": {
+    "0": "0xbc80ccbf275b977c3298d8fead8e5c1374945391024a30fd42b655704957af40",
+    "1": "0x4721619dd2AbbBa70E3771F1d41966e95B890DA6",
+    "2": "recalculate_max_price",
+    "3": "0x28b17326D08992f16D382DB2923d0D8B4ff8AdB0",
+    "4": "5000",
+    "5": "1000000",
+    "6": "1",
+    "id": "0xbc80ccbf275b977c3298d8fead8e5c1374945391024a30fd42b655704957af40",
+    "recipient": "0x4721619dd2AbbBa70E3771F1d41966e95B890DA6",
+    "queryType": "recalculate_max_price",
+    "originator": "0x28b17326D08992f16D382DB2923d0D8B4ff8AdB0",
+    "owed": "5000",
+    "funds": "1000000",
+    "pricePerMB": "1"
+  },
+  "event": "_Incoming",
+  "signature": "0x728621a284344db905b6f900cd01f5cf758a0a4b0336a7979ab7943f1d786443",
+  "raw": {
+    "data": "0xbc80ccbf275b977c3298d8fead8e5c1374945391024a30fd42b655704957af400000000000000000000000004721619dd2abbba70e3771f1d41966e95b890da600000000000000000000000000000000000000000000000000000000000000e000000000000000000000000028b17326d08992f16d382db2923d0d8b4ff8adb0000000000000000000000000000000000000000000000000000000000000138800000000000000000000000000000000000000000000000000000000000f424000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000015726563616c63756c6174655f6d61785f7072696365",
+    "topics": [
+      "0x728621a284344db905b6f900cd01f5cf758a0a4b0336a7979ab7943f1d786443"
+    ]
+  }
+}
+Owed: 5000;
+Funds: 1000000;
+PricePerMB: 1;
+
+New price is: 200
+Sending transaction from PriceCalculatorHandler
+>>> [object Object]
+EVM call result:
+ {
+  "transactionHash": "0xb4ed12d1602b43ad1bd33a112b140bcbe801417d3d3a5d1b05891fa55bcf6f00",
+  "transactionIndex": 0,
+  "blockHash": "0x3e436d752920ec1c0c56bea60e0aedb8f1415ce70e1039d5a1f37bf75f141ace",
+  "blockNumber": 57,
+  "from": "0x28b17326d08992f16d382db2923d0d8b4ff8adb0",
+  "to": "0x4721619dd2abbba70e3771f1d41966e95b890da6",
+  "gasUsed": 31799,
+  "cumulativeGasUsed": 31799,
+  "contractAddress": null,
+  "logs": [],
+  "status": "0x1",
+  "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "v": "0x1b",
+  "r": "0xc620b43c604f22a6f1580080009d7a2fe57b0f350106784081d0aa78a133b0bf",
+  "s": "0x2e349eedebf6b708b296b43c12cb70f54fa6a45d4adb6ab491f98feb230c1c78"
+}

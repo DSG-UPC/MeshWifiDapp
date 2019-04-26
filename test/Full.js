@@ -32,7 +32,7 @@ function getRandomInt(max) {
 const randomInt = getRandomInt(10000)
 
 const stopOracle = 'screen -X -S oracle' + randomInt + ' quit';
-let options = {
+let oracleOptions = {
     'cwd': parentDir + '/oracle/'
 };
 const stopEventListener = 'screen -X -S events' + randomInt + ' quit';
@@ -120,7 +120,7 @@ contract("1st test", async function (accounts) {
 
         afterTime = new Date();
 
-        await wait(50000, 'Starting the minting process');
+        await wait(5000, 'Starting the minting process');
 
         let AdminAccount, ReserveAccount, ClientAccount, ProviderAccount
         async function printBalances(eip20, forwarding, iaccess) {
@@ -214,7 +214,7 @@ contract("1st test", async function (accounts) {
         console.log(`GasPrice: ${gasPrice}`);
 
         console.log(`\n\nBenchmark for Minting took ${getTime(diff)} milliseconds\n\n`);
-        await wait(50000, 'Starting Internet contract creation between client and provider')
+        await wait(5000, 'Starting Internet contract creation between client and provider')
 
 
 
@@ -337,7 +337,7 @@ contract("1st test", async function (accounts) {
 
 
 
-        await wait(50000, 'Starting Forwarding process');
+        await wait(5000, 'Starting Forwarding process');
 
         ////// FORWARDING //////
 
@@ -552,7 +552,7 @@ contract("1st test", async function (accounts) {
             funds_third = funds_after;
         });
 
-        await wait(50000, 'Full process is finished')
+        await wait(5000, 'Full process is finished')
 
     });
 
