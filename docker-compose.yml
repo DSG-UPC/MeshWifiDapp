@@ -1,0 +1,14 @@
+version: '2'
+services:
+  mongodb:
+    image: 'dsgupc/meshdapp-mongodb'
+    network_mode: 'host'
+  prometheus:
+    image: 'dsgupc/meshdapp-prometheus'
+    network_mode: 'host'
+  oracle:
+    image: 'dsgupc/meshdapp-oracle'
+    network_mode: 'host'
+    depends_on: 
+      - mongodb
+      - prometheus
