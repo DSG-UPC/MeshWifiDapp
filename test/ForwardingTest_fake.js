@@ -25,7 +25,7 @@ const stopOracle = 'screen -X -S oracle' + randomInt + ' quit';
 const DAO = artifacts.require('DAO');
 const EIP20 = artifacts.require('EIP20');
 const Forwarding = artifacts.require('Forwarding');
-const TestIP = 'localhost:3000'
+const TestIP = 'http://127.0.0.1:3000'
 
 async function wait(ms, text) {
   var testPromise = new Promise(function (resolve, reject) {

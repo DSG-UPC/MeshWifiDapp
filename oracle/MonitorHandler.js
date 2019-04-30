@@ -8,10 +8,8 @@ class MonitorHandler extends OracleHandler {
     constructor(_account) {
         super()
         this.account = _account
-        this.ip = config.prometheus
-        this.monitorServer = `${this.ip}/api/v1/`
-        this.stepTime = '1m'
-        this.step = `step=${this.stepTime}`
+        this.monitorServer = `${config.prometheus}/api/v1/`
+        this.step = 'step=1m'
         this.state = 'total'
     }
 
