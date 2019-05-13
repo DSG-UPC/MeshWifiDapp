@@ -1,6 +1,6 @@
 var config = {
     mongo: getMongoIP(),
-    prometheus: process.env.PROMETHEUS_IP || 'http://127.0.0.1:9090',
+    prometheus: process.env.PROMETHEUS_IP || 'http://10.228.207.65:9090',
     ethereum_provider: process.env.ETH_NET || 'http://127.0.0.1:8545',
     json_server: process.env.JSON_SERVER || 'http://10.228.207.37:3000',
 };
