@@ -48,7 +48,7 @@ node oracle --network staging
 docker build -t <<any-name>> .
 ```
 
-2. Execute the container (**Be sure to have a Ethereum provider, a Prometheus server and a MongoDB instances running and available**)
+2. Execute the container (**Be sure to have a Ethereum provider and a MongoDB instances running and available (and a Prometheus server just in case you want to run locally)**)
 
 ```
 docker run -it --network=host -e NETWORK=test -e ETH_NET=localhost:8545 -e PROMETHEUS_IP=localhost:9090 -e MONGO_IP=localhost:27017 oracle-mesh
