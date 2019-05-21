@@ -1,0 +1,10 @@
+
+---------- Welcome to this preprocessing script that transforms the dumps of the stations to a json file with amounts of data forwarded by nodes
+     USAGE:
+         $ python3 pre-processing <raw-data-directory> <num-of-owners>
+
+
+         The <raw-data-directory> is the directory where there are all the files *.iwdump.
+
+     NOTE: <raw-data-directory> have to finish with '/'.
+----------
