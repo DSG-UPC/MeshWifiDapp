@@ -53,7 +53,6 @@ for fileName in listFiles:
                 dataset[nodeName][numOfFiles-1][stationName]["tx"] =  line.split()[2]
 
 
-
 # Then we get rid of the nodes that do not have data for all the timestamps.
 
 # With this code we get the maximum number of timestamps a node have.
@@ -78,15 +77,22 @@ print("And we have this amount of files:",numOfFiles)
 
 
 jsonData = {}
-jsonData["monitor"] = []
 jsonData["node"] = []
+jsonData["owner"] = []
+jsonData["monitor"] = []
+
+with open("pre-processing-owners-list", "r") as f:
+    i = -1
+    for line in f:
+        i += 1
+        jsonData["owner"].append({"id": i, "value": line.split()[1]})
 
 # Reminder of the dataset structure:
 # dataset, nodeName, fileName, stationName, rx/tx
-
-
+n = -1
 for node, timestamps in dataset2.items():
-    jsonData["node"].append({"id": node})
+    n+=1
+    jsonData["node"].append({"id": n,"value": node})
     bytesT1 = 0
     calculatedBytes = 0
     #previousStationsValues = dataset[node][0]
@@ -112,7 +118,7 @@ for node, timestamps in dataset2.items():
 
         calculatedBytesList[i-1] = calculatedBytes
 
-    jsonData["monitor"].append({"id": node, "value": calculatedBytesList})
+    jsonData["monitor"].append({"id": n, "values": calculatedBytesList})
 
 
 

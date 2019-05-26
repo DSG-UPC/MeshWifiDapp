@@ -10,10 +10,12 @@ contract Forwarding is usingOracle{
     mapping(address => uint256) public debt;
     mapping(address => uint256) public amount_per_provider;
     mapping(address => bool) public is_provider_added;
+    mapping(uint256 => bool) public is_device_added;
     mapping(uint => address) public providers;
     address public reserve_account;
     uint public total_owed_iteration;
     uint public num_providers;
+    uint public num_devices;
     DAO public dao;
     EIP20Interface token;
 
@@ -23,6 +25,7 @@ contract Forwarding is usingOracle{
         reserve_account = address(this);
         total_owed_iteration = 0;
         num_providers = 0;
+        num_devices = 0;
     }
 
     function getTotalOwed() public view returns (uint owed){
@@ -36,7 +39,7 @@ contract Forwarding is usingOracle{
     function getDebt(address provider) public view returns (uint256 result){
         return debt[provider];
     }
-    
+
     /*
      * The most important method in this contract. Every period of time, this method will be called from an authorized
      * entity and the compensations payment will start:
@@ -75,7 +78,7 @@ contract Forwarding is usingOracle{
                 num_providers--;
             }
         }
-        recalculateMaxPrice(total_owed_iteration, reserve_funds);
+        //recalculateMaxPrice(total_owed_iteration, reserve_funds);
         total_owed_iteration = 0;
     }
 
@@ -95,6 +98,10 @@ contract Forwarding is usingOracle{
      */
     function getInvoice(string ip) public {
         queryOracle('forwarding', msg.sender, ip);
+    }
+
+    function getInvoiceFake(string query) public {
+        queryOracle('forwarding_fake', msg.sender, query);
     }
 
     /*
@@ -125,22 +132,28 @@ contract Forwarding is usingOracle{
 
 
     /*
-     * The first callback. Once a provider requests to be included for the compensation distribution at this iteration:
-     * - First of all, we must check that this provider was not already included for this iteration.
-     * - When this is done, we add the provider to the list of providers and increase the number or providers in 1.
-     * - Then, we need to calculate the amount owed to that provider, that is, multiply the price per MB times the number
-     *   of MBs forwarded by this provider. It is also important to include the debt we have acquired with the provider
-     *   in previous iterations.
+     * The first callback. Once a device requests to be included for the compensation distribution at this iteration:
+     * - First of all, we must check that this device was not already included for this iteration.
+     * - When this is done, we add the device to the list of devices and increase the number of devices in 1.
+     * - Then, we need to update the amount owed to that provider, that is, adding the result of multiplying the price
+     *   per MB times the number of MBs forwarded by this device to the accumulated owed amount for the provider.
+     *   It is also important to include the debt we have acquired with the provider in previous iterations.
      * - Finally, we add this amount to the total owed (for all providers) in this iteration.
      */
-    function __forwardingCallback(uint256 _response, address _provider) onlyFromOracle public {
+    function __forwardingCallback(uint256 _response, address _provider, uint256 _deviceid) onlyFromOracle public {
         require(_provider != 0x0, "This provider address is not a valid one");
-        require(!is_provider_added[_provider], 'This provider has already requested forwarding for this iteration');
-        providers[num_providers] = _provider;
-        is_provider_added[_provider] = true;
-        num_providers++;
-        amount_per_provider[_provider] = _response * dao.getPricePerMB() + debt[_provider];
-        total_owed_iteration += amount_per_provider[_provider];
+        require(!is_device_added[_deviceid], 'This device has already requested forwarding for this iteration');
+        if (!is_provider_added[_provider]){
+          providers[num_providers] = _provider;
+          is_provider_added[_provider] = true;
+          num_providers++;
+          amount_per_provider[_provider] = 0;
+        }
+        is_device_added[_deviceid] = true;
+        num_devices++;
+        uint added = _response * dao.getPricePerMB() + debt[_provider];
+        amount_per_provider[_provider] += added;
+        total_owed_iteration += added;
     }
 
     function __priceCalculatorCallback(uint _response) onlyFromOracle public {

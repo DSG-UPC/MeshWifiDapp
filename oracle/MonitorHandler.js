@@ -8,14 +8,14 @@ class MonitorHandler extends OracleHandler {
     constructor(_account) {
         super()
         this.account = _account
-        this.monitorServer = `${config.prometheus}/api/v1/`
+        this.monitorServer = `${config.json_server}`
         this.step = 'step=1m'
         this.state = 'total'
     }
 
     handle(_id, _recipient, _originator, _data, callback) {
         let _this = this
-        this.monitor(_data, (_traffic) => {
+        this.monitor_fake(_data, (_traffic) => {
             _this.getTransaction(_recipient, _traffic, _originator, callback)
         })
     }
@@ -32,9 +32,9 @@ class MonitorHandler extends OracleHandler {
                     name: '_response'
                 }, {
                     type: 'address',
-                    name: '_originator'
+                    name: '_owner'
                 }]
-            }, [traffic.monitor, originator]),
+            }, [traffic.monitor, traffic.owner]),
             gas: this.getWeb3().utils.numberToHex(300000)
         }
         console.log(transaction);
@@ -64,9 +64,10 @@ class MonitorHandler extends OracleHandler {
 
     monitor_fake(data, callback) {
         var url = config.json_server
-        console.log(data);
-        var monitor = `${url}/monitor?id=${data}`;
-        var owner = `${url}/owner?id=${data}`;
+        var json = JSON.parse(decodeURIComponent(data));
+        var monitor = `${url}/monitor?id=${json.deviceid}`;
+        var owner = `${url}/owner?id=${json.owner}`;
+        var node = `${url}/node?id=${json.deviceid}`
         var result = {}
 
         request(monitor, function (error, response, body) {
@@ -74,8 +75,8 @@ class MonitorHandler extends OracleHandler {
                 console.log("error: " + error)
             console.log("status code: " + response.statusCode)
             let wx = JSON.parse(body)
-            console.log("Traffic (MB): " + wx[0].value)
-            result.monitor = wx[0].value
+            console.log("Traffic (MB): " + wx[0].values[json.iteration])
+            result.monitor = wx[0].values[json.iteration]
             console.log(result.monitor);
             request(owner, function (error, response, body) {
                 if (error)
@@ -85,6 +86,7 @@ class MonitorHandler extends OracleHandler {
                 console.log("Owner: " + wx[0].value)
                 result.owner = wx[0].value
                 console.log(result.owner);
+                result.deviceid=json.deviceid;
                 callback(result)
             })
         })

@@ -1,8 +1,340 @@
 {
+    "node": [
+        {
+            "id": 0,
+            "value": "GS-RamblaBadal140-NS-0fe8"
+        },
+        {
+            "id": 1,
+            "value": "GS26gener10-8710"
+        },
+        {
+            "id": 2,
+            "value": "GSAvMadrid5-nb-9a57"
+        },
+        {
+            "id": 3,
+            "value": "GSAvMadrid5-ns-7369"
+        },
+        {
+            "id": 4,
+            "value": "GSCallao3-d141"
+        },
+        {
+            "id": 5,
+            "value": "GSComteGuell52-61ec"
+        },
+        {
+            "id": 6,
+            "value": "GSConselldeCent12-a1ef"
+        },
+        {
+            "id": 7,
+            "value": "GSConstitucio174-02ed"
+        },
+        {
+            "id": 8,
+            "value": "GSRajolers10-6e45"
+        },
+        {
+            "id": 9,
+            "value": "GSgV-nb-207c"
+        },
+        {
+            "id": 10,
+            "value": "GSgV-rk-0c33"
+        },
+        {
+            "id": 11,
+            "value": "GSgranVia255-db37"
+        },
+        {
+            "id": 12,
+            "value": "GSmVictoria-992f"
+        },
+        {
+            "id": 13,
+            "value": "GSmVictoria-RK-8da9"
+        },
+        {
+            "id": 14,
+            "value": "GSnodeprova-21bf"
+        },
+        {
+            "id": 15,
+            "value": "UPC-CN-C6-E104-Alix"
+        },
+        {
+            "id": 16,
+            "value": "UPC-CN-C6-E104-Alix-Paul"
+        },
+        {
+            "id": 17,
+            "value": "UPC-CN-C6-E104-NSLM5"
+        },
+        {
+            "id": 18,
+            "value": "UPC-CN-C6-E208-Alix-57728"
+        },
+        {
+            "id": 19,
+            "value": "UPC-CN-C6-E208-Alix-60415"
+        },
+        {
+            "id": 20,
+            "value": "UPC-CN-C6-E208-Alix-92032"
+        },
+        {
+            "id": 21,
+            "value": "UPC-CN-C6-Terrat-Alix"
+        },
+        {
+            "id": 22,
+            "value": "UPC-CN-C6-Terrat-Rocket-bcee"
+        },
+        {
+            "id": 23,
+            "value": "UPC-CN-Omega-cf70"
+        },
+        {
+            "id": 24,
+            "value": "UPC-EETAC-d9f3"
+        },
+        {
+            "id": 25,
+            "value": "UPC-ETSEIB-NS-7094"
+        },
+        {
+            "id": 26,
+            "value": "BCN-GS-CanBruixa20-NSM5-e48b"
+        },
+        {
+            "id": 27,
+            "value": "BCN-GS-CanBruixa20-RKM5-7bbd"
+        },
+        {
+            "id": 28,
+            "value": "BCN-GS-JpTarradellas40-6a5f"
+        },
+        {
+            "id": 29,
+            "value": "BCN-GS-Salou2bis-3a56"
+        },
+        {
+            "id": 30,
+            "value": "BCNBartomeuPi29-1141"
+        },
+        {
+            "id": 31,
+            "value": "BCNBerlin20-1edf"
+        },
+        {
+            "id": 32,
+            "value": "BCNEntenca239-0f6b"
+        },
+        {
+            "id": 33,
+            "value": "BCNEuropa16Rd2"
+        },
+        {
+            "id": 34,
+            "value": "BCNGranVia146Rd1-75a1"
+        },
+        {
+            "id": 35,
+            "value": "BCNJardiBotanicSants186-ba35"
+        },
+        {
+            "id": 36,
+            "value": "BCNJocsFlorals148-6a1b"
+        },
+        {
+            "id": 37,
+            "value": "BCNMelciorPalau62-6a4c"
+        },
+        {
+            "id": 38,
+            "value": "BCNMineria24-d9bc"
+        },
+        {
+            "id": 39,
+            "value": "BCNNogueraPallaresa15-ac8f"
+        },
+        {
+            "id": 40,
+            "value": "BCNNovell47-39be"
+        },
+        {
+            "id": 41,
+            "value": "BCNOlzinelles59-f0a4"
+        },
+        {
+            "id": 42,
+            "value": "BCNPuiggari17-b693"
+        },
+        {
+            "id": 43,
+            "value": "BCNRobrenyo44-4658"
+        },
+        {
+            "id": 44,
+            "value": "BCNRobrenyo70-8a35"
+        },
+        {
+            "id": 45,
+            "value": "BCNSanFructuos113-40c3"
+        },
+        {
+            "id": 46,
+            "value": "BCNSantaCatalina59Rd2-f500"
+        },
+        {
+            "id": 47,
+            "value": "BCNSantaCatalina59Rd3-805c"
+        },
+        {
+            "id": 48,
+            "value": "BCNSants186Rd1-993d"
+        },
+        {
+            "id": 49,
+            "value": "BCNSants186Rd2-996c"
+        },
+        {
+            "id": 50,
+            "value": "BCNSocors2-389c"
+        },
+        {
+            "id": 51,
+            "value": "BCNStFructuos84-b828"
+        },
+        {
+            "id": 52,
+            "value": "BCNTeatreDelsSentits-4197"
+        },
+        {
+            "id": 53,
+            "value": "BCNValladolid22-d906"
+        },
+        {
+            "id": 54,
+            "value": "BCNevaristoarnus5Rd4-988e"
+        },
+        {
+            "id": 55,
+            "value": "BCNevaristoarnus5Rd9-c239"
+        },
+        {
+            "id": 56,
+            "value": "BCNmasnou24Rd1-d594"
+        },
+        {
+            "id": 57,
+            "value": "BCNmasnou24Rd2-8416"
+        },
+        {
+            "id": 58,
+            "value": "BcnGranVia146-b233"
+        },
+        {
+            "id": 59,
+            "value": "HWBellchite-da28"
+        },
+        {
+            "id": 60,
+            "value": "HWRafaelCampalans29-1edf"
+        },
+        {
+            "id": 61,
+            "value": "LHAstilla-b1d7"
+        }
+    ],
+    "owner": [
+        {
+            "id": 0,
+            "value": "0x28b17326d08992f16d382db2923d0d8b4ff8adb0"
+        },
+        {
+            "id": 1,
+            "value": "0x77bf44c84ab15150baa1ae772836349788a7cf01"
+        },
+        {
+            "id": 2,
+            "value": "0x9d4c3fce2823167dc27f11fc24168dc59d6abffe"
+        },
+        {
+            "id": 3,
+            "value": "0xce98dc5b34d7889d5462ffc872fd375fd5e822c3"
+        },
+        {
+            "id": 4,
+            "value": "0x5d3e718434866d0c034ff98385f595ed001dc8b7"
+        },
+        {
+            "id": 5,
+            "value": "0xda2f1559152757a17cba75b6eb08b07d4a762c5e"
+        },
+        {
+            "id": 6,
+            "value": "0x794276006393a8e10f15ca9439aefb20b09329c1"
+        },
+        {
+            "id": 7,
+            "value": "0xed3fc3abc199e67c222e8aa00b2ccfb52298292d"
+        },
+        {
+            "id": 8,
+            "value": "0x31931d51123b025f2684c78c1923cbb152c42b49"
+        },
+        {
+            "id": 9,
+            "value": "0x9582326d15289e21aa52e540f2b34281e4a10048"
+        },
+        {
+            "id": 10,
+            "value": "0x8094e43b61c7d0eabd946eecd24e178cf508449e"
+        },
+        {
+            "id": 11,
+            "value": "0xc6136abe52a95c830d5854c11e97e2eb41045079"
+        },
+        {
+            "id": 12,
+            "value": "0x89d82896f1044f6d99801ef557958f46d0281ceb"
+        },
+        {
+            "id": 13,
+            "value": "0xc3acf07d54656b309efe1c0eb5e66572dc248491"
+        },
+        {
+            "id": 14,
+            "value": "0xb8f7aeae3739a7dd7a767e636c2d535258d5c7b5"
+        },
+        {
+            "id": 15,
+            "value": "0x0db9d5dcb6a6d0dc7d7d53dd4083802708a7e7d0"
+        },
+        {
+            "id": 16,
+            "value": "0xd9b1af19d34289ca73883d0edbefc22235ec46d3"
+        },
+        {
+            "id": 17,
+            "value": "0x24b474c48f6354da556aef8f2bdd28671ec7f575"
+        },
+        {
+            "id": 18,
+            "value": "0xd371ce6bf1d0d31f4334bf34af50b46c8ca6b396"
+        },
+        {
+            "id": 19,
+            "value": "0x37f0dc2a1987b99dab9cb6a27d41e04811d7d543"
+        }
+    ],
     "monitor": [
         {
-            "id": "GS-RamblaBadal140-NS-0fe8",
-            "value": {
+            "id": 0,
+            "values": {
                 "0": 9798089,
                 "1": 8987810,
                 "2": 11039975,
@@ -738,8 +1070,8 @@
             }
         },
         {
-            "id": "GS26gener10-8710",
-            "value": {
+            "id": 1,
+            "values": {
                 "0": 16336095,
                 "1": 16918710,
                 "2": 18174044,
@@ -1475,8 +1807,8 @@
             }
         },
         {
-            "id": "GSAvMadrid5-nb-9a57",
-            "value": {
+            "id": 2,
+            "values": {
                 "0": 8470067,
                 "1": 9574858,
                 "2": 9975513,
@@ -2212,8 +2544,8 @@
             }
         },
         {
-            "id": "GSAvMadrid5-ns-7369",
-            "value": {
+            "id": 3,
+            "values": {
                 "0": 17237048,
                 "1": 17139055,
                 "2": 16374757,
@@ -2949,8 +3281,8 @@
             }
         },
         {
-            "id": "GSCallao3-d141",
-            "value": {
+            "id": 4,
+            "values": {
                 "0": 0,
                 "1": 31426885,
                 "2": 32345481,
@@ -3686,8 +4018,8 @@
             }
         },
         {
-            "id": "GSComteGuell52-61ec",
-            "value": {
+            "id": 5,
+            "values": {
                 "0": 3542774,
                 "1": 3452127,
                 "2": 3596953,
@@ -4423,8 +4755,8 @@
             }
         },
         {
-            "id": "GSConselldeCent12-a1ef",
-            "value": {
+            "id": 6,
+            "values": {
                 "0": 9620005,
                 "1": 8102005,
                 "2": 12408384,
@@ -5160,8 +5492,8 @@
             }
         },
         {
-            "id": "GSConstitucio174-02ed",
-            "value": {
+            "id": 7,
+            "values": {
                 "0": 10435286,
                 "1": 10492890,
                 "2": 11361616,
@@ -5897,8 +6229,8 @@
             }
         },
         {
-            "id": "GSRajolers10-6e45",
-            "value": {
+            "id": 8,
+            "values": {
                 "0": 7829134,
                 "1": 16264647,
                 "2": 16742533,
@@ -6634,8 +6966,8 @@
             }
         },
         {
-            "id": "GSgV-nb-207c",
-            "value": {
+            "id": 9,
+            "values": {
                 "0": 5003671,
                 "1": 4767238,
                 "2": 4767044,
@@ -7371,8 +7703,8 @@
             }
         },
         {
-            "id": "GSgV-rk-0c33",
-            "value": {
+            "id": 10,
+            "values": {
                 "0": 6885365,
                 "1": 7002900,
                 "2": 7408695,
@@ -8108,8 +8440,8 @@
             }
         },
         {
-            "id": "GSgranVia255-db37",
-            "value": {
+            "id": 11,
+            "values": {
                 "0": 217985299,
                 "1": 196016539,
                 "2": 62514150,
@@ -8845,8 +9177,8 @@
             }
         },
         {
-            "id": "GSmVictoria-992f",
-            "value": {
+            "id": 12,
+            "values": {
                 "0": 988382,
                 "1": 1162054,
                 "2": 1145797,
@@ -9582,8 +9914,8 @@
             }
         },
         {
-            "id": "GSmVictoria-RK-8da9",
-            "value": {
+            "id": 13,
+            "values": {
                 "0": 12131661,
                 "1": 11728433,
                 "2": 13739299,
@@ -10319,8 +10651,8 @@
             }
         },
         {
-            "id": "GSnodeprova-21bf",
-            "value": {
+            "id": 14,
+            "values": {
                 "0": 11150752,
                 "1": 10060018,
                 "2": 10583856,
@@ -11056,8 +11388,8 @@
             }
         },
         {
-            "id": "UPC-CN-C6-E104-Alix",
-            "value": {
+            "id": 15,
+            "values": {
                 "0": 16336019,
                 "1": 15828313,
                 "2": 16713834,
@@ -11793,8 +12125,8 @@
             }
         },
         {
-            "id": "UPC-CN-C6-E104-Alix-Paul",
-            "value": {
+            "id": 16,
+            "values": {
                 "0": 0,
                 "1": 1067477096,
                 "2": 0,
@@ -12530,8 +12862,8 @@
             }
         },
         {
-            "id": "UPC-CN-C6-E104-NSLM5",
-            "value": {
+            "id": 17,
+            "values": {
                 "0": 28928253,
                 "1": 29124722,
                 "2": 28992101,
@@ -13267,8 +13599,8 @@
             }
         },
         {
-            "id": "UPC-CN-C6-E208-Alix-57728",
-            "value": {
+            "id": 18,
+            "values": {
                 "0": 34739118,
                 "1": 36723773,
                 "2": 36367564,
@@ -14004,8 +14336,8 @@
             }
         },
         {
-            "id": "UPC-CN-C6-E208-Alix-60415",
-            "value": {
+            "id": 19,
+            "values": {
                 "0": 39293374,
                 "1": 43005403,
                 "2": 42624999,
@@ -14741,8 +15073,8 @@
             }
         },
         {
-            "id": "UPC-CN-C6-E208-Alix-92032",
-            "value": {
+            "id": 20,
+            "values": {
                 "0": 40503846,
                 "1": 40379344,
                 "2": 39063160,
@@ -15478,8 +15810,8 @@
             }
         },
         {
-            "id": "UPC-CN-C6-Terrat-Alix",
-            "value": {
+            "id": 21,
+            "values": {
                 "0": 2857047,
                 "1": 2880317,
                 "2": 3034174,
@@ -16215,8 +16547,8 @@
             }
         },
         {
-            "id": "UPC-CN-C6-Terrat-Rocket-bcee",
-            "value": {
+            "id": 22,
+            "values": {
                 "0": 16509002,
                 "1": 16486631,
                 "2": 16414402,
@@ -16952,8 +17284,8 @@
             }
         },
         {
-            "id": "UPC-CN-Omega-cf70",
-            "value": {
+            "id": 23,
+            "values": {
                 "0": 8853687,
                 "1": 0,
                 "2": 140141586,
@@ -17689,8 +18021,8 @@
             }
         },
         {
-            "id": "UPC-EETAC-d9f3",
-            "value": {
+            "id": 24,
+            "values": {
                 "0": 0,
                 "1": 0,
                 "2": 0,
@@ -18426,8 +18758,8 @@
             }
         },
         {
-            "id": "UPC-ETSEIB-NS-7094",
-            "value": {
+            "id": 25,
+            "values": {
                 "0": 4017136,
                 "1": 4738464,
                 "2": 4774974,
@@ -19163,8 +19495,8 @@
             }
         },
         {
-            "id": "BCN-GS-CanBruixa20-NSM5-e48b",
-            "value": {
+            "id": 26,
+            "values": {
                 "0": 17938681,
                 "1": 15954734,
                 "2": 14891704,
@@ -19900,8 +20232,8 @@
             }
         },
         {
-            "id": "BCN-GS-CanBruixa20-RKM5-7bbd",
-            "value": {
+            "id": 27,
+            "values": {
                 "0": 6907250,
                 "1": 6386946,
                 "2": 7349653,
@@ -20637,8 +20969,8 @@
             }
         },
         {
-            "id": "BCN-GS-JpTarradellas40-6a5f",
-            "value": {
+            "id": 28,
+            "values": {
                 "0": 20214709,
                 "1": 0,
                 "2": 20669981,
@@ -21374,8 +21706,8 @@
             }
         },
         {
-            "id": "BCN-GS-Salou2bis-3a56",
-            "value": {
+            "id": 29,
+            "values": {
                 "0": 19572789,
                 "1": 20118428,
                 "2": 17247124,
@@ -22111,8 +22443,8 @@
             }
         },
         {
-            "id": "BCNBartomeuPi29-1141",
-            "value": {
+            "id": 30,
+            "values": {
                 "0": 7992383,
                 "1": 7162278,
                 "2": 5677934,
@@ -22848,8 +23180,8 @@
             }
         },
         {
-            "id": "BCNBerlin20-1edf",
-            "value": {
+            "id": 31,
+            "values": {
                 "0": 9647658,
                 "1": 13525564,
                 "2": 10629710,
@@ -23585,8 +23917,8 @@
             }
         },
         {
-            "id": "BCNEntenca239-0f6b",
-            "value": {
+            "id": 32,
+            "values": {
                 "0": 1165182,
                 "1": 1214772,
                 "2": 1062124,
@@ -24322,8 +24654,8 @@
             }
         },
         {
-            "id": "BCNEuropa16Rd2",
-            "value": {
+            "id": 33,
+            "values": {
                 "0": 7698609,
                 "1": 7975390,
                 "2": 8992163,
@@ -25059,8 +25391,8 @@
             }
         },
         {
-            "id": "BCNGranVia146Rd1-75a1",
-            "value": {
+            "id": 34,
+            "values": {
                 "0": 4694474,
                 "1": 4322616,
                 "2": 5471512,
@@ -25796,8 +26128,8 @@
             }
         },
         {
-            "id": "BCNJardiBotanicSants186-ba35",
-            "value": {
+            "id": 35,
+            "values": {
                 "0": 0,
                 "1": 123916664,
                 "2": 181440596,
@@ -26533,8 +26865,8 @@
             }
         },
         {
-            "id": "BCNJocsFlorals148-6a1b",
-            "value": {
+            "id": 36,
+            "values": {
                 "0": 20744474,
                 "1": 16628055,
                 "2": 19437766,
@@ -27270,8 +27602,8 @@
             }
         },
         {
-            "id": "BCNMelciorPalau62-6a4c",
-            "value": {
+            "id": 37,
+            "values": {
                 "0": 6101304,
                 "1": 7287961,
                 "2": 7404174,
@@ -28007,8 +28339,8 @@
             }
         },
         {
-            "id": "BCNMineria24-d9bc",
-            "value": {
+            "id": 38,
+            "values": {
                 "0": 4224055,
                 "1": 3970987,
                 "2": 3738273,
@@ -28744,8 +29076,8 @@
             }
         },
         {
-            "id": "BCNNogueraPallaresa15-ac8f",
-            "value": {
+            "id": 39,
+            "values": {
                 "0": 14137887,
                 "1": 14592552,
                 "2": 13878066,
@@ -29481,8 +29813,8 @@
             }
         },
         {
-            "id": "BCNNovell47-39be",
-            "value": {
+            "id": 40,
+            "values": {
                 "0": 13830316,
                 "1": 18427348,
                 "2": 15822581,
@@ -30218,8 +30550,8 @@
             }
         },
         {
-            "id": "BCNOlzinelles59-f0a4",
-            "value": {
+            "id": 41,
+            "values": {
                 "0": 20651463,
                 "1": 11301328,
                 "2": 14381816,
@@ -30955,8 +31287,8 @@
             }
         },
         {
-            "id": "BCNPuiggari17-b693",
-            "value": {
+            "id": 42,
+            "values": {
                 "0": 8455551,
                 "1": 7009488,
                 "2": 9246649,
@@ -31692,8 +32024,8 @@
             }
         },
         {
-            "id": "BCNRobrenyo44-4658",
-            "value": {
+            "id": 43,
+            "values": {
                 "0": 8220475,
                 "1": 7662074,
                 "2": 7172459,
@@ -32429,8 +32761,8 @@
             }
         },
         {
-            "id": "BCNRobrenyo70-8a35",
-            "value": {
+            "id": 44,
+            "values": {
                 "0": 17873392,
                 "1": 20062887,
                 "2": 22369940,
@@ -33166,8 +33498,8 @@
             }
         },
         {
-            "id": "BCNSanFructuos113-40c3",
-            "value": {
+            "id": 45,
+            "values": {
                 "0": 11159158,
                 "1": 11667592,
                 "2": 9267103,
@@ -33903,8 +34235,8 @@
             }
         },
         {
-            "id": "BCNSantaCatalina59Rd2-f500",
-            "value": {
+            "id": 46,
+            "values": {
                 "0": 235252954,
                 "1": 332016381,
                 "2": 18975084,
@@ -34640,8 +34972,8 @@
             }
         },
         {
-            "id": "BCNSantaCatalina59Rd3-805c",
-            "value": {
+            "id": 47,
+            "values": {
                 "0": 5362268,
                 "1": 5106472,
                 "2": 5666455,
@@ -35377,8 +35709,8 @@
             }
         },
         {
-            "id": "BCNSants186Rd1-993d",
-            "value": {
+            "id": 48,
+            "values": {
                 "0": 48483205,
                 "1": 36296387,
                 "2": 41310189,
@@ -36114,8 +36446,8 @@
             }
         },
         {
-            "id": "BCNSants186Rd2-996c",
-            "value": {
+            "id": 49,
+            "values": {
                 "0": 30644133,
                 "1": 25261960,
                 "2": 15827248,
@@ -36851,8 +37183,8 @@
             }
         },
         {
-            "id": "BCNSocors2-389c",
-            "value": {
+            "id": 50,
+            "values": {
                 "0": 20990520,
                 "1": 2982658,
                 "2": 2724521,
@@ -37588,8 +37920,8 @@
             }
         },
         {
-            "id": "BCNStFructuos84-b828",
-            "value": {
+            "id": 51,
+            "values": {
                 "0": 9297390,
                 "1": 8544113,
                 "2": 9675548,
@@ -38325,8 +38657,8 @@
             }
         },
         {
-            "id": "BCNTeatreDelsSentits-4197",
-            "value": {
+            "id": 52,
+            "values": {
                 "0": 56811475,
                 "1": 22017616,
                 "2": 11365004,
@@ -39062,8 +39394,8 @@
             }
         },
         {
-            "id": "BCNValladolid22-d906",
-            "value": {
+            "id": 53,
+            "values": {
                 "0": 1951858,
                 "1": 9383105,
                 "2": 4040448,
@@ -39799,8 +40131,8 @@
             }
         },
         {
-            "id": "BCNevaristoarnus5Rd4-988e",
-            "value": {
+            "id": 54,
+            "values": {
                 "0": 24032247,
                 "1": 16573720,
                 "2": 16019121,
@@ -40536,8 +40868,8 @@
             }
         },
         {
-            "id": "BCNevaristoarnus5Rd9-c239",
-            "value": {
+            "id": 55,
+            "values": {
                 "0": 5615461,
                 "1": 5091528,
                 "2": 6173583,
@@ -41273,8 +41605,8 @@
             }
         },
         {
-            "id": "BCNmasnou24Rd1-d594",
-            "value": {
+            "id": 56,
+            "values": {
                 "0": 60205670,
                 "1": 103611945,
                 "2": 12499694,
@@ -42010,8 +42342,8 @@
             }
         },
         {
-            "id": "BCNmasnou24Rd2-8416",
-            "value": {
+            "id": 57,
+            "values": {
                 "0": 71704932,
                 "1": 119560942,
                 "2": 25686874,
@@ -42747,8 +43079,8 @@
             }
         },
         {
-            "id": "BcnGranVia146-b233",
-            "value": {
+            "id": 58,
+            "values": {
                 "0": 0,
                 "1": 39166650,
                 "2": 74713467,
@@ -43484,8 +43816,8 @@
             }
         },
         {
-            "id": "HWBellchite-da28",
-            "value": {
+            "id": 59,
+            "values": {
                 "0": 8236219,
                 "1": 8301169,
                 "2": 8461833,
@@ -44221,8 +44553,8 @@
             }
         },
         {
-            "id": "HWRafaelCampalans29-1edf",
-            "value": {
+            "id": 60,
+            "values": {
                 "0": 3027953,
                 "1": 2686585,
                 "2": 2929075,
@@ -44958,8 +45290,8 @@
             }
         },
         {
-            "id": "LHAstilla-b1d7",
-            "value": {
+            "id": 61,
+            "values": {
                 "0": 63501693,
                 "1": 62223756,
                 "2": 123782598,
@@ -45693,194 +46025,6 @@
                 "730": 29426226,
                 "731": 26634452
             }
-        }
-    ],
-    "node": [
-        {
-            "id": "GS-RamblaBadal140-NS-0fe8"
-        },
-        {
-            "id": "GS26gener10-8710"
-        },
-        {
-            "id": "GSAvMadrid5-nb-9a57"
-        },
-        {
-            "id": "GSAvMadrid5-ns-7369"
-        },
-        {
-            "id": "GSCallao3-d141"
-        },
-        {
-            "id": "GSComteGuell52-61ec"
-        },
-        {
-            "id": "GSConselldeCent12-a1ef"
-        },
-        {
-            "id": "GSConstitucio174-02ed"
-        },
-        {
-            "id": "GSRajolers10-6e45"
-        },
-        {
-            "id": "GSgV-nb-207c"
-        },
-        {
-            "id": "GSgV-rk-0c33"
-        },
-        {
-            "id": "GSgranVia255-db37"
-        },
-        {
-            "id": "GSmVictoria-992f"
-        },
-        {
-            "id": "GSmVictoria-RK-8da9"
-        },
-        {
-            "id": "GSnodeprova-21bf"
-        },
-        {
-            "id": "UPC-CN-C6-E104-Alix"
-        },
-        {
-            "id": "UPC-CN-C6-E104-Alix-Paul"
-        },
-        {
-            "id": "UPC-CN-C6-E104-NSLM5"
-        },
-        {
-            "id": "UPC-CN-C6-E208-Alix-57728"
-        },
-        {
-            "id": "UPC-CN-C6-E208-Alix-60415"
-        },
-        {
-            "id": "UPC-CN-C6-E208-Alix-92032"
-        },
-        {
-            "id": "UPC-CN-C6-Terrat-Alix"
-        },
-        {
-            "id": "UPC-CN-C6-Terrat-Rocket-bcee"
-        },
-        {
-            "id": "UPC-CN-Omega-cf70"
-        },
-        {
-            "id": "UPC-EETAC-d9f3"
-        },
-        {
-            "id": "UPC-ETSEIB-NS-7094"
-        },
-        {
-            "id": "BCN-GS-CanBruixa20-NSM5-e48b"
-        },
-        {
-            "id": "BCN-GS-CanBruixa20-RKM5-7bbd"
-        },
-        {
-            "id": "BCN-GS-JpTarradellas40-6a5f"
-        },
-        {
-            "id": "BCN-GS-Salou2bis-3a56"
-        },
-        {
-            "id": "BCNBartomeuPi29-1141"
-        },
-        {
-            "id": "BCNBerlin20-1edf"
-        },
-        {
-            "id": "BCNEntenca239-0f6b"
-        },
-        {
-            "id": "BCNEuropa16Rd2"
-        },
-        {
-            "id": "BCNGranVia146Rd1-75a1"
-        },
-        {
-            "id": "BCNJardiBotanicSants186-ba35"
-        },
-        {
-            "id": "BCNJocsFlorals148-6a1b"
-        },
-        {
-            "id": "BCNMelciorPalau62-6a4c"
-        },
-        {
-            "id": "BCNMineria24-d9bc"
-        },
-        {
-            "id": "BCNNogueraPallaresa15-ac8f"
-        },
-        {
-            "id": "BCNNovell47-39be"
-        },
-        {
-            "id": "BCNOlzinelles59-f0a4"
-        },
-        {
-            "id": "BCNPuiggari17-b693"
-        },
-        {
-            "id": "BCNRobrenyo44-4658"
-        },
-        {
-            "id": "BCNRobrenyo70-8a35"
-        },
-        {
-            "id": "BCNSanFructuos113-40c3"
-        },
-        {
-            "id": "BCNSantaCatalina59Rd2-f500"
-        },
-        {
-            "id": "BCNSantaCatalina59Rd3-805c"
-        },
-        {
-            "id": "BCNSants186Rd1-993d"
-        },
-        {
-            "id": "BCNSants186Rd2-996c"
-        },
-        {
-            "id": "BCNSocors2-389c"
-        },
-        {
-            "id": "BCNStFructuos84-b828"
-        },
-        {
-            "id": "BCNTeatreDelsSentits-4197"
-        },
-        {
-            "id": "BCNValladolid22-d906"
-        },
-        {
-            "id": "BCNevaristoarnus5Rd4-988e"
-        },
-        {
-            "id": "BCNevaristoarnus5Rd9-c239"
-        },
-        {
-            "id": "BCNmasnou24Rd1-d594"
-        },
-        {
-            "id": "BCNmasnou24Rd2-8416"
-        },
-        {
-            "id": "BcnGranVia146-b233"
-        },
-        {
-            "id": "HWBellchite-da28"
-        },
-        {
-            "id": "HWRafaelCampalans29-1edf"
-        },
-        {
-            "id": "LHAstilla-b1d7"
         }
     ]
 }

@@ -86,6 +86,9 @@ async function startListener(abi, address) {
                 case 'forwarding':
                     setHandler(forwardingHandler)
                     break;
+                case 'forwarding_fake':
+                    setHandler(forwardingHandler)
+                    break;
                 case 'recalculate_max_price':
                     setHandler(priceCalculatorHandler)
                     logData.query = [logData.owed, logData.funds, logData.pricePerMB]
