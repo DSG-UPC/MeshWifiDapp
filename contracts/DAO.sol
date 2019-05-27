@@ -12,7 +12,8 @@ contract DAO is Ownable {
   /* To make things easier, the Forwarding will be the reserve account */
   address ReserveAccount;
   uint256 public pricePerMB;
-
+  uint256 public minPricePerMB;
+  uint256 public maxPricePerMB;
 
   constructor(uint256 _pricePerMB, address _OracleQuery)
     public
@@ -83,5 +84,27 @@ contract DAO is Ownable {
     pricePerMB = _pricePerMB;
     return true;
   }
+
+  function getMinPricePerMB() public view returns(uint256) {
+    return minPricePerMB;
+  }
+
+  function setMinPricePerMB(uint256 _pricePerMB) public returns(bool) {
+    //require(msg.sender == ReserveAccount);
+    minPricePerMB = _pricePerMB;
+    return true;
+  }
+
+  function getMaxPricePerMB() public view returns(uint256) {
+    return maxPricePerMB;
+  }
+
+  function setMaxPricePerMB(uint256 _pricePerMB) public returns(bool) {
+    //require(msg.sender == ReserveAccount);
+    maxPricePerMB = _pricePerMB;
+    return true;
+  }
+
+
 
 }

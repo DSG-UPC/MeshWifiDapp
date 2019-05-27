@@ -9,11 +9,15 @@ contract Forwarding is usingOracle{
 
     mapping(address => uint256) public debt;
     mapping(address => uint256) public amount_per_provider;
+    mapping(address => uint256) public amount_MB_per_provider;
+    mapping(address => uint) public devices_per_provider;
     mapping(address => bool) public is_provider_added;
     mapping(uint256 => bool) public is_device_added;
+    mapping(uint => uint256) public device_indexes;
     mapping(uint => address) public providers;
     address public reserve_account;
     uint public total_owed_iteration;
+    uint public total_MB_iteration;
     uint public num_providers;
     uint public num_devices;
     DAO public dao;
@@ -24,6 +28,7 @@ contract Forwarding is usingOracle{
         token = EIP20Interface(dao.getERC20());
         reserve_account = address(this);
         total_owed_iteration = 0;
+        total_MB_iteration = 0;
         num_providers = 0;
         num_devices = 0;
     }
@@ -80,10 +85,18 @@ contract Forwarding is usingOracle{
         }
         //recalculateMaxPrice(total_owed_iteration, reserve_funds);
         total_owed_iteration = 0;
+        total_MB_iteration = 0;
+        for(uint i=0;i<num_devices;i++){
+            is_device_added[device_indexes[i]] = false;
+        }
+        num_devices = 0;
+
     }
 
     function clearProvider(address current_provider) private {
         amount_per_provider[current_provider] = 0;
+        amount_MB_per_provider[current_provider] = 0;
+        devices_per_provider[current_provider] = 0;
         is_provider_added[current_provider] = false;
         delete providers[num_providers-1];
     }
@@ -100,7 +113,11 @@ contract Forwarding is usingOracle{
         queryOracle('forwarding', msg.sender, ip);
     }
 
-    function getInvoiceFake(string query) public {
+    function getInvoiceByAddress(address provider) public {
+        _queryOracle('calculate_price_per_provider', provider, devices_per_provider[provider], num_devices, num_providers);
+    }
+
+    function getMonitoringValues(string query) public {
         queryOracle('forwarding_fake', msg.sender, query);
     }
 
@@ -135,9 +152,9 @@ contract Forwarding is usingOracle{
      * The first callback. Once a device requests to be included for the compensation distribution at this iteration:
      * - First of all, we must check that this device was not already included for this iteration.
      * - When this is done, we add the device to the list of devices and increase the number of devices in 1.
-     * - Then, we need to update the amount owed to that provider, that is, adding the result of multiplying the price
-     *   per MB times the number of MBs forwarded by this device to the accumulated owed amount for the provider.
-     *   It is also important to include the debt we have acquired with the provider in previous iterations.
+     * - Then, we need to update the amount of forwarded MB by that provider, that is, adding the MBs forwarded by this device
+     *   to the accumulated forwarded amount by the provider.
+
      * - Finally, we add this amount to the total owed (for all providers) in this iteration.
      */
     function __forwardingCallback(uint256 _response, address _provider, uint256 _deviceid) onlyFromOracle public {
@@ -147,18 +164,29 @@ contract Forwarding is usingOracle{
           providers[num_providers] = _provider;
           is_provider_added[_provider] = true;
           num_providers++;
-          amount_per_provider[_provider] = 0;
+          amount_MB_per_provider[_provider] = 0;
+          devices_per_provider[_provider] = 0;
         }
         is_device_added[_deviceid] = true;
+        device_indexes[num_devices] = _deviceid;
         num_devices++;
-        uint added = _response * dao.getPricePerMB() + debt[_provider];
-        amount_per_provider[_provider] += added;
-        total_owed_iteration += added;
+        //uint added = _response * dao.getPricePerMB() + debt[_provider];
+        uint added = _response;
+        amount_MB_per_provider[_provider] += added;
+        devices_per_provider[_provider] += 1;
+        total_MB_iteration += added;
     }
 
     function __priceCalculatorCallback(uint _response) onlyFromOracle public {
         dao.setPricePerMB(_response);
     }
+
+    function __pricePerProviderCalculatorCallback(uint256 _response, address _provider) onlyFromOracle public {
+        require(_provider != 0x0, "This provider address is not a valid one");
+        amount_per_provider[_provider] = _response * amount_MB_per_provider[_provider];
+        total_owed_iteration += amount_per_provider[_provider];
+    }
+
 
     /*
      * Once received the proportional value, it is transferred to the corresponding provider and the

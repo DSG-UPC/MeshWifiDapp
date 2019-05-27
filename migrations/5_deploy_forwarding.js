@@ -10,6 +10,6 @@ module.exports = async function (deployer) {
     .then(async function (instance) {
       console.log("Forwarding contract:" + instance.address);
       await lookup.setReserveAccount(instance.address);
-      await erc20.transfer(instance.address, 100000000);
+      await erc20.transfer(instance.address, 1000000000000);
     })
 };

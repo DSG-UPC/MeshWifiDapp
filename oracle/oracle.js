@@ -7,9 +7,10 @@ const MonitorHandler = require('./MonitorHandler')
 const ForwardingHandler = require('./ForwardingHandler')
 const DatabaseHandler = require('./DatabaseHandler')
 const PriceCalculatorHandler = require('./PriceCalculatorHandler')
+const PricePerProviderCalculatorHandler = require('./PricePerProviderCalculatorHandler')
 const ProportionalCalculatorHandler = require('./ProportionalCalculatorHandler')
 var monitorHandler, forwardingHandler, databaseHandler,
-    priceCalculatorHandler, proportionalCalculatorHandler, handler
+    priceCalculatorHandler, pricePerProviderCalculatorHandler, proportionalCalculatorHandler, handler
 
 const Contract = require('../contract')
 const minimist = require('minimist'),
@@ -44,6 +45,7 @@ const getAccount = async () => {
     monitorHandler = new MonitorHandler(account);
     forwardingHandler = new ForwardingHandler(account, databaseHandler.getDatabase(), monitorHandler);
     priceCalculatorHandler = new PriceCalculatorHandler(account);
+    pricePerProviderCalculatorHandler = new PricePerProviderCalculatorHandler(account);
     proportionalCalculatorHandler = new ProportionalCalculatorHandler(account);
     console.log('Working from account ', account);
 }
@@ -135,6 +137,11 @@ async function startListener(abi, address) {
                     setHandler(proportionalCalculatorHandler)
                     logData.query = [logData.owed, logData.funds, logData.pricePerMB]
                     break;
+                case 'calculate_price_per_provider':
+                    setHandler(pricePerProviderCalculatorHandler)
+                    logData.query = [logData.owed, logData.funds, logData.pricePerMB]
+                    break;
+
             }
             handler.handle(logData.id, logData.recipient, logData.originator, logData.query,
                 (transaction) => {

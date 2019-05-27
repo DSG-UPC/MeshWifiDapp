@@ -35,7 +35,6 @@ let oracleOptions = {
 };
 const stopEventListener = 'screen -X -S events' + randomInt + ' quit';
 let eventOptions = {
-    //'cwd': parentDir+'/ethereum/'
     'cwd': parentDir + '/test/' //+'/ethereum/'
 };
 
@@ -100,23 +99,10 @@ contract("1st test", async function (accounts) {
             console.error(stderr);
         }
         console.log(stdout);
-        /*
-        const {
-            stdout1,
-            stderr1
-        } = await exec(stopEventListener, eventOptions);
-        console.log('Stop EventListener');
-        if (stderr1) {
-            console.log('Stop EventListener Error');
-            console.error(stderr1);
-        }
-        console.log(stdout1);
-        */
+
     });
 
     it("Economic system variations", async function () {
-
-        afterTime = new Date();
 
         let AdminAccount, ReserveAccount, ClientAccounts, ProviderAccounts
         async function printBalances(eip20, forwarding, iaccess) {
@@ -129,12 +115,6 @@ contract("1st test", async function (accounts) {
                         console.log('Provider '+ (n+1) +': ' + ProviderAccounts[n] + '\tTokens: ' + i);
                   });
                 }
-                /*await eip20.balanceOf(ClientAccounts).then(i => {
-                    var n;
-                    for (n = 0; n < ClientAccounts.length; n++) {
-                      console.log('Client '+ n+1 +': ' + ClientAccounts[n] + '\tTokens: ' + i);
-                    }
-                });*/
             }
             if (forwarding) {
                 await eip20.balanceOf(forwarding.address).then(i => {
@@ -148,9 +128,7 @@ contract("1st test", async function (accounts) {
             };
         }
         const dao = await DAO.deployed();
-        await dao.getReserveAccount().then(i => {
-            ReserveAccount = i;
-        })
+
         if (network == 'staging') {
             AdminAccount = accounts[0];
             ProviderAccounts = new Array(accounts[1],accounts[2]);
@@ -162,22 +140,29 @@ contract("1st test", async function (accounts) {
 
         printBalances(eip20);
 
-        /*
-        await eip20.transfer(ProviderAccount, 50, {
-            from: AdminAccount
-        });
-        */
-
 
         ////// EXPERIMENT VARIABLES ///////
 
         nDevices = 4
         nProviders = 2
         iteration = 0
+        minPricePerMB = 1
+        maxPricePerMB = 3
+
 
         ///  TODO calculation of how many devices per provider
+        // nb of devices/provider at the beggining : unif(1,5)
+
         // NOTE: the owner 0 is the admin account
         deviceOwner = [1,1,2,2]
+
+        // We have to decide when a provider buys a new device, or not. We can fix a certain amount of tokens d.
+        // When this amount is owned by a provider, he buys a new device with the probability p1 if it has less
+        // than x% of the network size devices and with the probability p2 (< p1) in the other case.
+        // The price for a new device is 150€. If the cost for maintaining a node
+        priceNewDevice = 27487; // = d
+        p1 = 0.7
+        p2 = 0.2
 
 
         //The device id can be the IP or the guifi.net node name. In our implementation is the node name.
@@ -185,8 +170,22 @@ contract("1st test", async function (accounts) {
 
         providers = new Array(nProviders)
 
+        await dao.setMinPricePerMB(minPricePerMB);
+        await dao.setMaxPricePerMB(maxPricePerMB);
 
         await wait(5000, 'Starting Forwarding process');
+
+
+        // The test will be:
+        // see balances.
+        // Get Monitoring Values (for all devices)
+        // Get Invoice (for all providers)
+        // see prices per MB per provider.
+        // see owed to providers.
+        // see total owed.
+        // Start Payment
+        // see balances.
+
 
         ////// FORWARDING //////
 
@@ -205,16 +204,12 @@ contract("1st test", async function (accounts) {
             funds_first = result.toNumber();
             console.log(`Balance of the Forwarding contract (funds account): ${funds_first}`);
         })
-        await dao.getPricePerMB().then(result => {
-            pricePerMB = result.toNumber();
-            console.log(`The current price per MB is: ${pricePerMB}`);
-        })
+
 
         for (var i=0; i<nDevices; i++){
-          // Avoid space
           query = "{\"deviceid\":"+i+",\"iteration\":"+iteration+",\"owner\":"+deviceOwner[i]+"}";
           console.log(`Query sent to the forwarding contract ${query}`);
-          await forwarding.getInvoiceFake(query);
+          await forwarding.getMonitoringValues(query);
         }
 
         await wait(1000, `\n\nObtaining monitoring values for the FIRST iteration\n\n`);
@@ -223,8 +218,24 @@ contract("1st test", async function (accounts) {
           await forwarding.getProvider(i).then(result => {
               providers[i] = result;
               console.log(`Provider address: ${providers[i]}`)
-          })
+          });
         }
+
+        await wait(1000, `\n\nObtaining invoices for the FIRST iteration\n\n`);
+
+        for (var i=0; i<nProviders; i++){
+          await forwarding.getInvoiceByAddress(providers[i]);
+        }
+
+
+
+        await dao.getMinPricePerMB().then(result => {
+            pricePerMB = result.toNumber();
+            console.log(`The min price per MB is: ${pricePerMB}`);
+        })
+
+        // Every provider has different price/MB, depending on the number of devices it has.
+        // It is in this function where the invoices are calculated.
 
 
         await forwarding.getTotalOwed().then(result => {
