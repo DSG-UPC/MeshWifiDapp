@@ -128,26 +128,16 @@ contract("1st test", async function (accounts) {
                 })
             };
         }
-        const dao = await DAO.deployed();
-
-        if (network == 'staging') {
-            AdminAccount = accounts[0];
-            ProviderAccounts = new Array(accounts[1],accounts[2]);
-        } else {
-            console.log('Please, use "staging" confinguration for the network.');
-        }
-        // Transfer tokens from reserve account to the other accounts
-        const eip20 = await EIP20.deployed();
-
 
 
         ////// EXPERIMENT VARIABLES ///////
 
         // priceSystem = { "no_max" , "max" , "fixed" }
         priceSystem = "max"
+        nProviders = 10
 
-        nDevices = 4
-        nProviders = 2
+        nDevices = 2 * nProviders
+        deviceOwner = []
         iteration = 0
         minPricePerMB = 10
         maxPricePerMB = 30
@@ -161,9 +151,12 @@ contract("1st test", async function (accounts) {
         devices_provider = new Array(nProviders)
 
         // NOTE: the owner id 0 is the admin account
-        deviceOwner = [1,1,2,2]
-        devices_provider[0] = 2
-        devices_provider[1] = 2
+        for (var i = 0; i < nProviders; i++) {
+          deviceOwner.push(i+1)
+          deviceOwner.push(i+1)
+          devices_provider[i] = 2
+        }
+
 
         // We have to decide when a provider buys a new device, or not. We can fix a certain amount of tokens d.
         // When this amount is owned by a provider, he buys a new device with the probability p1 if it has less
@@ -178,12 +171,26 @@ contract("1st test", async function (accounts) {
 
         output = []
 
-
-
         //The device id can be the IP or the guifi.net node name. In our implementation is the node name.
         devicesID = new Array(nDevices)
 
         providers = new Array(nProviders)
+
+        const dao = await DAO.deployed();
+
+        if (network == 'staging') {
+            AdminAccount = accounts[0];
+            ProviderAccounts = new Array(nProviders);
+            for (var i = 0; i < nProviders; i++) {
+              ProviderAccounts[i] = accounts[i+1];
+            }
+
+        } else {
+            console.log('Please, use "staging" confinguration for the network.');
+        }
+        // Transfer tokens from reserve account to the other accounts
+        const eip20 = await EIP20.deployed();
+
 
         await dao.setMinPricePerMB(minPricePerMB);
         await dao.setMaxPricePerMB(maxPricePerMB);
