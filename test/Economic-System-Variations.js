@@ -103,6 +103,7 @@ contract("1st test", async function (accounts) {
     });
 
     it("Economic system variations", async function () {
+       this.timeout(3000000);
 
         let AdminAccount, ReserveAccount, ClientAccounts, ProviderAccounts
         async function printBalances(eip20, forwarding, iaccess) {
@@ -139,13 +140,20 @@ contract("1st test", async function (accounts) {
         const eip20 = await EIP20.deployed();
 
 
+
         ////// EXPERIMENT VARIABLES ///////
+
+        // priceSystem = { "no_max" , "max" , "fixed" }
+        priceSystem = "max"
 
         nDevices = 4
         nProviders = 2
         iteration = 0
-        minPricePerMB = 1
-        maxPricePerMB = 3
+        minPricePerMB = 10
+        maxPricePerMB = 30
+
+        maxIterations = 29
+        maxDevices = 62
 
 
         ///  TODO calculation of how many devices per provider
@@ -161,9 +169,15 @@ contract("1st test", async function (accounts) {
         // When this amount is owned by a provider, he buys a new device with the probability p1 if it has less
         // than x% of the network size devices and with the probability p2 (< p1) in the other case.
         // The price for a new device is 150€. If the cost for maintaining a node
-        priceNewDevice = 100000000; // = d
+        priceNewDevice = 1000000000; // = d
         p1 = 0.7
         p2 = 0.2
+
+
+        ////// EXPERIMENT OUPUT ///////
+
+        output = []
+
 
 
         //The device id can be the IP or the guifi.net node name. In our implementation is the node name.
@@ -197,28 +211,44 @@ contract("1st test", async function (accounts) {
             forwarding = instance;
         });
 
+        let funds;
+
+        await eip20.balanceOf(Forwarding.address).then(result => {
+            funds = result.toNumber();
+            console.log(`Balance of the Forwarding contract (funds account): ${funds}`);
+        })
+
+
+
         // Let's do several iterations.
-        for (var it = 0; it < 3; it++) {
+        for (iteration = 0; iteration < maxIterations && funds > 0 && nDevices <= maxDevices; iteration++) {
 
           await wait(5000, '\n\n----- STARTING NEW ITERATION\n')
+
+          let outputIteration = [];
+          outputIteration.push(nDevices);
+          for (var i = 0; i < nProviders; i++) {
+            outputIteration.push(devices_provider[i]);
+          }
 
           // Initially, the Forwarding contract (which is the reserve account) owns all tokens
           // and the pricePerMB is set to 1.
           await eip20.balanceOf(Forwarding.address).then(result => {
               funds_first = result.toNumber();
+              funds = result.toNumber();
               console.log(`Balance of the Forwarding contract (funds account): ${funds_first}`);
           })
           printBalances(eip20);
 
-          await wait(1000, `\n\nObtaining monitoring values for the ${it} iteration\n\n`);
+          await wait(1000, `\n\nObtaining monitoring values for the ${iteration} iteration\n\n`);
 
           for (var i=0; i<nDevices; i++){
-            query = "{\"deviceid\":"+i+",\"iteration\":"+it+",\"owner\":"+deviceOwner[i]+"}";
+            query = "{\"deviceid\":"+i+",\"iteration\":"+iteration+",\"owner\":"+deviceOwner[i]+"}";
             console.log(`Query sent to the forwarding contract ${query}`);
             await forwarding.getMonitoringValues(query);
           }
 
-          await wait(1000, `\n\nCheckint provider addresses in Ferowarding contract.\n\n`);
+          await wait(1000, `\n\nChecking provider addresses in Forwarding contract.\n\n`);
 
 
           for (var i=0; i<nProviders; i++){
@@ -228,10 +258,30 @@ contract("1st test", async function (accounts) {
             });
           }
 
-          await wait(1000, `\n\nObtaining invoices for the ${it} iteration\n\n`);
+          await wait(1000, `\n\nRecording data for analysing results.\n\n`);
 
           for (var i=0; i<nProviders; i++){
-            await forwarding.getInvoiceByAddress(providers[i]);
+            await eip20.balanceOf(providers[i]).then(result => {
+                balance = result.toNumber()
+                outputIteration.push(balance)
+            })
+          }
+
+
+          await wait(1000, `\n\nObtaining invoices for the ${iteration} iteration\n\n`);
+
+          for (var i=0; i<nProviders; i++){
+            switch (priceSystem) {
+                case "max":
+                  await forwarding.getInvoiceByAddress(providers[i]);
+                  break;
+                case "no_max":
+                  await forwarding.getInvoiceByAddressNoMax(providers[i]);
+                  break;
+                case "fixed":
+                  await forwarding.getInvoiceByAddressFixed(providers[i]);
+                  break;
+            }
           }
 
 
@@ -247,25 +297,25 @@ contract("1st test", async function (accounts) {
 
           await forwarding.getTotalOwed().then(result => {
               owed_first_iteration = result.toNumber();
-              console.log(`Monitoring result for the ${it} iteration: ${owed_first_iteration}`)
+              console.log(`Total Owed in the ${iteration} iteration: ${owed_first_iteration} (sum of all the benefits)`)
           })
 
           for (var i=0; i<nProviders; i++){
-            await forwarding.amount_per_provider(providers[i]).then(result => {
+            await forwarding.benefit_per_provider(providers[i]).then(result => {
                 owed_provider = result.toNumber();
-                console.log(`Owed to the provider ${i+1} in this iteration: ${owed_provider}`)
+                console.log(`Benefit of the provider ${i+1} in this iteration: ${owed_provider} (10% of MB_forwarded * price_MB)`)
             })
           }
 
 
           // We proceed with the payment
           await forwarding.startPayment();
-          await wait(1000, `\n\nResolving payments for the ${it} iteration\n\n`);
+          await wait(1000, `\n\nResolving payments for the ${iteration} iteration\n\n`);
 
           // First of all, check if the forwarded amount was deduced from the funds.
           await eip20.balanceOf(Forwarding.address).then(result => {
               funds_after = result.toNumber();
-              console.log(`Balance of the forwarding contract after the ${it} iteration: ${funds_after}`)
+              console.log(`Balance of the forwarding contract after the ${iteration} iteration: ${funds_after}`)
               let value = funds_first - owed_first_iteration;
               assert.equal(funds_after, value);
           })
@@ -274,44 +324,53 @@ contract("1st test", async function (accounts) {
           for (var i=0; i<nProviders; i++){
             await eip20.balanceOf(providers[i]).then(result => {
                 provider1_balance_first = result.toNumber()
-                console.log(`Balance of the provider ${i+1} after the ${it} iteration: ${provider1_balance_first}`)
+                console.log(`Balance of the provider ${i+1} after the ${iteration} iteration: ${provider1_balance_first}`)
                 //assert.equal(provider1_balance_first, 3000);
             })
           }
 
 
-          // Then check if the debt with the provider is 0.
-          //await forwarding.getDebt(provider1).then(result => {
-          //    debt_first_provider1 = result.toNumber();
-          //    console.log(`Debt with the provider after the FIRST iteration: ${debt_first_provider1}`)
-          //    assert.equal(debt_first_provider1, 0);
-          //});
 
           // Finally, check if the pricePerMB has changed into the expected
           // value.
           await dao.getPricePerMB().then(result => {
               priceMB_first = result.toNumber()
-              console.log(`New pricePerMB after the ${it} iteration: ${priceMB_first}`)
+              //console.log(`PricePerMB after the ${iteration} iteration: ${priceMB_first}`)
               //assert(pricePerMB < priceMB_first, "The price per mb now is greater than before");
               funds_first = funds_second = funds_after;
           });
 
 
+          // //TODO paying costs of maintainment.
+          // await wait(1000, `\n\nProviders paying costs for the devices in the ${iteration} iteration\n\n`);
+          // for (var i=0; i<nProviders; i++){
+          //   await eip20.balanceOf(providers[i]).then(result => {
+          //       balance = result.toNumber();
+          //       toPay = 0.9*balance;
+          //       eip20.transfer(forwarding.address, toPay, {from: providers[i]});
+          //       console.log(`The provider ${i+1} payed costs in the ${iteration} iteration: ${toPay}`)
+          //   })
+          // }
+
+
           // Now the providers decide if they buy a new device or not.
           let num_devicesIncentiveMax = Math.floor(3/2*nDevices/nProviders); // = x
-          await wait(1000, `\n\nIs any provider going to buy a new device in the ${it} iteration? (the incentive maximun devices per provider is ${num_devicesIncentiveMax})\n\n`);
-
+          await wait(1000, `\n\nIs any provider going to buy a new device in the ${iteration} iteration? (the incentive maximun devices per provider is ${num_devicesIncentiveMax})\n\n`);
 
 
           for (var i=0; i<nProviders; i++){
+            if (nDevices >= maxDevices) {
+              console.log(`No more devices available. Max: ${nDevices}`);
+              break;
+            }
             await eip20.balanceOf(providers[i]).then(result => {
                 balance = result.toNumber()
                 if (balance < priceNewDevice) {
-                  console.log(`Provider ${i+1} cannot buy a device in the ${it} iteration. It has ${provider1_balance_first}`)
+                  console.log(`Provider ${i+1} cannot buy a device in the ${iteration} iteration. It has ${provider1_balance_first}`)
                 } else {
                   let p = Math.random();
                   if (devices_provider[i] < num_devicesIncentiveMax && p < p1 || devices_provider[i] >= num_devicesIncentiveMax && p < p2) {
-                      console.log(`Provider ${i+1} BUYS a device in the ${it} iteration. p=${p}. It had ${provider1_balance_first} tokens and ${devices_provider[i]} devices.`);
+                      console.log(`Provider ${i+1} BUYS a device in the ${iteration} iteration. p=${p}. It had ${provider1_balance_first} tokens and ${devices_provider[i]} devices.`);
                       devices_provider[i]++;
                       deviceOwner.push(i+1);
                       nDevices++;
@@ -320,9 +379,13 @@ contract("1st test", async function (accounts) {
                 }
             })
           }
+
+          output.push(outputIteration)
         } // End interations
 
-        await wait(5000, 'Full process is finished')
+        console.log(`${output}`);
+
+
 
     });
 

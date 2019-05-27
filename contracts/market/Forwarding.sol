@@ -9,6 +9,7 @@ contract Forwarding is usingOracle{
 
     mapping(address => uint256) public debt;
     mapping(address => uint256) public amount_per_provider;
+    mapping(address => uint256) public benefit_per_provider;
     mapping(address => uint256) public amount_MB_per_provider;
     mapping(address => uint) public devices_per_provider;
     mapping(address => bool) public is_provider_added;
@@ -71,7 +72,7 @@ contract Forwarding is usingOracle{
         if (int(reserve_funds - total_owed_iteration) >= 0) {
             while(num_providers > 0){
                 current_provider = providers[num_providers-1];
-                token.transfer(current_provider, amount_per_provider[current_provider]);
+                token.transfer(current_provider, benefit_per_provider[current_provider]);
                 debt[current_provider] = 0;
                 clearProvider(current_provider);
                 num_providers--;
@@ -95,6 +96,7 @@ contract Forwarding is usingOracle{
 
     function clearProvider(address current_provider) private {
         amount_per_provider[current_provider] = 0;
+        benefit_per_provider[current_provider] = 0;
         amount_MB_per_provider[current_provider] = 0;
         devices_per_provider[current_provider] = 0;
         is_provider_added[current_provider] = false;
@@ -115,6 +117,14 @@ contract Forwarding is usingOracle{
 
     function getInvoiceByAddress(address provider) public {
         _queryOracle('calculate_price_per_provider', provider, devices_per_provider[provider], num_devices, num_providers);
+    }
+
+    function getInvoiceByAddressNoMax(address provider) public {
+        _queryOracle('calculate_price_per_provider_no_max', provider, devices_per_provider[provider], num_devices, num_providers);
+    }
+
+    function getInvoiceByAddressFixed(address provider) public {
+        _queryOracle('calculate_price_per_provider_fixed', provider, devices_per_provider[provider], num_devices, num_providers);
     }
 
     function getMonitoringValues(string query) public {
@@ -184,7 +194,8 @@ contract Forwarding is usingOracle{
     function __pricePerProviderCalculatorCallback(uint256 _response, address _provider) onlyFromOracle public {
         require(_provider != 0x0, "This provider address is not a valid one");
         amount_per_provider[_provider] = _response * amount_MB_per_provider[_provider];
-        total_owed_iteration += amount_per_provider[_provider];
+        benefit_per_provider[_provider] = amount_per_provider[_provider] / 10; // Benefit: 10%
+        total_owed_iteration += benefit_per_provider[_provider];
     }
 
 

@@ -8,20 +8,24 @@ class PricePerProviderCalculatorHandler extends OracleHandler {
     }
 
     handle(_id, _recipient, _originator, result, callback) {
-        let [devices_provider, num_devices, num_providers] = result;
+        let [devices_provider, num_devices, num_providers, price_system] = result;
         console.log(`Devices provider: ${devices_provider};\nTotal devices: ${num_devices};\nTotal providers: ${num_providers};\n`)
-        let price;
 
         // Fixed values
-        let minpricePerMB = 1;
-        let maxPricePerMB = 3;
+        let minPricePerMB = 10;
+        let maxPricePerMB = 30;
         let num_devicesIncentiveMax = Math.floor(3/2*num_devices/num_providers)
 
-        price = maxPricePerMB/num_devicesIncentiveMax*devices_provider
+        let price = minPricePerMB;
 
-        if (price > maxPricePerMB) {
-          price = maxPricePerMB;
+        if (price_system != "fixed") {
+          price = minPricePerMB + (maxPricePerMB - minPricePerMB) / (num_devicesIncentiveMax - 1) * (devices_provider - 1);
+
+          if (price_system=="max" && price > maxPricePerMB) {
+            price = maxPricePerMB;
+          }
         }
+
         let response = {};
         response.response = price;
         response.provider = _originator;

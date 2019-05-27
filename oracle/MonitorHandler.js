@@ -75,9 +75,11 @@ class MonitorHandler extends OracleHandler {
                 console.log("error: " + error)
             console.log("status code: " + response.statusCode)
             let wx = JSON.parse(body)
-            console.log("Traffic (MB): " + wx[0].values[json.iteration])
-            result.monitor = wx[0].values[json.iteration]
-            console.log(result.monitor);
+            result.monitor = 0;
+            for (var i = 0; i < 24; i++) {
+              result.monitor += wx[0].values[json.iteration*24 + i]
+            }
+            console.log("Traffic (MB) in one day: " + result.monitor)
             request(owner, function (error, response, body) {
                 if (error)
                     console.log("error: " + error)

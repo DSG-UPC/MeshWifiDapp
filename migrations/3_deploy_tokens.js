@@ -7,7 +7,7 @@ const CRUDFactory = artifacts.require("CRUDFactory");
 //const Ownable = artifacts.require("Ownable");
 
 module.exports = function (deployer, network, accounts) {
-  deployer.deploy(ERC20, 1000000001024, 'Guificoin', 0, 'GCN')
+  deployer.deploy(ERC20, 100000000001024, 'Guificoin', 0, 'GCN')
   .then(async function (erc20) {
     await DAO.deployed().then(function(instance){dao=instance})
     console.log("ERC20: " + erc20.address);

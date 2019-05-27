@@ -139,7 +139,15 @@ async function startListener(abi, address) {
                     break;
                 case 'calculate_price_per_provider':
                     setHandler(pricePerProviderCalculatorHandler)
-                    logData.query = [logData.owed, logData.funds, logData.pricePerMB]
+                    logData.query = [logData.owed, logData.funds, logData.pricePerMB, "max"]
+                    break;
+                case 'calculate_price_per_provider_no_max':
+                    setHandler(pricePerProviderCalculatorHandler)
+                    logData.query = [logData.owed, logData.funds, logData.pricePerMB, "no_max"]
+                    break;
+                case 'calculate_price_per_provider_fixed':
+                    setHandler(pricePerProviderCalculatorHandler)
+                    logData.query = [logData.owed, logData.funds, logData.pricePerMB, "fixed"]
                     break;
 
             }
