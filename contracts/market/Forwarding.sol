@@ -9,6 +9,7 @@ contract Forwarding is usingOracle{
 
     mapping(address => uint256) public debt;
     mapping(address => uint256) public amount_per_provider;
+    mapping(address => uint256) public price_per_provider;
     mapping(address => uint256) public benefit_per_provider;
     mapping(address => uint256) public amount_MB_per_provider;
     mapping(address => uint) public devices_per_provider;
@@ -96,6 +97,7 @@ contract Forwarding is usingOracle{
 
     function clearProvider(address current_provider) private {
         amount_per_provider[current_provider] = 0;
+        price_per_provider[current_provider] = 0;
         benefit_per_provider[current_provider] = 0;
         amount_MB_per_provider[current_provider] = 0;
         devices_per_provider[current_provider] = 0;
@@ -195,6 +197,7 @@ contract Forwarding is usingOracle{
         require(_provider != 0x0, "This provider address is not a valid one");
         amount_per_provider[_provider] = _response * amount_MB_per_provider[_provider];
         benefit_per_provider[_provider] = amount_per_provider[_provider] / 10; // Benefit: 10%
+        price_per_provider[_provider] = _response;
         total_owed_iteration += benefit_per_provider[_provider];
     }
 

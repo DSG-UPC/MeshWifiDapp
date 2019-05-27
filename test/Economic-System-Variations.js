@@ -134,9 +134,8 @@ contract("1st test", async function (accounts) {
 
         // priceSystem = { "no_max" , "max" , "fixed" }
         priceSystem = "max"
-        nProviders = 10
+        nProviders = 5
 
-        nDevices = 2 * nProviders
         deviceOwner = []
         iteration = 0
         minPricePerMB = 10
@@ -144,6 +143,7 @@ contract("1st test", async function (accounts) {
 
         maxIterations = 29
         maxDevices = 62
+       nDevices = 0
 
 
         ///  TODO calculation of how many devices per provider
@@ -152,9 +152,15 @@ contract("1st test", async function (accounts) {
 
         // NOTE: the owner id 0 is the admin account
         for (var i = 0; i < nProviders; i++) {
-          deviceOwner.push(i+1)
-          deviceOwner.push(i+1)
-          devices_provider[i] = 2
+          if (i%2 == 0) {
+            devices_provider[i] = 1
+            nDevices += 1
+            deviceOwner.push(i+1)
+          } else {
+            devices_provider[i] = 3
+            nDevices += 3
+            deviceOwner.push(i+1,i+1,i+1)
+          }
         }
 
 
@@ -162,7 +168,7 @@ contract("1st test", async function (accounts) {
         // When this amount is owned by a provider, he buys a new device with the probability p1 if it has less
         // than x% of the network size devices and with the probability p2 (< p1) in the other case.
         // The price for a new device is 150€. If the cost for maintaining a node
-        priceNewDevice = 1000000000; // = d
+        priceNewDevice = 10000000000; // = d
         p1 = 0.7
         p2 = 0.2
 
@@ -313,6 +319,14 @@ contract("1st test", async function (accounts) {
                 console.log(`Benefit of the provider ${i+1} in this iteration: ${owed_provider} (10% of MB_forwarded * price_MB)`)
             })
           }
+          await wait(1000, `\n\nPrice per MB per providers for the ${iteration} iteration\n\n`);
+
+          for (var i=0; i<nProviders; i++){
+            await forwarding.price_per_provider(providers[i]).then(result => {
+                price = result.toNumber();
+                console.log(`Price per MB of the provider ${i+1} in this iteration: ${price}`)
+            })
+          }
 
 
           // We proceed with the payment
@@ -373,11 +387,11 @@ contract("1st test", async function (accounts) {
             await eip20.balanceOf(providers[i]).then(result => {
                 balance = result.toNumber()
                 if (balance < priceNewDevice) {
-                  console.log(`Provider ${i+1} cannot buy a device in the ${iteration} iteration. It has ${provider1_balance_first}`)
+                  console.log(`Provider ${i+1} cannot buy a device in the ${iteration} iteration. It has ${balance}`)
                 } else {
                   let p = Math.random();
                   if (devices_provider[i] < num_devicesIncentiveMax && p < p1 || devices_provider[i] >= num_devicesIncentiveMax && p < p2) {
-                      console.log(`Provider ${i+1} BUYS a device in the ${iteration} iteration. p=${p}. It had ${provider1_balance_first} tokens and ${devices_provider[i]} devices.`);
+                      console.log(`Provider ${i+1} BUYS a device in the ${iteration} iteration. p=${p}. It had ${balance} tokens and ${devices_provider[i]} devices.`);
                       devices_provider[i]++;
                       deviceOwner.push(i+1);
                       nDevices++;
