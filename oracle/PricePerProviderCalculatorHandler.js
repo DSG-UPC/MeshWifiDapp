@@ -15,9 +15,9 @@ class PricePerProviderCalculatorHandler extends OracleHandler {
         // Fixed values
         let minpricePerMB = 1;
         let maxPricePerMB = 3;
-        let num_devicesIncitiveMax = Math.floor(3/2*num_devices/num_providers)
+        let num_devicesIncentiveMax = Math.floor(3/2*num_devices/num_providers)
 
-        price = maxPricePerMB/num_devicesIncitiveMax*devices_provider
+        price = maxPricePerMB/num_devicesIncentiveMax*devices_provider
 
         if (price > maxPricePerMB) {
           price = maxPricePerMB;

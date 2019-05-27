@@ -138,8 +138,6 @@ contract("1st test", async function (accounts) {
         // Transfer tokens from reserve account to the other accounts
         const eip20 = await EIP20.deployed();
 
-        printBalances(eip20);
-
 
         ////// EXPERIMENT VARIABLES ///////
 
@@ -152,9 +150,12 @@ contract("1st test", async function (accounts) {
 
         ///  TODO calculation of how many devices per provider
         // nb of devices/provider at the beggining : unif(1,5)
+        devices_provider = new Array(nProviders)
 
-        // NOTE: the owner 0 is the admin account
+        // NOTE: the owner id 0 is the admin account
         deviceOwner = [1,1,2,2]
+        devices_provider[0] = 2
+        devices_provider[1] = 2
 
         // We have to decide when a provider buys a new device, or not. We can fix a certain amount of tokens d.
         // When this amount is owned by a provider, he buys a new device with the probability p1 if it has less
@@ -199,6 +200,7 @@ contract("1st test", async function (accounts) {
         // Let's do several iterations.
         for (var it = 0; it < 3; it++) {
 
+          await wait(5000, '\n\n----- STARTING NEW ITERATION\n')
 
           // Initially, the Forwarding contract (which is the reserve account) owns all tokens
           // and the pricePerMB is set to 1.
@@ -206,7 +208,9 @@ contract("1st test", async function (accounts) {
               funds_first = result.toNumber();
               console.log(`Balance of the Forwarding contract (funds account): ${funds_first}`);
           })
+          printBalances(eip20);
 
+          await wait(1000, `\n\nObtaining monitoring values for the ${it} iteration\n\n`);
 
           for (var i=0; i<nDevices; i++){
             query = "{\"deviceid\":"+i+",\"iteration\":"+it+",\"owner\":"+deviceOwner[i]+"}";
@@ -214,7 +218,8 @@ contract("1st test", async function (accounts) {
             await forwarding.getMonitoringValues(query);
           }
 
-          await wait(1000, `\n\nObtaining monitoring values for the ${it} iteration\n\n`);
+          await wait(1000, `\n\nCheckint provider addresses in Ferowarding contract.\n\n`);
+
 
           for (var i=0; i<nProviders; i++){
             await forwarding.getProvider(i).then(result => {
@@ -291,7 +296,31 @@ contract("1st test", async function (accounts) {
               funds_first = funds_second = funds_after;
           });
 
-        }
+
+          // Now the providers decide if they buy a new device or not.
+          let num_devicesIncentiveMax = Math.floor(3/2*nDevices/nProviders); // = x
+          await wait(1000, `\n\nIs any provider going to buy a new device in the ${it} iteration? (the incentive maximun devices per provider is ${num_devicesIncentiveMax})\n\n`);
+
+
+
+          for (var i=0; i<nProviders; i++){
+            await eip20.balanceOf(providers[i]).then(result => {
+                balance = result.toNumber()
+                if (balance < priceNewDevice) {
+                  console.log(`Provider ${i+1} cannot buy a device in the ${it} iteration. It has ${provider1_balance_first}`)
+                } else {
+                  let p = Math.random();
+                  if (devices_provider[i] < num_devicesIncentiveMax && p < p1 || devices_provider[i] >= num_devicesIncentiveMax && p < p2) {
+                      console.log(`Provider ${i+1} BUYS a device in the ${it} iteration. p=${p}. It had ${provider1_balance_first} tokens and ${devices_provider[i]} devices.`);
+                      devices_provider[i]++;
+                      deviceOwner.push(i+1);
+                      nDevices++;
+                      eip20.transfer(forwarding.address, priceNewDevice, {from: providers[i]});
+                  }
+                }
+            })
+          }
+        } // End interations
 
         await wait(5000, 'Full process is finished')
 
