@@ -160,7 +160,7 @@ contract("1st test", async function (accounts) {
         // When this amount is owned by a provider, he buys a new device with the probability p1 if it has less
         // than x% of the network size devices and with the probability p2 (< p1) in the other case.
         // The price for a new device is 150€. If the cost for maintaining a node
-        priceNewDevice = 27487; // = d
+        priceNewDevice = 100000000; // = d
         p1 = 0.7
         p2 = 0.2
 
@@ -196,100 +196,102 @@ contract("1st test", async function (accounts) {
             forwarding = instance;
         });
 
+        // Let's do several iterations.
+        for (var it = 0; it < 3; it++) {
 
 
-        // Initially, the Forwarding contract (which is the reserve account) owns all tokens
-        // and the pricePerMB is set to 1.
-        await eip20.balanceOf(Forwarding.address).then(result => {
-            funds_first = result.toNumber();
-            console.log(`Balance of the Forwarding contract (funds account): ${funds_first}`);
-        })
+          // Initially, the Forwarding contract (which is the reserve account) owns all tokens
+          // and the pricePerMB is set to 1.
+          await eip20.balanceOf(Forwarding.address).then(result => {
+              funds_first = result.toNumber();
+              console.log(`Balance of the Forwarding contract (funds account): ${funds_first}`);
+          })
 
 
-        for (var i=0; i<nDevices; i++){
-          query = "{\"deviceid\":"+i+",\"iteration\":"+iteration+",\"owner\":"+deviceOwner[i]+"}";
-          console.log(`Query sent to the forwarding contract ${query}`);
-          await forwarding.getMonitoringValues(query);
-        }
+          for (var i=0; i<nDevices; i++){
+            query = "{\"deviceid\":"+i+",\"iteration\":"+it+",\"owner\":"+deviceOwner[i]+"}";
+            console.log(`Query sent to the forwarding contract ${query}`);
+            await forwarding.getMonitoringValues(query);
+          }
 
-        await wait(1000, `\n\nObtaining monitoring values for the FIRST iteration\n\n`);
+          await wait(1000, `\n\nObtaining monitoring values for the ${it} iteration\n\n`);
 
-        for (var i=0; i<nProviders; i++){
-          await forwarding.getProvider(i).then(result => {
-              providers[i] = result;
-              console.log(`Provider address: ${providers[i]}`)
+          for (var i=0; i<nProviders; i++){
+            await forwarding.getProvider(i).then(result => {
+                providers[i] = result;
+                console.log(`Provider address: ${providers[i]}`)
+            });
+          }
+
+          await wait(1000, `\n\nObtaining invoices for the ${it} iteration\n\n`);
+
+          for (var i=0; i<nProviders; i++){
+            await forwarding.getInvoiceByAddress(providers[i]);
+          }
+
+
+
+          await dao.getMinPricePerMB().then(result => {
+              pricePerMB = result.toNumber();
+              console.log(`The min price per MB is: ${pricePerMB}`);
+          })
+
+          // Every provider has different price/MB, depending on the number of devices it has.
+          // It is in this function where the invoices are calculated.
+
+
+          await forwarding.getTotalOwed().then(result => {
+              owed_first_iteration = result.toNumber();
+              console.log(`Monitoring result for the ${it} iteration: ${owed_first_iteration}`)
+          })
+
+          for (var i=0; i<nProviders; i++){
+            await forwarding.amount_per_provider(providers[i]).then(result => {
+                owed_provider = result.toNumber();
+                console.log(`Owed to the provider ${i+1} in this iteration: ${owed_provider}`)
+            })
+          }
+
+
+          // We proceed with the payment
+          await forwarding.startPayment();
+          await wait(1000, `\n\nResolving payments for the ${it} iteration\n\n`);
+
+          // First of all, check if the forwarded amount was deduced from the funds.
+          await eip20.balanceOf(Forwarding.address).then(result => {
+              funds_after = result.toNumber();
+              console.log(`Balance of the forwarding contract after the ${it} iteration: ${funds_after}`)
+              let value = funds_first - owed_first_iteration;
+              assert.equal(funds_after, value);
+          })
+
+          // Then check if the provider has received the tokens.
+          for (var i=0; i<nProviders; i++){
+            await eip20.balanceOf(providers[i]).then(result => {
+                provider1_balance_first = result.toNumber()
+                console.log(`Balance of the provider ${i+1} after the ${it} iteration: ${provider1_balance_first}`)
+                //assert.equal(provider1_balance_first, 3000);
+            })
+          }
+
+
+          // Then check if the debt with the provider is 0.
+          //await forwarding.getDebt(provider1).then(result => {
+          //    debt_first_provider1 = result.toNumber();
+          //    console.log(`Debt with the provider after the FIRST iteration: ${debt_first_provider1}`)
+          //    assert.equal(debt_first_provider1, 0);
+          //});
+
+          // Finally, check if the pricePerMB has changed into the expected
+          // value.
+          await dao.getPricePerMB().then(result => {
+              priceMB_first = result.toNumber()
+              console.log(`New pricePerMB after the ${it} iteration: ${priceMB_first}`)
+              //assert(pricePerMB < priceMB_first, "The price per mb now is greater than before");
+              funds_first = funds_second = funds_after;
           });
+
         }
-
-        await wait(1000, `\n\nObtaining invoices for the FIRST iteration\n\n`);
-
-        for (var i=0; i<nProviders; i++){
-          await forwarding.getInvoiceByAddress(providers[i]);
-        }
-
-
-
-        await dao.getMinPricePerMB().then(result => {
-            pricePerMB = result.toNumber();
-            console.log(`The min price per MB is: ${pricePerMB}`);
-        })
-
-        // Every provider has different price/MB, depending on the number of devices it has.
-        // It is in this function where the invoices are calculated.
-
-
-        await forwarding.getTotalOwed().then(result => {
-            owed_first_iteration = result.toNumber();
-            console.log(`Monitoring result for the FIRST iteration: ${owed_first_iteration}`)
-        })
-
-        for (var i=0; i<nProviders; i++){
-          await forwarding.amount_per_provider(providers[i]).then(result => {
-              owed_provider = result.toNumber();
-              console.log(`Owed to the provider ${i+1} in this iteration: ${owed_provider}`)
-          })
-        }
-
-
-        // We proceed with the payment
-        await forwarding.startPayment();
-        await wait(1000, `\n\nResolving payments for the FIRST iteration\n\n`);
-
-        // First of all, check if the forwarded amount was deduced from the funds.
-        await eip20.balanceOf(Forwarding.address).then(result => {
-            funds_after = result.toNumber();
-            console.log(`Balance of the forwarding contract after the FIRST iteration: ${funds_after}`)
-            let value = funds_first - owed_first_iteration;
-            assert.equal(funds_after, value);
-        })
-
-        // Then check if the provider has received the tokens.
-        for (var i=0; i<nProviders; i++){
-          await eip20.balanceOf(providers[i]).then(result => {
-              provider1_balance_first = result.toNumber()
-              console.log(`Balance of the provider ${i+1} after the FIRST iteration: ${provider1_balance_first}`)
-              //assert.equal(provider1_balance_first, 3000);
-          })
-        }
-
-
-        // Then check if the debt with the provider is 0.
-        //await forwarding.getDebt(provider1).then(result => {
-        //    debt_first_provider1 = result.toNumber();
-        //    console.log(`Debt with the provider after the FIRST iteration: ${debt_first_provider1}`)
-        //    assert.equal(debt_first_provider1, 0);
-        //});
-
-        // Finally, check if the pricePerMB has changed into the expected
-        // value.
-        await dao.getPricePerMB().then(result => {
-            priceMB_first = result.toNumber()
-            console.log(`New pricePerMB after the FIRST iteration: ${priceMB_first}`)
-            //assert(pricePerMB < priceMB_first, "The price per mb now is greater than before");
-            funds_first = funds_second = funds_after;
-        });
-
-
 
         await wait(5000, 'Full process is finished')
 
