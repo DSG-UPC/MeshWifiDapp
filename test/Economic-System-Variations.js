@@ -316,7 +316,7 @@ contract("1st test", async function (accounts) {
           for (var i=0; i<nProviders; i++){
             await forwarding.benefit_per_provider(providers[i]).then(result => {
                 owed_provider = result.toNumber();
-                console.log(`Benefit of the provider ${i+1} in this iteration: ${owed_provider} (10% of MB_forwarded * price_MB)`)
+                console.log(`Benefit of the provider ${i+1} in this iteration: ${owed_provider} (amount owed - cost)`)
             })
           }
           await wait(1000, `\n\nPrice per MB per providers for the ${iteration} iteration\n\n`);

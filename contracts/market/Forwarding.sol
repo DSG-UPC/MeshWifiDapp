@@ -196,7 +196,7 @@ contract Forwarding is usingOracle{
     function __pricePerProviderCalculatorCallback(uint256 _response, address _provider) onlyFromOracle public {
         require(_provider != 0x0, "This provider address is not a valid one");
         amount_per_provider[_provider] = _response * amount_MB_per_provider[_provider];
-        benefit_per_provider[_provider] = amount_per_provider[_provider] / 10; // Benefit: 10%
+          benefit_per_provider[_provider] = amount_per_provider[_provider] - ((dao.getMinPricePerMB() * amount_MB_per_provider[_provider] * 9 )/ 10); // Benefit: Amount - cost. Cost = 90% * amount with prix_min
         price_per_provider[_provider] = _response;
         total_owed_iteration += benefit_per_provider[_provider];
     }
