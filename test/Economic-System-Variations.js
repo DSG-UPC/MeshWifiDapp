@@ -143,7 +143,7 @@ contract("1st test", async function (accounts) {
 
         maxIterations = 29
         maxDevices = 62
-       nDevices = 0
+        nDevices = 0
 
 
         ///  TODO calculation of how many devices per provider
@@ -234,7 +234,7 @@ contract("1st test", async function (accounts) {
 
 
         // Let's do several iterations.
-        for (iteration = 0; iteration < maxIterations && funds > 0 && nDevices <= maxDevices; iteration++) {
+        for (iteration = 0; iteration < maxIterations && funds > 0 && nDevices < maxDevices; iteration++) {
 
           await wait(5000, '\n\n----- STARTING NEW ITERATION\n')
 
@@ -390,7 +390,7 @@ contract("1st test", async function (accounts) {
                   console.log(`Provider ${i+1} cannot buy a device in the ${iteration} iteration. It has ${balance}`)
                 } else {
                   let p = Math.random();
-                  if (devices_provider[i] < num_devicesIncentiveMax && p < p1 || devices_provider[i] >= num_devicesIncentiveMax && p < p2) {
+                  if ((priceSystem == "max" &&  devices_provider[i] < num_devicesIncentiveMax && p < p1) || (priceSystem == "max" && devices_provider[i] >= num_devicesIncentiveMax && p < p2) || (priceSystem != "max" && p < p1)) {
                       console.log(`Provider ${i+1} BUYS a device in the ${iteration} iteration. p=${p}. It had ${balance} tokens and ${devices_provider[i]} devices.`);
                       devices_provider[i]++;
                       deviceOwner.push(i+1);
@@ -404,8 +404,9 @@ contract("1st test", async function (accounts) {
           output.push(outputIteration)
         } // End interations
 
-        console.log(`${output}`);
-
+        for (var i = 0; i < output.length; i++) {
+          console.log(`${output[i]}`);
+        }
 
 
     });
