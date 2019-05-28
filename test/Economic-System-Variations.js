@@ -133,7 +133,7 @@ contract("1st test", async function (accounts) {
         ////// EXPERIMENT VARIABLES ///////
 
         // priceSystem = { "no_max" , "max" , "fixed" }
-        priceSystem = "max"
+        priceSystem = "no_max"
         nProviders = 5
 
         deviceOwner = []
@@ -403,6 +403,20 @@ contract("1st test", async function (accounts) {
 
           output.push(outputIteration)
         } // End interations
+
+        await wait(1000, `\n\nIterations finished. Printing results.\n\n`);
+
+
+        let outputIteration = [];
+        outputIteration.push(nDevices);
+        for (var i = 0; i < nProviders; i++) {
+          outputIteration.push(devices_provider[i]);
+          await eip20.balanceOf(providers[i]).then(result => {
+              balance = result.toNumber()
+              outputIteration.push(balance)
+          })
+        }
+        output.push(outputIteration)
 
         for (var i = 0; i < output.length; i++) {
           console.log(`${output[i]}`);
