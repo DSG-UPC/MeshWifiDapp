@@ -133,8 +133,8 @@ contract("1st test", async function (accounts) {
         ////// EXPERIMENT VARIABLES ///////
 
         // priceSystem = { "no_max" , "max" , "fixed" }
-        priceSystem = "no_max"
-        nProviders = 5
+        priceSystem = "fixed"
+        nProviders = 2
 
         deviceOwner = []
         iteration = 0
@@ -169,8 +169,8 @@ contract("1st test", async function (accounts) {
         // than x% of the network size devices and with the probability p2 (< p1) in the other case.
         // The price for a new device is 150€. If the cost for maintaining a node
         priceNewDevice = 10000000000; // = d
-        p1 = 0.7
-        p2 = 0.2
+        p1 = 0.7 // probability of buying a new device when the price will increase
+        p2 = 0.2 // probability of buying a new device when the price will not increase
 
 
         ////// EXPERIMENT OUPUT ///////
@@ -390,7 +390,7 @@ contract("1st test", async function (accounts) {
                   console.log(`Provider ${i+1} cannot buy a device in the ${iteration} iteration. It has ${balance}`)
                 } else {
                   let p = Math.random();
-                  if ((priceSystem == "max" &&  devices_provider[i] < num_devicesIncentiveMax && p < p1) || (priceSystem == "max" && devices_provider[i] >= num_devicesIncentiveMax && p < p2) || (priceSystem != "max" && p < p1)) {
+                  if ((priceSystem == "max" &&  devices_provider[i] < num_devicesIncentiveMax && p < p1) || (priceSystem == "max" && devices_provider[i] >= num_devicesIncentiveMax && p < p2) || (priceSystem == "no_max" && p < p1) || (priceSystem == "fixed" && p < p2)) {
                       console.log(`Provider ${i+1} BUYS a device in the ${iteration} iteration. p=${p}. It had ${balance} tokens and ${devices_provider[i]} devices.`);
                       devices_provider[i]++;
                       deviceOwner.push(i+1);
