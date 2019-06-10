@@ -47,25 +47,18 @@ contract Forwarding is usingOracle{
         return debt[provider];
     }
 
-    /*
-     * The most important method in this contract. Every period of time, this method will be called from an authorized
-     * entity and the compensations payment will start:
-     * - It starts by checking if any provider requested to receive the payments, if no providers asked about this
-     *   it makes no sense to continue with the payment.
-     * - Then we get the current balance (in tokens) of the contract account (the available funds).
-     * - The next step consists in checking whether the contract can afford the total amount of tokens owed for this
-     *   iteration or not.
-     *      - If we can afford it, we proceed with the payment.
-     *      - Else, we will not pay the whole owed amount to the owner, but a proportional part of it (in order for
-     *        every provider to get at least a small amount of tokens). As this task requires precise mathematical
-     *        operations, this calculus is performed by the Oracle (explained in calculateProportional).
-     *        We need to keep track of the debt generated during this procedure with this provider.
-     *      - Finally we also remove the current provider information from this contract (externalized in clearProvider
-     *        method).
-     *  - Once this process is finished, we need to recalculate the new price for the MB. This is a crucial part of
-     *    the process because it helps to keep a zero sum game model in the system (if we have debt, we need to reduce
-     *    pricePerMB, else we can raise it). This explanation continues in recalculateMaxPrice.
-     */
+
+    // It starts by checking if any provider requested to receive the payments, if no providers
+    // asked about this it makes no sense to continue with the payment.
+    //
+    // Then, it checks if any provider requested to receive the payments, if no providers asked
+    // about this it makes no sense to continue with the payment.
+    //
+    // By design, in our implementation it is not possible that the Reserve funds run out of tokens,
+    // because we start with a 10^{14} (coded in the migration files 3_deploy_tokens.js
+    // and 5_deploy_forwarding.js), so the providers will always be able to get the owed amount.
+    // Finally the information of the providers and devices used in this iteration is removed
+    //  from the contract (externalized in clearProvider method).
     function startPayment() public {
         require(num_providers > 0, "No providers requested money");
         uint reserve_funds = token.balanceOf(reserve_account);
@@ -117,18 +110,29 @@ contract Forwarding is usingOracle{
         queryOracle('forwarding', msg.sender, ip);
     }
 
+
+    // There is one method for each of the price/MB calculation option Fair, Unbounded and
+    // Fixed price. The provider (identified by its Ethereum address) notifies the contract that
+    // he wants to receive the payment for the last period of forwarding. The monitoring values are
+    // already retrieved, so the contract calls the Oracle to calculate the price/MB for this provider,
+    // taking into account the state of the network (number of devices and providers in total and number
+    // of devices accounted owned by this provider during this iteration. The final calculus of the
+    // benefit of the provider is calculated in __pricePerProviderCalculatorCallback.
     function getInvoiceByAddress(address provider) public {
         _queryOracle('calculate_price_per_provider', provider, devices_per_provider[provider], num_devices, num_providers);
     }
-
     function getInvoiceByAddressNoMax(address provider) public {
         _queryOracle('calculate_price_per_provider_no_max', provider, devices_per_provider[provider], num_devices, num_providers);
     }
-
     function getInvoiceByAddressFixed(address provider) public {
         _queryOracle('calculate_price_per_provider_fixed', provider, devices_per_provider[provider], num_devices, num_providers);
     }
 
+
+    // This is the entry point of the contract. The provider notifies the contract that he wants to get the monitored forwarded
+    // MB by a given device (identified with the device id provided by the system) for the last period of forwarding (indicated
+    // by the iteration number). As we need to get the monitored data from the provider's node, we need to ask the Oracle for
+    // this purpose. This method will be resolved in __forwardingCallback.
     function getMonitoringValues(string query) public {
         queryOracle('forwarding_fake', msg.sender, query);
     }
@@ -193,10 +197,17 @@ contract Forwarding is usingOracle{
         dao.setPricePerMB(_response);
     }
 
+
+    // This function receives a provider (Ethereum address) and its price/MB, and calculates the amount
+    // of tokens that corresponds to a provider (price/MB * amount_MB_forwarded). Then, the benefit
+    // that the provider makes, which is the amount of tokens that corresponds to it minus the cost of
+    // maintaining the devices. The cost of maintaining the devices is implicit in the price/MB, and it
+    // is the 90% of the calculated tokens with price_{min}. The calculated benefit is the amount of
+    // tokens that will be paid to the provider.
     function __pricePerProviderCalculatorCallback(uint256 _response, address _provider) onlyFromOracle public {
         require(_provider != 0x0, "This provider address is not a valid one");
         amount_per_provider[_provider] = _response * amount_MB_per_provider[_provider];
-          benefit_per_provider[_provider] = amount_per_provider[_provider] - ((dao.getMinPricePerMB() * amount_MB_per_provider[_provider] * 9 )/ 10); // Benefit: Amount - cost. Cost = 90% * amount with prix_min
+        benefit_per_provider[_provider] = amount_per_provider[_provider] - ((dao.getMinPricePerMB() * amount_MB_per_provider[_provider] * 9 )/ 10); // Benefit: Amount - cost. Cost = 90% * amount with price_min
         price_per_provider[_provider] = _response;
         total_owed_iteration += benefit_per_provider[_provider];
     }
