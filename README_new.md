@@ -47,7 +47,11 @@ The communication, as stated before is done via RPC callings from smart contract
 
 ### Monitoring
 
-/*Reference to own repo and briefly explain*/
+We are using a monitoring server called [Prometheus](https://prometheus.io/) to keep track of the data forwarded for each of the devices that belong to the network. This data allows the system to obtain the values we need to pay to each provider respectively.
+
+This system offers a target discovery service to identify new devices to be monitored. The process to add a new device to the list would be sending a request to the oracle, such that it mints a new device in the database and, after that, makes a request to the [Prometheus CRUD Targets](https://github.com/DSG-UPC/Prometheus-CRUD-Targets/tree/master) software(*to be implemented yet*) so that the new device is added to the list of targets that Prometheus needs to monitor.
+
+This module has its [own external repository](https://github.com/DSG-UPC/MeshWifiDapp-Monitoring/tree/master/prometheus-server) and further explanations can be found there.
 
 
 ### MongoDB
