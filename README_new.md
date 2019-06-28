@@ -56,19 +56,112 @@ This module has its [own external repository](https://github.com/DSG-UPC/MeshWif
 
 ### MongoDB
 
-/*Reference to own repo and briefly explain*/
+As we did with the DAO smart contract, we want to ease things when accessing information about the users or devices. In this case, we will externalize this information into a MongoDB database. We have chosen Mongo because the setup process is neither hard nor long. It takes just a couple of minutes creating the database and the needed entitites. Another important point is that the format in which the information is stored is JSON, which stands for JavaScript Object Notation. This is important as the communication between the blockchain and the database will be done by the oracle, which has been developed in Node.js so we are dealing directly with JavaScript notation.
+
+All the classes related with the communication between MeshDApp and the database are stored under the `database/` folder. Every operation related with the database, is controlled by the `MongoHandler` class, which redirects the operation to be performed to the corresponding DAO class (note this [DAO](https://en.wikipedia.org/wiki/Data_access_object) is different from the [DAO contract](https://download.slock.it/public/DAO/WhitePaper.pdf)) and receives the information as a callback after the operation is performed by the corresponding DAO.
+
+There are two schemas in this database, one for Devices and another one for Users. Both schemas are defined in their corresponding classes and are required for the framework Mongoose, which makes the communication with the database much more easier.
+
+This module has its [own external repository](https://github.com/DSG-UPC/MeshWifiDapp-MongoDB) and further explanations can be found there.
 
 
 ### Exporters
 
-/*Reference to own repo and briefly explain*/
+Prometheus is intended to store the amount of data forwarded per each device in the system, this is done by requesting the forwarding information to every node, respectively. We were required to create a script to expose the data transferred by a node in a safe way (i.e. only authorized entities can access this information). Luckily for us, Prometheus allows to include a secret token as authorization header, so we are able to catch the headers of every request received by any device and decide whether the requester address is safe or not.
+
+Once we know the requester address is the one we want, the given device sends the *inner* and *outter* traffic in a format that Prometheus can understand and parse correctly. Prometheus will plot the data transferred for every node using three sources of data (in/out/total) traffic.
+
+Currently there are two implementations of the exporters, one in Lua and the other one in Node.js, but currently the only one which is finished and working is the Lua one. We decide to put more effort in the Lua implementation as it is supported by most of the routers (and all the devices that will be used in the network) and also because it requires less configuration.
+
+This module has its [own external repository](https://github.com/DSG-UPC/Prometheus-Lua-Exporter) and further explanations can be found there.
 
 
 ## Deployment
 
+There are three different ways of deploying the system, so don't go directly for the first one, because maybe is not the most suitable for what you want to do. These ways are:
+
+- **Manually**, in which you would have to install and configure almost everything. The good point here is that this approach gives more freedom when your intention is creating a custom installation of the system (maybe a new docker image with your custom configuration).
+
+- **Docker containers**, is a middle point between the first and the second option as you have to choose the configuration that will be used for the docker images you will be running. And also you may have to run some external modules (mongodb and prometheus) on your own.
+
+- **Docker-Compose**, the easiest one, just running two commands and the system is up and working with the default configuration, not the best choice if you want to make big changes (or even small but important ones).
+
 
 ### Manually
+
+1. **Read this point if you want to run it locally, otherwise continue to the second one**. We will need to install [MongoDB](https://docs.mongodb.com/manual/installation/). Once mongo is installed and running in our machine, we will have to initialize it and load some schemas. This can be done as follows:
+
+```
+mongo < database/init
+```
+
+2. The first thing to do is to install all the required dependencies:
+
+```
+npm install
+```
+
+3. Then we will need to compile and migrate the contracts to be used with respect to the Ethereum Network we'll be using:
+
+```
+./node_modules/.bin/truffle compile --all --network <<network-name>>
+
+./node_modules/.bin/truffle migrate --reset --network <<network-name>>
+```
+
+4. Once all the contracts have been migrated succesfully and we have a `build/` directory in the root folder of the project, we can start the oracle from inside the `/oracle` folder:
+
+```
+node oracle --network staging
+```
+
+5. If everything went ok we should be able to see a long output describing the WebSocketProvider and also the contract ABI.
 
 
 ### Docker
 
+1. Build the Dockerfile to get the image:
+
+```
+docker build -t <<any-name>> .
+```
+
+2. Execute the container **(Be sure to have a Ethereum provider and a MongoDB instances running and available, and a Prometheus server just in case you want to run locally)**
+
+```
+docker run -it --network=host -e NETWORK=test -e ETH_NET=localhost:8545 -e PROMETHEUS_IP=localhost:9090 -e MONGO_IP=localhost:27017 oracle-mesh
+```
+
+#### Things to be taken into account
+The command from the second point has some features that need to be explained:
+
+- **--network=host** This makes easier the integration when running everything locally. The idea is that the docker container inherits the network interface of the host, such that we can access to the different systems deployed on the host ports without needing to expose them individually (e.g. -p 8545:8545).
+
+- Five environment variables need to be set for the oracle to work properly:
+    
+	- **NETWORK** will represent the network name (check truffle.js to find available networks). Default value `staging` (be sure to choose the same network as the ethereum network provider).
+    
+	- **ETH_NET** will represent the IP of the ethereum network provider. Default value `localhost:8545`
+    
+	- **PROMETHEUS_IP** will represent the IP of the prometheus server. Default value `localhost:9090`
+    
+	- **MONGO_IP** will represent the IP of the database (MongoDB). Default value `localhost:27017`
+
+    - **HTTP_PROVIDER** string ('true' or 'false') used to validate if the provider will be via http or web socket instead. Default value `false` (which means using web socket).
+
+- If you decide to run it with the docker command shown above, the console will only show output and it will need to remain open while the docker container is running. Consider using `-d` or flag to detach it.
+
+- The command shown above to run the instance, is using the default values assuming it is being run in localhost, tune the parameters with the values you have for each of the services.
+
+
+### Docker-Compose
+
+Another approach, maybe the easiest one in terms of configuration, because it avoids keep installing or downloading things using several commands, is the docker compose. The only thing to be done here is downloading docker compose and (maybe) tunning the configuration in `config.js` to update the addresses of the different services that we are retrieving information from.
+
+To run the system with docker compose make sure you have an instance of ganache already running in the correct network (read previous sections for further information), also that all the addresses in config.js are correct and that they point to your services as expected. Once you have checked that it would be enough running the following command to start the system:
+
+```
+docker-compose up
+```
+
+This is the easiest approach, but if you want to create a custom execution for the system you should refer to the previous sections.
