@@ -35,7 +35,7 @@ const getAccount = async () => {
     if (oracleNetwork == 'staging') {
         account = accounts[0];
     } else {
-        account = accounts[3];
+        account = accounts[0];
     }
     //console.log(account);
     //web3.setProvider(web.provider)

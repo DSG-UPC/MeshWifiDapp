@@ -39,6 +39,8 @@ contract('Checks that oracle works properly', () => {
             net_id = 7775
         else if (network === "production")
             net_id = 1516
+	else if (network === "testbc")
+	    net_id = 456
 
         lookupAddress = jsonLookup.networks[net_id].address
 

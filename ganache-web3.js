@@ -5,7 +5,7 @@ let web3;
 Web3.providers.WebsocketProvider.prototype.sendAsync = Web3.providers.WebsocketProvider.prototype.send
 
 // HTTP for deploying and WS for the rest of the process (oracle needs WS)
-const provider = new Web3.providers.WebsocketProvider('ws://localhost:8545');
+const provider = new Web3.providers.WebsocketProvider('ws://10.1.27.43:8546');
 web3 = new Web3(provider);
  /*
 if (typeof web3.currentProvider.sendAsync !== "function") {

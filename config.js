@@ -7,7 +7,7 @@ var config = {
 
 function getMongoIP() {
     let ip = process.env.MONGO_IP || '127.0.0.1:27017'
-    return `mongodb://ammbr:4mmBr_P4ssW0rd@${ip}/ammbr`;
+    return `mongodb://test:test@${ip}/test`;
 }
 
 module.exports = config

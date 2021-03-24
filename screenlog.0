@@ -809,3 +809,210 @@ EVM call result:
   "r": "0xc620b43c604f22a6f1580080009d7a2fe57b0f350106784081d0aa78a133b0bf",
   "s": "0x2e349eedebf6b708b296b43c12cb70f54fa6a45d4adb6ab491f98feb230c1c78"
 }
+WebsocketProvider {
+  responseCallbacks: {},
+  notificationCallbacks:
+   [ [36m[Function: requestManagerNotification][39m,
+     [36m[Function: requestManagerNotification][39m,
+     [36m[Function: requestManagerNotification][39m,
+     [36m[Function: requestManagerNotification][39m,
+     [36m[Function: requestManagerNotification][39m,
+     [36m[Function: requestManagerNotification][39m,
+     [36m[Function: requestManagerNotification][39m,
+     [36m[Function: requestManagerNotification][39m,
+     [36m[Function: requestManagerNotification][39m ],
+  _customTimeout: [90mundefined[39m,
+  connection:
+   W3CWebSocket {
+     _listeners: {},
+     addEventListener: [36m[Function: _addEventListener][39m,
+     removeEventListener: [36m[Function: _removeEventListener][39m,
+     dispatchEvent: [36m[Function: _dispatchEvent][39m,
+     _url: [32m'ws://10.1.27.43:8546'[39m,
+     _readyState: [33m1[39m,
+     _protocol: [90mundefined[39m,
+     _extensions: [],
+     _bufferedAmount: [33m0[39m,
+     _binaryType: [32m'arraybuffer'[39m,
+     _connection:
+      WebSocketConnection {
+        _debug: [36m[Function][39m,
+        _events: [36m[Object][39m,
+        _eventsCount: [33m4[39m,
+        _maxListeners: [90mundefined[39m,
+        _pingListenerCount: [33m0[39m,
+        config: [36m[Object][39m,
+        socket: [36m[Socket][39m,
+        protocol: [90mundefined[39m,
+        extensions: [],
+        remoteAddress: [32m'10.1.27.43'[39m,
+        closeReasonCode: [33m-1[39m,
+        closeDescription: [1mnull[22m,
+        closeEventEmitted: [33mfalse[39m,
+        maskOutgoingPackets: [33mtrue[39m,
+        maskBytes: <Buffer 48 a7 2f 6a>,
+        frameHeader: <Buffer 81 51 00 00 00 00 00 00 00 00>,
+        bufferList: [36m[BufferList][39m,
+        currentFrame: [36m[WebSocketFrame][39m,
+        fragmentationSize: [33m0[39m,
+        frameQueue: [],
+        connected: [33mtrue[39m,
+        state: [32m'open'[39m,
+        waitingForCloseResponse: [33mfalse[39m,
+        receivedEnd: [33mfalse[39m,
+        closeTimeout: [33m5000[39m,
+        assembleFragments: [33mtrue[39m,
+        maxReceivedMessageSize: [33m8388608[39m,
+        outputBufferFull: [33mfalse[39m,
+        inputPaused: [33mfalse[39m,
+        receivedDataHandler: [36m[Function: bound ][39m,
+        _closeTimerHandler: [36m[Function: bound ][39m,
+        webSocketVersion: [33m13[39m },
+     _client:
+      WebSocketClient {
+        _events: [36m[Object][39m,
+        _eventsCount: [33m2[39m,
+        _maxListeners: [90mundefined[39m,
+        config: [36m[Object][39m,
+        _req: [1mnull[22m,
+        protocols: [],
+        origin: [90mundefined[39m,
+        url: [36m[Url][39m,
+        secure: [33mfalse[39m,
+        base64nonce: [32m'Pb+Lz2xRxCF71m0hahOJUQ=='[39m,
+        socket: [36m[Socket][39m,
+        response: [36m[IncomingMessage][39m,
+        firstDataChunk: [1mnull[22m },
+     onerror: [36m[Function][39m,
+     onclose: [36m[Function][39m,
+     onmessage: [36m[Function][39m },
+  connected: [36m[Getter][39m,
+  lastChunk: [1mnull[22m }
+Working from account  0x5318Fe18C179226493bd525c24dfB50C21b6BFCF
+contract address: 0x7C3a7787410Ab1fbC80E6a2974c984EcA91Ef4f1
+starting event monitoring on contract: 0xBCF7C83bd788DFD77Fb4432F6AD6c114C2FCc37A
+(node:21611) DeprecationWarning: current Server Discovery and Monitoring engine is deprecated, and will be removed in a future version. To use the new Server Discover and Monitoring engine, pass option { useUnifiedTopology: true } to the MongoClient constructor.
+(node:21611) DeprecationWarning: Listening to events on the Db class has been deprecated and will be removed in the next major version.
+(node:21611) DeprecationWarning: collection.ensureIndex is deprecated. Use createIndexes instead.
+1
+>>> [object Object]
+error: Error: connect EHOSTUNREACH 10.228.207.37:3000
+
+/home/cloudy/meshdapp/MeshWifiDapp/oracle/MonitorHandler.js:75
+            console.log("status code: " + response.statusCode)
+                                                   ^
+TypeError: Cannot read property 'statusCode' of undefined
+    at Request._callback (/home/cloudy/meshdapp/MeshWifiDapp/oracle/MonitorHandler.js:75:52)
+    at self.callback (/home/cloudy/meshdapp/MeshWifiDapp/node_modules/request/request.js:185:22)
+    at Request.emit (events.js:198:13)
+    at Request.onRequestError (/home/cloudy/meshdapp/MeshWifiDapp/node_modules/request/request.js:877:8)
+    at ClientRequest.emit (events.js:198:13)
+    at Socket.socketErrorListener (_http_client.js:401:9)
+    at Socket.emit (events.js:198:13)
+    at emitErrorNT (internal/streams/destroy.js:91:8)
+    at emitErrorAndCloseNT (internal/streams/destroy.js:59:3)
+    at process._tickCallback (internal/process/next_tick.js:63:19)
+OracleDispatch  Not Deployed
+WebsocketProvider {
+  responseCallbacks: {},
+  notificationCallbacks:
+   [ [36m[Function: requestManagerNotification][39m,
+     [36m[Function: requestManagerNotification][39m,
+     [36m[Function: requestManagerNotification][39m,
+     [36m[Function: requestManagerNotification][39m,
+     [36m[Function: requestManagerNotification][39m,
+     [36m[Function: requestManagerNotification][39m,
+     [36m[Function: requestManagerNotification][39m,
+     [36m[Function: requestManagerNotification][39m,
+     [36m[Function: requestManagerNotification][39m ],
+  _customTimeout: [90mundefined[39m,
+  connection:
+   W3CWebSocket {
+     _listeners: {},
+     addEventListener: [36m[Function: _addEventListener][39m,
+     removeEventListener: [36m[Function: _removeEventListener][39m,
+     dispatchEvent: [36m[Function: _dispatchEvent][39m,
+     _url: [32m'ws://10.1.27.43:8546'[39m,
+     _readyState: [33m1[39m,
+     _protocol: [90mundefined[39m,
+     _extensions: [],
+     _bufferedAmount: [33m0[39m,
+     _binaryType: [32m'arraybuffer'[39m,
+     _connection:
+      WebSocketConnection {
+        _debug: [36m[Function][39m,
+        _events: [36m[Object][39m,
+        _eventsCount: [33m4[39m,
+        _maxListeners: [90mundefined[39m,
+        _pingListenerCount: [33m0[39m,
+        config: [36m[Object][39m,
+        socket: [36m[Socket][39m,
+        protocol: [90mundefined[39m,
+        extensions: [],
+        remoteAddress: [32m'10.1.27.43'[39m,
+        closeReasonCode: [33m-1[39m,
+        closeDescription: [1mnull[22m,
+        closeEventEmitted: [33mfalse[39m,
+        maskOutgoingPackets: [33mtrue[39m,
+        maskBytes: <Buffer b6 b3 3b 22>,
+        frameHeader: <Buffer 81 51 00 00 00 00 00 00 00 00>,
+        bufferList: [36m[BufferList][39m,
+        currentFrame: [36m[WebSocketFrame][39m,
+        fragmentationSize: [33m0[39m,
+        frameQueue: [],
+        connected: [33mtrue[39m,
+        state: [32m'open'[39m,
+        waitingForCloseResponse: [33mfalse[39m,
+        receivedEnd: [33mfalse[39m,
+        closeTimeout: [33m5000[39m,
+        assembleFragments: [33mtrue[39m,
+        maxReceivedMessageSize: [33m8388608[39m,
+        outputBufferFull: [33mfalse[39m,
+        inputPaused: [33mfalse[39m,
+        receivedDataHandler: [36m[Function: bound ][39m,
+        _closeTimerHandler: [36m[Function: bound ][39m,
+        webSocketVersion: [33m13[39m },
+     _client:
+      WebSocketClient {
+        _events: [36m[Object][39m,
+        _eventsCount: [33m2[39m,
+        _maxListeners: [90mundefined[39m,
+        config: [36m[Object][39m,
+        _req: [1mnull[22m,
+        protocols: [],
+        origin: [90mundefined[39m,
+        url: [36m[Url][39m,
+        secure: [33mfalse[39m,
+        base64nonce: [32m'25YyzKtQLtkVSRdx+IGeBg=='[39m,
+        socket: [36m[Socket][39m,
+        response: [36m[IncomingMessage][39m,
+        firstDataChunk: [1mnull[22m },
+     onerror: [36m[Function][39m,
+     onclose: [36m[Function][39m,
+     onmessage: [36m[Function][39m },
+  connected: [36m[Getter][39m,
+  lastChunk: [1mnull[22m }
+Working from account  0x5318Fe18C179226493bd525c24dfB50C21b6BFCF
+contract address: 
+starting event monitoring on contract: 0xBCF7C83bd788DFD77Fb4432F6AD6c114C2FCc37A
+(node:21634) DeprecationWarning: current Server Discovery and Monitoring engine is deprecated, and will be removed in a future version. To use the new Server Discover and Monitoring engine, pass option { useUnifiedTopology: true } to the MongoClient constructor.
+(node:21634) DeprecationWarning: Listening to events on the Db class has been deprecated and will be removed in the next major version.
+(node:21634) DeprecationWarning: collection.ensureIndex is deprecated. Use createIndexes instead.
+localhost:9000
+>>> [object Object]
+error: Error: connect EHOSTUNREACH 10.228.207.37:3000
+
+/home/cloudy/meshdapp/MeshWifiDapp/oracle/MonitorHandler.js:75
+            console.log("status code: " + response.statusCode)
+                                                   ^
+TypeError: Cannot read property 'statusCode' of undefined
+    at Request._callback (/home/cloudy/meshdapp/MeshWifiDapp/oracle/MonitorHandler.js:75:52)
+    at self.callback (/home/cloudy/meshdapp/MeshWifiDapp/node_modules/request/request.js:185:22)
+    at Request.emit (events.js:198:13)
+    at Request.onRequestError (/home/cloudy/meshdapp/MeshWifiDapp/node_modules/request/request.js:877:8)
+    at ClientRequest.emit (events.js:198:13)
+    at Socket.socketErrorListener (_http_client.js:401:9)
+    at Socket.emit (events.js:198:13)
+    at emitErrorNT (internal/streams/destroy.js:91:8)
+    at emitErrorAndCloseNT (internal/streams/destroy.js:59:3)
+    at process._tickCallback (internal/process/next_tick.js:63:19)

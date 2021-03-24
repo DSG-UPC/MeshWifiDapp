@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/DSG-UPC/MeshWifiDappOracle#readme",
   "dependencies": {
+    "@truffle/hdwallet-provider": "^1.2.2",
     "alt": "^0.18.6",
     "contracts": "file:contracts",
     "eth-crypto": "^1.2.1",
