@@ -3,8 +3,12 @@ services:
   mongodb:
     image: 'dsgupc/meshdapp-mongodb'
     network_mode: 'host'
+  ganache:
+    image: 'trufflesuite/ganache-cli'
+    network_mode: 'host'
   oracle:
     image: 'dsgupc/meshdapp-oracle'
     network_mode: 'host'
     depends_on: 
       - mongodb
+      - ganache
