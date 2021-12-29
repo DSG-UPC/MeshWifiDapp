@@ -10,7 +10,7 @@ contract('Checks that oracle works properly', () => {
     var device = {
         name: 'Initial',
         price: 50,
-        ip: '127.0.0.2',
+        ip: '127.0.0.1',
         deviceType: 'Router',
         owner: 'c71943425a898db276dd5771656e100d',
         wallet: 'd8d6ef110c36222bf4c6381161e1762e'
@@ -33,8 +33,10 @@ contract('Checks that oracle works properly', () => {
         })
         // Then we create the OracleTest contract.
 
-        if (network == null || network == undefined)
+        if (network == null || network == undefined) {
             network = "development"
+            net_id = 7775
+        }
         else if (network === "staging")
             net_id = 7775
         else if (network === "production")
