@@ -6,7 +6,7 @@ services:
   ganache:
     image: 'trufflesuite/ganache-cli'
     network_mode: 'host'
-    command: node /app/ganache-core.docker.cli.js -l 11000000 -m "improve bomb example bus alert argue behind leopard taste champion antique behave"
+    command: node /app/ganache-core.docker.cli.js -l 11000000 -n 7775  -m "improve bomb example bus alert argue behind leopard taste champion antique behave"
   prometheus:
     image: 'dsgupc/meshdapp-prometheus'
     network_mode: 'host'
