@@ -6,9 +6,13 @@ services:
   ganache:
     image: 'trufflesuite/ganache-cli'
     network_mode: 'host'
+  prometheus:
+    image: 'dsgupc/meshdapp-prometheus'
+    network_mode: 'host'
   oracle:
     image: 'dsgupc/meshdapp-oracle'
     network_mode: 'host'
     depends_on: 
       - mongodb
       - ganache
+      - prometheus
