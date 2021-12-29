@@ -78,7 +78,7 @@ contract('Checks that oracle works properly', () => {
             pubKey: 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQ',
             devices: [],
             role: 'Provider',
-            wallet: '0xbce83eeb42c0b98f5bfb24a20b494bf6'
+            wallet: '0x11891834542c32C509Aa1Eae38Dfccb5288EDa2b'
         }
 
         // ADDING A USER //
@@ -116,7 +116,7 @@ contract('Checks that oracle works properly', () => {
             ip: '127.0.0.1',
             deviceType: 'Router',
             owner: 'c71943425a898db276dd5771656e100d',
-            wallet: '0x6e5981a73ad28051b6bd655c3a0b3160'
+            wallet: '0x37bE35ae7ECEd44Ca25e4683e98425FC7830a8A5'
         }
         // MINTING A DEVICE //
 

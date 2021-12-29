@@ -17,7 +17,7 @@ const device = {
   ip: `${TestIP}`,
   deviceType: 'Router',
   owner: 'c71943425a898db276dd5771656e100d',
-  wallet: '0x28b17326d08992f16d382db2923d0d8b4ff8adb0'
+  wallet: '0x11891834542c32C509Aa1Eae38Dfccb5288EDa2b'
 }
 
 
