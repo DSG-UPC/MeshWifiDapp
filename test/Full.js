@@ -155,9 +155,9 @@ contract("1st test", async function (accounts) {
             ClientAccount = accounts[1];
             ProviderAccount = accounts[2];
         } else {
-            AdminAccount = accounts[3];
-            ClientAccount = accounts[4];
-            ProviderAccount = accounts[5];
+            AdminAccount = accounts[0];
+            ClientAccount = accounts[1];
+            ProviderAccount = accounts[2];
         }
         console.log(`Admin account: ${AdminAccount};
                     \nClient account: ${ClientAccount};
